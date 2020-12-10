@@ -1,10 +1,12 @@
 package com.nivelais.combiplanner.app.ui.modules
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticAmbientOf
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.nivelais.combiplanner.app.ui.modules.home.Home
+import com.nivelais.combiplanner.app.ui.modules.home.HomeViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.Settings
 
 /**
