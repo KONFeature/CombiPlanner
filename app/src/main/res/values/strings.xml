@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">CombiPlanner</string>
+
+    <string name="generic_loading">Loading</string>
+    <string name="generic_name">Name</string>
+
+    <string name="settings_part_category">Categories</string>
+    <string name="settings_part_category_loading">@string/generic_loading</string>
+
+    <string name="create_category_title">Create a new category</string>
+    <string name="create_category_name_label">@string/generic_name</string>
+    <string name="create_category_color_label">Color</string>
+    <string name="create_category_button">Create</string>
+
 </resources>

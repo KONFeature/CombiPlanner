@@ -1,7 +1,13 @@
 package com.nivelais.combiplanner.app.di
 
-import com.nivelais.combiplanner.data.repositories.TestRepositoryImpl
-import com.nivelais.combiplanner.domain.repositories.TestRepository
+import com.nivelais.combiplanner.data.database.dao.CategoryDao
+import com.nivelais.combiplanner.data.database.dao.TaskDao
+import com.nivelais.combiplanner.data.database.entities.MyObjectBox
+import com.nivelais.combiplanner.data.repositories.CategoryRepositoryImpl
+import com.nivelais.combiplanner.data.repositories.TaskRepositoryImpl
+import com.nivelais.combiplanner.domain.repositories.CategoryRepository
+import com.nivelais.combiplanner.domain.repositories.TaskRepository
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 /**
@@ -12,6 +18,20 @@ import org.koin.dsl.module
  */
 val dataModule = module {
 
-    single<TestRepository> { TestRepositoryImpl() }
+    // Init ObjectBox
+    single {
+        MyObjectBox.builder()
+            .name("CombiPlannerDatabase")
+            .androidContext(androidContext())
+            .build()
+    }
+
+    // DAO's
+    single { CategoryDao(get()) }
+    single { TaskDao(get()) }
+
+    // Repository implementations
+    single<CategoryRepository> { CategoryRepositoryImpl(get()) }
+    single<TaskRepository> { TaskRepositoryImpl(get()) }
 
 }

@@ -1,6 +1,8 @@
 package com.nivelais.combiplanner.app.di
 
 import com.nivelais.combiplanner.app.ui.modules.home.HomeViewModel
+import com.nivelais.combiplanner.app.ui.modules.settings.SettingsViewModel
+import com.nivelais.combiplanner.app.ui.modules.settings.create_category.CreateCategoryViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -12,6 +14,11 @@ import org.koin.dsl.module
  */
 val appModule = module {
 
-    viewModel { HomeViewModel(get()) }
+    // Home
+    viewModel { HomeViewModel() }
+
+    // Settings
+    viewModel { SettingsViewModel() }
+    viewModel { CreateCategoryViewModel() }
 
 }

@@ -3,7 +3,7 @@ package com.nivelais.combiplanner.app.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.platform.setContent
-import com.nivelais.combiplanner.app.ui.modules.Navigator
+import com.nivelais.combiplanner.app.ui.modules.main.Navigator
 import com.nivelais.combiplanner.app.ui.theme.CombiPlannerTheme
 
 /**

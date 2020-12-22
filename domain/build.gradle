@@ -14,9 +14,9 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutines_version"
 
     // Slf4j (Logging)
-    implementation 'org.slf4j:slf4j-android:1.7.30'
+    implementation "org.slf4j:slf4j-android:$slf4j_version"
 
     // Log4j
-    implementation 'org.apache.logging.log4j:log4j-api:2.14.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.14.0'
+    implementation "org.apache.logging.log4j:log4j-api:$logback_version"
+    implementation "org.apache.logging.log4j:log4j-core:$logback_version"
 }

@@ -1,12 +1,11 @@
-package com.nivelais.combiplanner.app.ui.modules
+package com.nivelais.combiplanner.app.ui.modules.main
 
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.staticAmbientOf
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.nivelais.combiplanner.app.ui.modules.home.Home
-import com.nivelais.combiplanner.app.ui.modules.home.HomeViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.Settings
 
 /**
@@ -17,17 +16,19 @@ fun Navigator() {
 
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "home") {
-        composable("home") { Home(navController) }
-        composable("settings") { Settings(navController) }
+    Scaffold(
+        bottomBar = { BottomNavBar(navController) }
+    ) {
+        NavHost(navController, startDestination = "home") {
+            composable("home") { Home() }
+            composable("settings") { Settings() }
+        }
     }
-
 }
 
-object Route {
+object Routes {
     val HOME: Int by lazy { createRoute("home") }
     val SETTINGS: Int by lazy { createRoute("settings") }
-
 
     private fun createRoute(route: String) =
         "android-app://androidx.navigation.compose/$route".hashCode()

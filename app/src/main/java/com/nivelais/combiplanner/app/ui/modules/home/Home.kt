@@ -1,74 +1,113 @@
 package com.nivelais.combiplanner.app.ui.modules.home
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.onActive
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.nivelais.combiplanner.app.ui.modules.Route
+import com.nivelais.combiplanner.domain.entities.Task
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.getViewModel
-import org.koin.androidx.viewmodel.ViewModelOwner
-import org.koin.androidx.viewmodel.compat.ViewModelCompat.viewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun Home(
-    navController: NavController,
     homeViewModel: HomeViewModel = getViewModel()
 ) {
+    onActive {
+        // Launch the tasks fetching
+        homeViewModel.fetchTasks()
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()
+        modifier = Modifier.padding(16.dp).fillMaxWidth()
     ) {
         Text(
             text = "Home",
             style = MaterialTheme.typography.h1
         )
-        StateDemo(state = homeViewModel.useCaseFlow.collectAsState())
-        Button(
-            onClick = {
-                navController.navigate(Route.SETTINGS)
-            }) {
-            Text(
-                text = "Go to settings",
-                style = MaterialTheme.typography.h6
-            )
+        Tasks(taskState = homeViewModel.tasksFlow.collectAsState())
+
+        // TODO : Create a new task
+        // TODO : Manage category in the settings screen first
+        FloatingActionButton(
+            onClick = { /*TODO*/ }
+        ) {
+            Icon(Icons.Filled.Add)
         }
-        Button(
-            onClick = {
-                homeViewModel.launchTest()
-            }) {
-            Text(
-                text = "Execute use case",
-                style = MaterialTheme.typography.h6
-            )
-        }
+    }
+
+}
+
+@Composable
+private fun Tasks(taskState: State<List<Task>?>) {
+    taskState.value?.let { tasks ->
+        TasksGrid(tasks = tasks, columnCount = 2)
+    } ?: run {
+        // Else display a lmoading indicator
+        // TODO : Shimmer effect ???
+        Text(
+            text = "Tasks are currently loading",
+            style = MaterialTheme.typography.h3
+        )
     }
 }
 
 @Composable
-fun StateDemo(state: State<String?>) {
-    state.value?.let {
-        Text(
-            text = it,
-            style = MaterialTheme.typography.h3
-        )
-    } ?: run {
-        Text(
-            text = "No value",
-            style = MaterialTheme.typography.h3
-        )
+private fun TasksGrid(
+    tasks: List<Task>,
+    columnCount: Int
+) {
+    // Chunk or list to get two task by column
+    val tasksChunked = tasks.chunked(columnCount)
+
+    // If we got value display all the task
+    LazyColumn {
+        this.items(tasksChunked) { taskRow ->
+            Row {
+                taskRow.forEach { task ->
+                    TaskCard(
+                        task = task,
+                        modifier = Modifier.weight(1f).padding(4.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+// TODO : Custom view with it's own view model ?
+@Composable
+private fun TaskCard(
+    task: Task,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier,
+    ) {
+        Card {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(16.dp)
+            ) {
+                Text(
+                    text = task.name,
+                    style = MaterialTheme.typography.h6
+                )
+                Spacer(modifier = Modifier.padding(4.dp))
+                task.entries.forEach { entry ->
+                    Text(
+                        text = entry.name
+                    )
+                }
+            }
+        }
     }
 }
