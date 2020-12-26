@@ -7,6 +7,6 @@ data class Task(
     var id: Long = 0,
     var name: String,
     var description: String? = null,
-    val category: Category,
+    var category: Category,
     val entries: List<TaskEntry> = emptyList()
 )

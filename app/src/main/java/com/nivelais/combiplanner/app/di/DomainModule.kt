@@ -3,8 +3,11 @@ package com.nivelais.combiplanner.app.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nivelais.combiplanner.app.ui.modules.home.HomeViewModel
+import com.nivelais.combiplanner.app.ui.modules.home.tasks.TasksViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.SettingsViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.create_category.CreateCategoryViewModel
+import com.nivelais.combiplanner.app.ui.modules.task.TaskViewModel
+import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntriesViewModel
 import com.nivelais.combiplanner.domain.usecases.*
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
@@ -14,19 +17,33 @@ import org.koin.dsl.module
  *  - Use Case
  */
 val domainModule = module {
-
+    // Home part
     scope<HomeViewModel> {
         scoped { viewModelCoroutineScope() }
+        scoped { SaveTaskUseCase(get(), get()) }
+    }
+    scope<TasksViewModel> {
+        scoped { viewModelCoroutineScope() }
         scoped { GetTasksUseCase(get(), get()) }
-        scoped { CreateTaskUseCase(get(), get()) }
     }
 
+    // Task part
+    scope<TaskViewModel> {
+        scoped { viewModelCoroutineScope() }
+        scoped { GetCategoriesUseCase(get(), get()) }
+        scoped { SaveTaskUseCase(get(), get()) }
+        scoped { GetTaskUseCase(get(), get()) }
+    }
+    scope<TaskEntriesViewModel> {
+        scoped { viewModelCoroutineScope() }
+    }
+
+    // Settings part
     scope<SettingsViewModel> {
         scoped { viewModelCoroutineScope() }
         scoped { GetCategoriesUseCase(get(), get()) }
         scoped { DeleteCategoryUseCase(get(), get()) }
     }
-
     scope<CreateCategoryViewModel> {
         scoped { viewModelCoroutineScope() }
         scoped { CreateCategoryUseCase(get(), get()) }

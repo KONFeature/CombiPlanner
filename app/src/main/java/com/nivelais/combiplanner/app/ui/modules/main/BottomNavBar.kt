@@ -1,5 +1,6 @@
 package com.nivelais.combiplanner.app.ui.modules.main
 
+import androidx.annotation.StringRes
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -10,29 +11,31 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
+import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigate
+import com.nivelais.combiplanner.R
 
 @Composable
 fun BottomNavBar(navController: NavController) {
     BottomAppBar {
-        // Get the current nav route
-        val currentRouteId = currentRoute(navController)
-
         // Create each of our nav buttoms
         navigationTargets().forEach { navTarget ->
-            val isCurrentTarget = navTarget.routeId == currentRouteId;
             BottomNavigationItem(
                 icon = { Icon(navTarget.icon) },
-                selected = isCurrentTarget,
+                selected = isCurrentRoute(navController = navController, target = navTarget),
                 onClick = {
-                    if (!isCurrentTarget) {
-                        navController.navigate(navTarget.routeId, null, navTarget.navOptions())
+                    navController.navigate(navTarget.route) {
+                        // Single top to prevent navigating on the same target again and again
+                        launchSingleTop = true
+                        // Popup all the backstack to the start destination
+                        popUpTo = navController.graph.startDestination
                     }
                 },
                 label = {
-                    Text(navTarget.label)
+                    Text(text = stringResource(id = navTarget.labelId))
                 }
             )
         }
@@ -40,32 +43,29 @@ fun BottomNavBar(navController: NavController) {
 }
 
 @Composable
-private fun currentRoute(navController: NavController): Int? {
+private fun isCurrentRoute(navController: NavController, target: BottomNavTarget): Boolean {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    return navBackStackEntry?.destination?.id
+    val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+    return currentRoute == target.route;
 }
 
 /**
- * Represent a target of our bottom nav bar
+ * The different target of our bottom navbar
  */
-private data class BottomNavigationTarget(
-    val routeId: Int,
+sealed class BottomNavTarget(
+    val route: String,
     val icon: ImageVector,
-    val label: String
-)
+    @StringRes val labelId: Int
+) {
+    object Home : BottomNavTarget(Routes.HOME, Icons.Filled.Home, R.string.home_label)
+    object Settings :
+        BottomNavTarget(Routes.SETTINGS, Icons.Filled.Settings, R.string.settings_label)
+}
 
 /**
  * Extension on the route object to convert them to navigation target
  */
 private fun navigationTargets() = listOf(
-    BottomNavigationTarget(Routes.HOME, Icons.Filled.Home, "Home"),
-    BottomNavigationTarget(Routes.SETTINGS, Icons.Filled.Settings, "Settings"),
+    BottomNavTarget.Home,
+    BottomNavTarget.Settings
 )
-
-/**
- * Get the navigation options for our navigation target
- */
-private fun BottomNavigationTarget.navOptions() =
-    NavOptions.Builder()
-        .setPopUpTo(Routes.HOME, routeId == Routes.HOME)
-        .build()

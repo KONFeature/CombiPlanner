@@ -3,8 +3,12 @@
 
     <string name="generic_loading">Loading</string>
     <string name="generic_name">Name</string>
+    <string name="generic_categories">Categories</string>
 
-    <string name="settings_part_category">Categories</string>
+    <string name="home_label">Home</string>
+
+    <string name="settings_label">Settings</string>
+    <string name="settings_part_category">@string/generic_categories</string>
     <string name="settings_part_category_loading">@string/generic_loading</string>
 
     <string name="create_category_title">Create a new category</string>
@@ -12,4 +16,10 @@
     <string name="create_category_color_label">Color</string>
     <string name="create_category_button">Create</string>
 
+    <string name="task_name_label">Task name</string>
+    <string name="task_category_loading">@string/generic_loading</string>
+    <string name="task_category_title">@string/generic_categories</string>
+
+    <string name="task_entries_name_placeholder">Task entry</string>
+    <string name="task_entries_add_button">Add an entry</string>
 </resources>

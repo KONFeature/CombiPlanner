@@ -9,7 +9,7 @@ import org.koin.core.scope.newScope
 /**
  * Generic view model binded to a Koin Scope
  */
-abstract class GenericViewModel : ViewModel(), KoinScopeComponent {
+open class GenericViewModel : ViewModel(), KoinScopeComponent {
 
     // Logger for all of our view model
     val log by logger
@@ -18,7 +18,7 @@ abstract class GenericViewModel : ViewModel(), KoinScopeComponent {
     override val scope: Scope by lazy { newScope(this) }
 
     // Abstract function that will close all the use case
-    abstract fun clearUseCases()
+    open fun clearUseCases() {}
 
     /**
      * When view model cleared close the scope

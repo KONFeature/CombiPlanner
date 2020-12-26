@@ -23,9 +23,7 @@ class SettingsViewModel : GenericViewModel() {
     /**
      * Call the use case to fetch all of our category
      */
-    fun fetchCategories() {
-        getCategoriesUseCase.run(Unit)
-    }
+    fun fetchCategories() = getCategoriesUseCase.run(Unit)
 
     /**
      * Call the use case to delete a category

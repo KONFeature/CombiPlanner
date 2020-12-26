@@ -5,5 +5,6 @@ package com.nivelais.combiplanner.domain.entities
  */
 data class TaskEntry(
     var id: Long = 0,
-    val name: String
+    var name: String,
+    var isDone: Boolean = false
 )
