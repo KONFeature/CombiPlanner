@@ -9,6 +9,9 @@ import com.nivelais.combiplanner.app.ui.modules.settings.create_category.CreateC
 import com.nivelais.combiplanner.app.ui.modules.task.TaskViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntriesViewModel
 import com.nivelais.combiplanner.domain.usecases.*
+import com.nivelais.combiplanner.domain.usecases.category.CreateCategoryUseCase
+import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryUseCase
+import com.nivelais.combiplanner.domain.usecases.category.GetCategoriesUseCase
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 

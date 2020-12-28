@@ -8,6 +8,7 @@ import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 import com.nivelais.combiplanner.domain.usecases.*
+import com.nivelais.combiplanner.domain.usecases.category.GetCategoriesUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.scope.inject

@@ -1,4 +1,4 @@
-package com.nivelais.combiplanner.domain.usecases
+package com.nivelais.combiplanner.domain.usecases.category
 
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.repositories.CategoryRepository

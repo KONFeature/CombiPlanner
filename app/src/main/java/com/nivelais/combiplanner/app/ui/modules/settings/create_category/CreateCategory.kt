@@ -18,22 +18,35 @@ import org.koin.androidx.compose.getViewModel
 fun CreateCategory(
     viewModel: CreateCategoryViewModel = getViewModel()
 ) {
-    var categoryName by remember { viewModel.name }
-    var categoryColor by remember { viewModel.color }
+    var categoryName by remember { viewModel.nameState }
+    var categoryColor by remember { viewModel.colorState }
+
+    val errorRes by remember { viewModel.nameErrorResState }
 
     val creationState = viewModel.creationFlow.collectAsState()
 
     CreateCategoryBox {
         Text(
             text = stringResource(id = R.string.create_category_title),
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.h6,
         )
         Spacer(modifier = Modifier.padding(8.dp))
         NamePicker(
             value = categoryName,
+            isError = errorRes != null,
             onValueChange = {
                 categoryName = it
             })
+        // If we got an error display it
+        errorRes?.let {
+            Spacer(modifier = Modifier.padding(8.dp))
+            Text(
+                text = stringResource(id = it),
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.error
+            )
+        }
+        // Color picker
         Spacer(modifier = Modifier.padding(8.dp))
         ColorPicker(
             value = categoryColor,
@@ -42,6 +55,7 @@ fun CreateCategory(
             },
             colors = viewModel.colors
         )
+        // Create button
         Spacer(modifier = Modifier.padding(8.dp))
         OutlinedButton(
             onClick = {
@@ -75,7 +89,11 @@ private fun CreateCategoryBox(
 }
 
 @Composable
-private fun NamePicker(value: TextFieldValue, onValueChange: (TextFieldValue) -> Unit) {
+private fun NamePicker(
+    value: TextFieldValue,
+    isError: Boolean,
+    onValueChange: (TextFieldValue) -> Unit
+) {
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = value,
@@ -83,7 +101,8 @@ private fun NamePicker(value: TextFieldValue, onValueChange: (TextFieldValue) ->
         singleLine = true,
         label = {
             Text(text = stringResource(id = R.string.create_category_name_label))
-        }
+        },
+        isErrorValue = isError
     )
 }
 

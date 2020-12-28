@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.Category
-import com.nivelais.combiplanner.domain.usecases.GetCategoriesUseCase
+import com.nivelais.combiplanner.domain.usecases.category.GetCategoriesUseCase
 import org.koin.core.scope.inject
 
 class HomeViewModel : GenericViewModel() {

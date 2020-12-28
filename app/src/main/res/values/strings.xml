@@ -19,6 +19,9 @@
     <string name="create_category_name_label">@string/generic_name</string>
     <string name="create_category_color_label">Color</string>
     <string name="create_category_button">Create</string>
+    <string name="create_category_error_invalid_name">Invalid name</string>
+    <string name="create_category_error_duplicate_name">A category with this name already exist</string>
+    <string name="create_category_error">An error occured during the category creation</string>
 
     <string name="task_name_label">Task name</string>
     <string name="task_category_loading">@string/generic_loading</string>

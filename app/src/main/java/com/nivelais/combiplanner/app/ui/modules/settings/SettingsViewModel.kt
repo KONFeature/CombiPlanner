@@ -2,9 +2,9 @@ package com.nivelais.combiplanner.app.ui.modules.settings
 
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.Category
-import com.nivelais.combiplanner.domain.usecases.DeleteCategoryParams
-import com.nivelais.combiplanner.domain.usecases.DeleteCategoryUseCase
-import com.nivelais.combiplanner.domain.usecases.GetCategoriesUseCase
+import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryParams
+import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryUseCase
+import com.nivelais.combiplanner.domain.usecases.category.GetCategoriesUseCase
 import org.koin.core.scope.inject
 
 class SettingsViewModel : GenericViewModel() {
