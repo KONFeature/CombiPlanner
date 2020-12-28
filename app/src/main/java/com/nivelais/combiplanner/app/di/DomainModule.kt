@@ -20,7 +20,7 @@ val domainModule = module {
     // Home part
     scope<HomeViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { SaveTaskUseCase(get(), get()) }
+        scoped { GetCategoriesUseCase(get(), get()) }
     }
     scope<TasksViewModel> {
         scoped { viewModelCoroutineScope() }

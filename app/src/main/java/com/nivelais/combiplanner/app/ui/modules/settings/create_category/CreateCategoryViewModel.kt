@@ -28,7 +28,12 @@ class CreateCategoryViewModel : GenericViewModel() {
      */
     val colors: List<Color> = listOf(
         Color(0xff2A9D8F),
-        Color(0xffE9C46A)
+        Color(0xffE9C46A),
+        Color(0xffEB5957),
+        Color(0xff33719E),
+        Color(0xff9E3C3A),
+        Color(0xff239E4A),
+        Color(0xff9E691B),
     )
 
     /**

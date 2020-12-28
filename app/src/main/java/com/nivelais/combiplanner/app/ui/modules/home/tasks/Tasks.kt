@@ -6,14 +6,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.onActive
+import androidx.compose.runtime.*
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.nivelais.combiplanner.app.ui.modules.main.Routes
+import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
+import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.getViewModel
@@ -22,11 +23,16 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun Tasks(
     navController: NavController,
+    category: State<Category?> = mutableStateOf(null),
     viewModel: TasksViewModel = getViewModel()
 ) {
     onActive {
-        // Launch the tasks fetching
+        // Launch the task fetching
         viewModel.fetchTasks()
+    }
+
+    category.value?.let {
+        viewModel.fetchTasks(it)
     }
 
 
@@ -82,10 +88,17 @@ private fun TaskCard(
     TaskCardBox(
         modifier = modifier
     ) {
-        Text(
-            text = task.name,
-            style = MaterialTheme.typography.h6
-        )
+        Row {
+            Text(
+                modifier = modifier.weight(1f),
+                text = task.name,
+                style = MaterialTheme.typography.h6
+            )
+            task.category.color?.let { colorCode ->
+                Spacer(modifier = Modifier.padding(8.dp))
+                ColorIndicator(colorCode = colorCode)
+            }
+        }
         Spacer(modifier = Modifier.padding(4.dp))
         task.entries.forEach { entry ->
             Text(

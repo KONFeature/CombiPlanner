@@ -6,6 +6,7 @@
     <string name="generic_categories">Categories</string>
 
     <string name="home_label">Home</string>
+    <string name="home_category_title">@string/generic_categories</string>
 
     <string name="settings_label">Settings</string>
     <string name="settings_part_category">@string/generic_categories</string>

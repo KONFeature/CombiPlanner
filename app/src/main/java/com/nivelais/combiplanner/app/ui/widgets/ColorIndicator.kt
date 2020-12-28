@@ -24,12 +24,12 @@ fun ColorIndicator(
             .size(size = size)
             .background(
                 color = Color(value = colorCode.toULong()),
-                shape = RoundedCornerShape(100)
+                shape = RoundedCornerShape(50)
             )
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colors.onBackground,
-                shape = RoundedCornerShape(100)
+                shape = RoundedCornerShape(50)
             )
     )
 }

@@ -47,6 +47,8 @@ fun Navigator() {
 object Routes {
     const val HOME = "home"
     const val SETTINGS = "settings"
+
     const val TASK = "task/"
+    const val CREATE_TASK = "${TASK}0"
     const val TASK_W_PARAM = "$TASK{taskId}"
 }
