@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -17,14 +17,20 @@ import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 
-@Composable
 fun TaskEntries(
+    scope: LazyListScope,
     entries: List<TaskEntry>,
     onEntriesUpdated: (List<TaskEntry>) -> Unit,
     viewModel: TaskEntriesViewModel = TaskEntriesViewModel(entries = entries)
 ) {
-    // Columns with the entries
-    LazyColumn {
+    scope.apply {
+        item {
+            Text(
+                text = stringResource(id = R.string.task_entries_title),
+                style = MaterialTheme.typography.body2
+            )
+        }
+
         // Items with the task entry
         itemsIndexed(viewModel.entriesState) { index, entry ->
 
@@ -46,21 +52,21 @@ fun TaskEntries(
                 }
             )
         }
+
         // Item to create a new task
         item {
             Spacer(modifier = Modifier.padding(16.dp))
             OutlinedButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { viewModel.addEntry() }
+                onClick = {
+                    viewModel.addEntry()
+                    onEntriesUpdated(viewModel.getUpdatedEntries())
+                }
             ) {
                 AddEntryButtonContent()
-                onEntriesUpdated(viewModel.getUpdatedEntries())
             }
-            // TODO : Lot of space at the end for the bottom nav, how to fix ??
-            Spacer(modifier = Modifier.padding(64.dp))
         }
     }
-
 }
 
 @Composable

@@ -40,8 +40,8 @@ class TaskRepositoryImpl(
         entity.entries.addAll(taskEntryDatabaseMapper.datasToEntities(entries))
 
         // Insert it in the database and return the mapped result
-        val insertedEntity = taskDao.save(entity)
-        return taskDatabaseMapper.entityToData(insertedEntity)
+        taskDao.save(entity)
+        return taskDatabaseMapper.entityToData(entity)
     }
 
     /**
@@ -69,12 +69,14 @@ class TaskRepositoryImpl(
             task.name = name
             task.description = description
             task.category.targetId = category.id
-            taskDao.save(task)
+            // TODO : Track deletion
             // Update it's entries
             val entryEntities = taskEntryDatabaseMapper.datasToEntities(entries)
+            taskDao.saveEntries(entryEntities)
             task.entries.clear()
             task.entries.addAll(entryEntities)
             task.entries.applyChangesToDb()
+            taskDao.save(task)
         }
     }
 

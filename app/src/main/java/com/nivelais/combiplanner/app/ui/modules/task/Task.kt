@@ -1,9 +1,10 @@
 package com.nivelais.combiplanner.app.ui.modules.task
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -58,10 +59,6 @@ fun TaskPage(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Back button
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(Icons.Default.ArrowBack)
-            }
             // Name of the task
             NameInput(
                 modifier = Modifier.weight(1f),
@@ -73,36 +70,54 @@ fun TaskPage(
             IconButton(onClick = { viewModel.save() }) {
                 Icon(Icons.Default.Save)
             }
+            // Delete button if that's not a new task
+            if (viewModel.initialTaskId != null) {
+                Spacer(modifier = Modifier.padding(8.dp))
+                IconButton(onClick = { viewModel.delete() }) {
+                    Icon(Icons.Default.Delete)
+                }
+            }
+        }
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        LazyColumn {
+
+            // Category selection
+            item {
+                Text(
+                    text = stringResource(id = R.string.task_category_title),
+                    style = MaterialTheme.typography.body2
+                )
+                Spacer(modifier = Modifier.padding(8.dp))
+                viewModel.categoriesFlow
+                    .collectAsState()
+                    .value?.let { categories ->
+                        CategoryPicker(
+                            categories = categories,
+                            categorySelected = category,
+                            onCategoryPicked = {
+                                category = it
+                            })
+                    } ?: run {
+                    Text(text = stringResource(id = R.string.task_category_loading))
+                }
+                Spacer(modifier = Modifier.padding(8.dp))
+            }
+
+            // Task entries
+            // The entries for our task
+            TaskEntries(
+                scope = this,
+                entries = viewModel.entries,
+                onEntriesUpdated = {
+                    viewModel.entries = it
+                })
+
+            // TODO : Entries and add button
         }
 
-        // Category selection
-        Spacer(modifier = Modifier.padding(8.dp))
-        Text(
-            text = stringResource(id = R.string.task_category_title),
-            style = MaterialTheme.typography.body2
-        )
-        Spacer(modifier = Modifier.padding(8.dp))
-        viewModel.categoriesFlow
-            .collectAsState()
-            .value?.let { categories ->
-                CategoryPicker(
-                    categories = categories,
-                    categorySelected = category,
-                    onCategoryPicked = {
-                        category = it
-                    })
-            } ?: run {
-            Text(text = stringResource(id = R.string.task_category_loading))
-        }
+        // Button to delete the task
 
-        Spacer(modifier = Modifier.padding(8.dp))
-
-        // The entries for our task
-        TaskEntries(
-            entries = viewModel.entries,
-            onEntriesUpdated = {
-                viewModel.entries = it
-            })
     }
 }
 
@@ -121,4 +136,15 @@ private fun NameInput(
             Text(text = stringResource(id = R.string.task_name_label))
         }
     )
+}
+
+@Composable
+private fun DeleteTaskButton() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(Icons.Default.Delete)
+        Spacer(modifier = Modifier.padding(8.dp))
+        Text(text = stringResource(id = R.string.task_entries_add_button))
+    }
 }

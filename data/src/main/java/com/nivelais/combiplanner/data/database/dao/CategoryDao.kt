@@ -19,10 +19,8 @@ class CategoryDao(boxStore: BoxStore) {
     /**
      * Save a new category
      */
-    fun save(categoryEntity: CategoryEntity): CategoryEntity {
-        val categoryId = box.put(categoryEntity)
-        // TODO : Check if we need to refetch it or if the entity is updated
-        return box.get(categoryId);
+    fun save(categoryEntity: CategoryEntity) {
+        box.put(categoryEntity)
     }
 
     /**

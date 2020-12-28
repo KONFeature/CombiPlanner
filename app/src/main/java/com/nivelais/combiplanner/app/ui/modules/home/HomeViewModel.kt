@@ -26,6 +26,17 @@ class HomeViewModel : GenericViewModel() {
     // Load all the categories
     fun fetchCategories() = getCategoriesUseCase.run(Unit)
 
+    /**
+     * Handle the selection of a new category
+     */
+    fun onCategorySelected(category: Category) {
+        if (selectedCategoryState.value == category) {
+            selectedCategoryState.value = null
+        } else {
+            selectedCategoryState.value = category
+        }
+    }
+
     override fun clearUseCases() {
         getCategoriesUseCase.clear()
     }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Filter2
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,10 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.home.tasks.Tasks
-import com.nivelais.combiplanner.app.ui.modules.main.Routes
+import com.nivelais.combiplanner.app.ui.modules.main.Route
+import com.nivelais.combiplanner.app.ui.modules.main.navigate
 import com.nivelais.combiplanner.app.ui.widgets.CategoryPicker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.getViewModel
@@ -36,24 +35,27 @@ fun HomePage(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(16.dp).fillMaxWidth()
     ) {
-        Text(
-            text = "Tasks",
-            style = MaterialTheme.typography.h2
-        )
         // Bar with the different possible helper
         Row {
+            Text(
+                text = stringResource(id = R.string.home_task_title),
+                style = MaterialTheme.typography.h4,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.padding(8.dp))
             // Button used to launch the task creation
             FilterButton(
                 onClick = { filterCardVisibility = !filterCardVisibility },
             )
             Spacer(modifier = Modifier.padding(8.dp))
             AddButton(
-                onClick = { navController.navigate(Routes.CREATE_TASK) },
+                onClick = { navController.navigate(Route.Task()) },
             )
         }
 
         // If the filter card is visible display it
         if (filterCardVisibility) {
+            Spacer(modifier = Modifier.padding(8.dp))
             FilterCard {
                 // Category picker
                 Text(
@@ -66,11 +68,8 @@ fun HomePage(
                     CategoryPicker(
                         categories = categories,
                         categorySelected = viewModel.selectedCategoryState.value,
-                        onCategoryPicked = {
-                            if(viewModel.selectedCategoryState.value == it) {
-                                viewModel.selectedCategoryState.value = it
-                            }
-                        })
+                        onCategoryPicked = { viewModel.onCategorySelected(it) }
+                    )
                 }
             }
         }
@@ -78,7 +77,7 @@ fun HomePage(
         Spacer(modifier = Modifier.padding(8.dp))
 
         // Show the tasks
-        Tasks(navController = navController, category = viewModel.selectedCategoryState)
+        Tasks(navController = navController, categoryState = viewModel.selectedCategoryState)
     }
 }
 

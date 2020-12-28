@@ -29,6 +29,7 @@ class DeleteCategoryUseCase(
  */
 data class DeleteCategoryParams(
     val id: Long,
+    // TODO : Add params for the task associated delete / migration strategy
 )
 
 
@@ -39,4 +40,5 @@ enum class DeleteCategoryResult {
     LOADING,
     SUCCESS
     // TODO : Error dependening on exception that can be throwned by the repository
+    // TODO : Throw a state telling some task are associated and need migration / strategy
 }

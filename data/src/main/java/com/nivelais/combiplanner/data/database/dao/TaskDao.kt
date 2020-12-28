@@ -2,6 +2,7 @@ package com.nivelais.combiplanner.data.database.dao
 
 import com.nivelais.combiplanner.data.database.entities.TaskEntity
 import com.nivelais.combiplanner.data.database.entities.TaskEntity_
+import com.nivelais.combiplanner.data.database.entities.TaskEntryEntity
 import com.nivelais.combiplanner.data.database.observe
 import com.nivelais.combiplanner.data.database.observeAll
 import io.objectbox.Box
@@ -20,19 +21,21 @@ class TaskDao(boxStore: BoxStore) {
     private val box: Box<TaskEntity> = boxStore.boxFor()
 
     /**
+     * Box used to access our task entries
+     */
+    private val entryBox: Box<TaskEntryEntity> = boxStore.boxFor()
+
+    /**
      * Save a task entity
      */
-    fun save(taskEntity: TaskEntity): TaskEntity {
+    fun save(taskEntity: TaskEntity) {
         // Save the task
-        val taskId = box.put(taskEntity)
+        box.put(taskEntity)
 
         // Save all the entries if needed
         if (taskEntity.entries.hasPendingDbChanges()) {
             taskEntity.entries.applyChangesToDb()
         }
-
-        // TODO : Check if we need to refetch it or if the entity is updated
-        return box.get(taskId);
     }
 
     /**
@@ -55,4 +58,9 @@ class TaskDao(boxStore: BoxStore) {
     fun get(id: Long) = box.query {
         equal(TaskEntity_.id, id)
     }.findFirst()
+
+    /**
+     * Save a list of task entries
+     */
+    fun saveEntries(entries: List<TaskEntryEntity>) = entryBox.put(entries)
 }

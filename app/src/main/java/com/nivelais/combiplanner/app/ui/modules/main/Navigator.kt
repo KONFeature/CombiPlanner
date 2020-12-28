@@ -1,12 +1,15 @@
 package com.nivelais.combiplanner.app.ui.modules.main
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navArgument
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.*
 import com.nivelais.combiplanner.app.ui.modules.home.HomePage
 import com.nivelais.combiplanner.app.ui.modules.settings.SettingsPage
 import com.nivelais.combiplanner.app.ui.modules.task.TaskPage
@@ -22,33 +25,45 @@ fun Navigator() {
     Scaffold(
         bottomBar = { BottomNavBar(navController) }
     ) {
-        NavHost(navController, startDestination = Routes.HOME) {
-            // Home route
-            composable(Routes.HOME) { HomePage(navController = navController) }
-            // Settings route
-            composable(Routes.SETTINGS) { SettingsPage() }
-            // Task route (with the route id as optionnal arg)
-            composable(
-                Routes.TASK_W_PARAM,
-                arguments = listOf(navArgument("taskId") {
-                    type = NavType.LongType
-                    defaultValue = -1L
-                })
-            ) { navBackStackEntry ->
-                TaskPage(
-                    navController = navController,
-                    taskId = navBackStackEntry.arguments?.getLong("taskId")
-                )
+        // Encapsulate the nav host in a box to prevent bottom hided under bottom bar
+        Box(
+            modifier = Modifier.padding(bottom = 48.dp)
+        ) {
+            NavHost(
+                navController,
+                startDestination = Route.Home.name
+            ) {
+                // Home route
+                composable(Route.Home.name) { HomePage(navController = navController) }
+                // Settings route
+                composable(Route.Settings.name) { SettingsPage() }
+                // Task route (with the route id as optionnal arg)
+                composable(
+                    Route.TaskHost.name,
+                    arguments = listOf(navArgument("taskId") {
+                        type = NavType.LongType
+                        defaultValue = -1L
+                    })
+                ) { navBackStackEntry ->
+                    TaskPage(
+                        navController = navController,
+                        taskId = navBackStackEntry.arguments?.getLong("taskId")
+                    )
+                }
             }
         }
     }
 }
 
-object Routes {
-    const val HOME = "home"
-    const val SETTINGS = "settings"
+// Class representing our different route
+sealed class Route(val name: String) {
+    object Home : Route("home")
+    object Settings : Route("settings")
 
-    const val TASK = "task/"
-    const val CREATE_TASK = "${TASK}0"
-    const val TASK_W_PARAM = "$TASK{taskId}"
+    class Task(taskId: Long = 0L) : Route("task/${taskId}")
+    object TaskHost : Route("task/{taskId}")
 }
+
+// Extension on nav controller to use route directly
+fun NavController.navigate(route: Route, builder: NavOptionsBuilder.() -> Unit = {}) =
+    this.navigate(route = route.name, builder = builder)

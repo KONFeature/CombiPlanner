@@ -1,5 +1,6 @@
 package com.nivelais.combiplanner.app.ui.modules.home.tasks
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,10 +10,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.AmbientConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
-import com.nivelais.combiplanner.app.ui.modules.main.Routes
+import com.nivelais.combiplanner.R
+import com.nivelais.combiplanner.app.ui.modules.main.Route
+import com.nivelais.combiplanner.app.ui.modules.main.navigate
 import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
@@ -23,25 +27,23 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun Tasks(
     navController: NavController,
-    category: State<Category?> = mutableStateOf(null),
+    categoryState: State<Category?> = mutableStateOf(null),
     viewModel: TasksViewModel = getViewModel()
 ) {
-    onActive {
-        // Launch the task fetching
-        viewModel.fetchTasks()
-    }
-
-    category.value?.let {
-        viewModel.fetchTasks(it)
-    }
-
+    // Fetch the task accordingly to the current category selected
+    val currentCategory by remember { categoryState }
+    viewModel.fetchTasks(category = currentCategory)
 
     val tasksState = viewModel.tasksFlow.collectAsState()
 
     tasksState.value?.let { tasks ->
-        TasksGrid(tasks = tasks, columnCount = 2, onTaskClicked = { task ->
-            navController.navigate(Routes.TASK + task.id)
-        })
+        val orientation = AmbientConfiguration.current.orientation
+        TasksGrid(
+            tasks = tasks,
+            columnCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 4 else 2,
+            onTaskClicked = { task ->
+                navController.navigate(Route.Task(task.id))
+            })
     } ?: run {
         // Else display a lmoading indicator
         // TODO : Shimmer effect ???
@@ -88,6 +90,7 @@ private fun TaskCard(
     TaskCardBox(
         modifier = modifier
     ) {
+        // Header of the card (name and color indicator for category if present)
         Row {
             Text(
                 modifier = modifier.weight(1f),
@@ -100,11 +103,19 @@ private fun TaskCard(
             }
         }
         Spacer(modifier = Modifier.padding(4.dp))
-        task.entries.forEach { entry ->
-            Text(
-                text = entry.name
-            )
+        // Entries not done of this task
+        task.entries.filter { !it.isDone }.forEach { entry ->
+            Text(text = entry.name)
         }
+        // Sum of the entries done
+        Spacer(modifier = Modifier.padding(4.dp))
+        Text(
+            text = stringResource(
+                id = R.string.tasks_card_done_state,
+                task.entries.filter { it.isDone }.count(),
+                task.entries.count()
+            )
+        )
     }
 }
 

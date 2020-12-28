@@ -17,7 +17,7 @@ class TaskViewModel : GenericViewModel() {
     /**
      * The initial task id used to init this view
      */
-    private var initialTaskId: Long? = null
+    var initialTaskId: Long? = null
 
     /**
      * Value to know if we are currently loading the initial task
@@ -108,6 +108,13 @@ class TaskViewModel : GenericViewModel() {
             )
             saveTaskUseCase.run(params)
         }
+    }
+
+    /**
+     * Delete this task
+     */
+    fun delete() {
+        // TODO : Do it
     }
 
     override fun clearUseCases() {

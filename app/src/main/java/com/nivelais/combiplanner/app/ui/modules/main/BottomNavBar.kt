@@ -15,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigate
 import com.nivelais.combiplanner.R
 
 @Composable
@@ -46,20 +45,20 @@ fun BottomNavBar(navController: NavController) {
 private fun isCurrentRoute(navController: NavController, target: BottomNavTarget): Boolean {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-    return currentRoute == target.route;
+    return currentRoute == target.route.name;
 }
 
 /**
  * The different target of our bottom navbar
  */
 sealed class BottomNavTarget(
-    val route: String,
+    val route: Route,
     val icon: ImageVector,
     @StringRes val labelId: Int
 ) {
-    object Home : BottomNavTarget(Routes.HOME, Icons.Filled.Home, R.string.home_label)
+    object Home : BottomNavTarget(Route.Home, Icons.Filled.Home, R.string.home_label)
     object Settings :
-        BottomNavTarget(Routes.SETTINGS, Icons.Filled.Settings, R.string.settings_label)
+        BottomNavTarget(Route.Settings, Icons.Filled.Settings, R.string.settings_label)
 }
 
 /**

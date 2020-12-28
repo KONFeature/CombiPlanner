@@ -6,7 +6,10 @@
     <string name="generic_categories">Categories</string>
 
     <string name="home_label">Home</string>
+    <string name="home_task_title">Tasks</string>
     <string name="home_category_title">@string/generic_categories</string>
+
+    <string name="tasks_card_done_state">%d step(s) done on %d steps</string>
 
     <string name="settings_label">Settings</string>
     <string name="settings_part_category">@string/generic_categories</string>
@@ -20,7 +23,9 @@
     <string name="task_name_label">Task name</string>
     <string name="task_category_loading">@string/generic_loading</string>
     <string name="task_category_title">@string/generic_categories</string>
+    <string name="task_delete_button">Delete this task</string>
 
-    <string name="task_entries_name_placeholder">Task entry</string>
+    <string name="task_entries_title">Steps</string>
+    <string name="task_entries_name_placeholder">Task step</string>
     <string name="task_entries_add_button">Add an entry</string>
 </resources>
