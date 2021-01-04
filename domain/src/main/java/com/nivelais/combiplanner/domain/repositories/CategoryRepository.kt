@@ -4,7 +4,6 @@ import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.exceptions.CreateCategoryException
 import com.nivelais.combiplanner.domain.exceptions.DeleteCategoryException
 import kotlinx.coroutines.flow.Flow
-import kotlin.jvm.Throws
 
 /**
  * Repository used to manage our category
@@ -27,4 +26,10 @@ interface CategoryRepository {
      */
     @Throws(DeleteCategoryException::class)
     suspend fun delete(id: Long)
+
+    /**
+     * Migrate all the tasks associated to a given category to a new one
+     */
+    @Throws(DeleteCategoryException::class)
+    suspend fun migrate(initialId: Long, targetId: Long)
 }

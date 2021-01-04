@@ -2,7 +2,6 @@ package com.nivelais.combiplanner.data.database.dao
 
 import com.nivelais.combiplanner.data.database.entities.TaskEntity
 import com.nivelais.combiplanner.data.database.entities.TaskEntity_
-import com.nivelais.combiplanner.data.database.entities.TaskEntryEntity
 import com.nivelais.combiplanner.data.database.observe
 import com.nivelais.combiplanner.data.database.observeAll
 import io.objectbox.Box
@@ -19,11 +18,6 @@ class TaskDao(boxStore: BoxStore) {
      * Box used to access our task
      */
     private val box: Box<TaskEntity> = boxStore.boxFor()
-
-    /**
-     * Box used to access our task entries
-     */
-    private val entryBox: Box<TaskEntryEntity> = boxStore.boxFor()
 
     /**
      * Save a task entity
@@ -46,10 +40,18 @@ class TaskDao(boxStore: BoxStore) {
     /**
      * Get all the task entities we got in the database
      */
-    fun getForCategory(categoryId: Long) =
+    fun observeForCategory(categoryId: Long) =
         box.query {
             equal(TaskEntity_.categoryId, categoryId)
         }.observe()
+
+    /**
+     * Get all the task entities we got in the database
+     */
+    fun getForCategory(categoryId: Long): List<TaskEntity> =
+        box.query {
+            equal(TaskEntity_.categoryId, categoryId)
+        }.find()
 
 
     /**
@@ -60,7 +62,14 @@ class TaskDao(boxStore: BoxStore) {
     }.findFirst()
 
     /**
-     * Save a list of task entries
+     * Delete a task
      */
-    fun saveEntries(entries: List<TaskEntryEntity>) = entryBox.put(entries)
+    fun delete(task: TaskEntity) = box.remove(task)
+
+    /**
+     * Count the number of task corresponding to the name
+     */
+    fun countByName(name: String) = box.query {
+        equal(TaskEntity_.name, name)
+    }.count()
 }

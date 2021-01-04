@@ -15,7 +15,8 @@ import androidx.navigation.NavController
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntries
 import com.nivelais.combiplanner.app.ui.widgets.CategoryPicker
-import com.nivelais.combiplanner.domain.usecases.SaveTaskResult
+import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskResult
+import com.nivelais.combiplanner.domain.usecases.task.SaveTaskResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.getViewModel
 
@@ -45,8 +46,16 @@ fun TaskPage(
         // If the save is in success we go back
         navController.popBackStack()
     }
-    // TODO : Auto update ???
-    // TODO : Error handling ??
+
+    // The state of the delete process
+    val deleteState = viewModel.deleteFlow.collectAsState()
+    if (deleteState.value == DeleteTaskResult.SUCCESS) {
+        // If the delete is in success we go back
+        navController.popBackStack()
+    }
+
+    val errorRes by remember { viewModel.errorResState }
+    val isNameError by remember { viewModel.isNameInErrorState }
 
     // The state for the name and category of this task
     var name by remember { viewModel.nameState }
@@ -63,6 +72,7 @@ fun TaskPage(
             NameInput(
                 modifier = Modifier.weight(1f),
                 name = name,
+                isError = isNameError,
                 onNameChange = { name = it }
             )
             Spacer(modifier = Modifier.padding(8.dp))
@@ -79,6 +89,15 @@ fun TaskPage(
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
+
+        // If we got an error display it
+        errorRes?.let {
+            Text(
+                text = stringResource(id = it),
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.error
+            )
+        }
 
         LazyColumn {
 
@@ -112,12 +131,7 @@ fun TaskPage(
                 onEntriesUpdated = {
                     viewModel.entries = it
                 })
-
-            // TODO : Entries and add button
         }
-
-        // Button to delete the task
-
     }
 }
 
@@ -125,6 +139,7 @@ fun TaskPage(
 private fun NameInput(
     name: String,
     onNameChange: (String) -> Unit,
+    isError: Boolean,
     modifier: Modifier
 ) {
     OutlinedTextField(
@@ -132,19 +147,9 @@ private fun NameInput(
         onValueChange = onNameChange,
         singleLine = true,
         modifier = modifier,
+        isErrorValue = isError,
         label = {
             Text(text = stringResource(id = R.string.task_name_label))
         }
     )
-}
-
-@Composable
-private fun DeleteTaskButton() {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(Icons.Default.Delete)
-        Spacer(modifier = Modifier.padding(8.dp))
-        Text(text = stringResource(id = R.string.task_entries_add_button))
-    }
 }

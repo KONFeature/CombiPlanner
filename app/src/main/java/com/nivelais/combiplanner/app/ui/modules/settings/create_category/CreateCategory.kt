@@ -23,8 +23,6 @@ fun CreateCategory(
 
     val errorRes by remember { viewModel.nameErrorResState }
 
-    val creationState = viewModel.creationFlow.collectAsState()
-
     CreateCategoryBox {
         Text(
             text = stringResource(id = R.string.create_category_title),
@@ -65,10 +63,6 @@ fun CreateCategory(
                 text = stringResource(id = R.string.create_category_button)
             )
         }
-        Spacer(modifier = Modifier.padding(4.dp))
-        Text(
-            text = "Creation step = ${creationState.value}"
-        )
     }
 }
 

@@ -11,7 +11,7 @@ val logger: ReadOnlyProperty<Any, Logger> get() = LoggerDelegate()
  * Delegate to create a simple logger
  */
 class LoggerDelegate : ReadOnlyProperty<Any, Logger> {
-    lateinit var logger: Logger
+    private lateinit var logger: Logger
 
     override fun getValue(thisRef: Any, property: KProperty<*>): Logger {
         if (!::logger.isInitialized) logger = LoggerFactory.getLogger(thisRef.javaClass)

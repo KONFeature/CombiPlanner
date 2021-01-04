@@ -3,6 +3,7 @@ package com.nivelais.combiplanner.app.di
 import com.nivelais.combiplanner.app.ui.modules.home.HomeViewModel
 import com.nivelais.combiplanner.app.ui.modules.home.tasks.TasksViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.SettingsViewModel
+import com.nivelais.combiplanner.app.ui.modules.settings.category.CategoryViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.create_category.CreateCategoryViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.TaskViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -22,6 +23,7 @@ val appModule = module {
 
     // Settings
     viewModel { SettingsViewModel() }
+    viewModel { CategoryViewModel() }
     viewModel { CreateCategoryViewModel() }
 
     // Task

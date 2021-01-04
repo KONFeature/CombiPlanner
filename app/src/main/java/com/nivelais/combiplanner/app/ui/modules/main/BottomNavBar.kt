@@ -20,7 +20,7 @@ import com.nivelais.combiplanner.R
 @Composable
 fun BottomNavBar(navController: NavController) {
     BottomAppBar {
-        // Create each of our nav buttoms
+        // Create each of our nav buttons
         navigationTargets().forEach { navTarget ->
             BottomNavigationItem(
                 icon = { Icon(navTarget.icon) },
@@ -45,7 +45,7 @@ fun BottomNavBar(navController: NavController) {
 private fun isCurrentRoute(navController: NavController, target: BottomNavTarget): Boolean {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-    return currentRoute == target.route.name;
+    return currentRoute == target.route.name
 }
 
 /**

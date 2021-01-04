@@ -11,6 +11,7 @@ import org.koin.core.context.startKoin
 /**
  * Application class, init Hilt with the help of the annotation
  */
+@Suppress("unused")
 class CombiPlannerApp : Application() {
     override fun onCreate() {
         super.onCreate()

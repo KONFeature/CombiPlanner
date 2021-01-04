@@ -21,9 +21,7 @@ class CategoryDao(boxStore: BoxStore) {
     /**
      * Save a new category
      */
-    fun save(categoryEntity: CategoryEntity) {
-        box.put(categoryEntity)
-    }
+    fun save(categoryEntity: CategoryEntity) = box.put(categoryEntity)
 
     /**
      * Get all the category entities we got in the database
@@ -41,5 +39,12 @@ class CategoryDao(boxStore: BoxStore) {
     fun countByName(name: String) = box.query {
         equal(CategoryEntity_.name, name)
     }.count()
+
+    /**
+     * Find a category by it's id (not using the direct getter of objectbox to prevent null pointer)
+     */
+    fun get(id: Long) = box.query {
+        equal(CategoryEntity_.id, id)
+    }.findFirst()
 
 }

@@ -27,7 +27,7 @@ abstract class FlowableUseCase<in Params, Result> : CoroutineScope {
     /**
      * The coroutine scope we will use for the state flow
      */
-    abstract val observingScope: CoroutineScope;
+    abstract val observingScope: CoroutineScope
 
     /**
      * The inter state flow the child use case will update

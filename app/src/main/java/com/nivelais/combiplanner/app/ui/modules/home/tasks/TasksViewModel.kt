@@ -2,8 +2,8 @@ package com.nivelais.combiplanner.app.ui.modules.home.tasks
 
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.Category
-import com.nivelais.combiplanner.domain.usecases.GetTasksParams
-import com.nivelais.combiplanner.domain.usecases.GetTasksUseCase
+import com.nivelais.combiplanner.domain.usecases.task.GetTasksParams
+import com.nivelais.combiplanner.domain.usecases.task.GetTasksUseCase
 import org.koin.core.scope.inject
 
 class TasksViewModel : GenericViewModel() {

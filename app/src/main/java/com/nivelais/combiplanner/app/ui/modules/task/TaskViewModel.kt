@@ -3,12 +3,13 @@ package com.nivelais.combiplanner.app.ui.modules.task
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
+import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
 import com.nivelais.combiplanner.domain.entities.TaskEntry
-import com.nivelais.combiplanner.domain.usecases.*
 import com.nivelais.combiplanner.domain.usecases.category.GetCategoriesUseCase
+import com.nivelais.combiplanner.domain.usecases.task.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.scope.inject
@@ -41,15 +42,58 @@ class TaskViewModel : GenericViewModel() {
     // Use case to save our task
     private val saveTaskUseCase: SaveTaskUseCase by inject()
 
+    // Use case to delete our task
+    private val deleteTaskUseCase: DeleteTaskUseCase by inject()
+
+    // If we got any error put it here
+    val errorResState: MutableState<Int?> = mutableStateOf(null)
+
+    // If we an error on the name part
+    val isNameInErrorState: MutableState<Boolean> = mutableStateOf(false)
+
     /**
      * State flow of our categories
      */
     val categoriesFlow = getCategoriesUseCase.stateFlow
 
     /**
-     * The flow pour the save of this task
+     * The flow for the saving of this task
      */
     val saveFlow = saveTaskUseCase.stateFlow
+
+    /**
+     * The flow pour the deletion of this task
+     */
+    val deleteFlow = deleteTaskUseCase.stateFlow
+
+    init {
+        viewModelScope.launch {
+            saveTaskUseCase.stateFlow.collect {
+                when (it) {
+                    SaveTaskResult.WAITING -> {
+                        // Nothing ??
+                    }
+                    SaveTaskResult.SUCCESS -> {
+                        // Tell the view to go back ?
+                        errorResState.value = null
+                        isNameInErrorState.value = false
+                    }
+                    SaveTaskResult.INVALID_NAME -> {
+                        errorResState.value = R.string.task_save_error_invalid_name
+                        isNameInErrorState.value = true
+                    }
+                    SaveTaskResult.DUPLICATE_NAME -> {
+                        errorResState.value = R.string.task_save_error_duplicate_name
+                        isNameInErrorState.value = true
+                    }
+                    SaveTaskResult.ERROR -> {
+                        errorResState.value = R.string.task_save_error
+                        isNameInErrorState.value = false
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Get the initial task
@@ -108,6 +152,8 @@ class TaskViewModel : GenericViewModel() {
                 entries = entries
             )
             saveTaskUseCase.run(params)
+        } ?: run {
+            errorResState.value = R.string.task_save_error_no_category
         }
     }
 
@@ -115,7 +161,9 @@ class TaskViewModel : GenericViewModel() {
      * Delete this task
      */
     fun delete() {
-        // TODO : Do it
+        initialTaskId?.let { taskId ->
+            deleteTaskUseCase.run(DeleteTaskParams(id = taskId))
+        }
     }
 
     override fun clearUseCases() {

@@ -5,13 +5,17 @@ import androidx.lifecycle.viewModelScope
 import com.nivelais.combiplanner.app.ui.modules.home.HomeViewModel
 import com.nivelais.combiplanner.app.ui.modules.home.tasks.TasksViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.SettingsViewModel
+import com.nivelais.combiplanner.app.ui.modules.settings.category.CategoryViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.create_category.CreateCategoryViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.TaskViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntriesViewModel
-import com.nivelais.combiplanner.domain.usecases.*
 import com.nivelais.combiplanner.domain.usecases.category.CreateCategoryUseCase
 import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryUseCase
 import com.nivelais.combiplanner.domain.usecases.category.GetCategoriesUseCase
+import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskUseCase
+import com.nivelais.combiplanner.domain.usecases.task.GetTaskUseCase
+import com.nivelais.combiplanner.domain.usecases.task.GetTasksUseCase
+import com.nivelais.combiplanner.domain.usecases.task.SaveTaskUseCase
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
@@ -36,6 +40,7 @@ val domainModule = module {
         scoped { GetCategoriesUseCase(get(), get()) }
         scoped { SaveTaskUseCase(get(), get()) }
         scoped { GetTaskUseCase(get(), get()) }
+        scoped { DeleteTaskUseCase(get(), get()) }
     }
     scope<TaskEntriesViewModel> {
         scoped { viewModelCoroutineScope() }
@@ -45,7 +50,10 @@ val domainModule = module {
     scope<SettingsViewModel> {
         scoped { viewModelCoroutineScope() }
         scoped { GetCategoriesUseCase(get(), get()) }
-        scoped { DeleteCategoryUseCase(get(), get()) }
+    }
+    scope<CategoryViewModel> {
+        scoped { viewModelCoroutineScope() }
+        scoped { DeleteCategoryUseCase(get(), get(), get()) }
     }
     scope<CreateCategoryViewModel> {
         scoped { viewModelCoroutineScope() }

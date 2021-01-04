@@ -19,11 +19,6 @@ class CreateCategoryViewModel : GenericViewModel() {
     // View model used to create our scope
     private val createCategoryUseCase: CreateCategoryUseCase by inject()
 
-    /**
-     * State flow for our category creation
-     */
-    val creationFlow = createCategoryUseCase.stateFlow
-
     // Current name and color picked by the user
     val nameState = mutableStateOf(TextFieldValue())
     val colorState: MutableState<Color?> = mutableStateOf(null)

@@ -46,7 +46,7 @@ subprojects {
         }
     }
 
-    // Enable advanced kotlin option and expiremental ones
+    // Enable advanced kotlin option and experimental ones
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
             // Treat all Kotlin warnings as errors (to have the better code possible)

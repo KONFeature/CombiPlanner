@@ -23,4 +23,4 @@ fun <T> Query<T>.observe(): Flow<List<T>> {
 /**
  * Observe all the entities of an objectbox database
  */
-fun <T> Box<T>.observeAll(): Flow<List<T>> = this.query().build().observe();
+fun <T> Box<T>.observeAll(): Flow<List<T>> = this.query().build().observe()

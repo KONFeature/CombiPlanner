@@ -33,7 +33,7 @@ class CreateCategoryUseCase(
                     resultFlow.emit(CreateCategoryResult.DUPLICATE_NAME_ERROR)
             }
         } catch (exception: Throwable) {
-            log.error("Unknown error occured when creating the repository", exception)
+            log.error("Unknown error occurred when creating the category", exception)
             resultFlow.emit(CreateCategoryResult.ERROR)
         }
     }

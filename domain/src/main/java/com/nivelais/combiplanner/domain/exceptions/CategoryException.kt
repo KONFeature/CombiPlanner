@@ -7,8 +7,11 @@ sealed class DeleteCategoryException(
     message: String? = null,
     throwable: Throwable? = null
 ) : Exception(message, throwable) {
-    object TaskAssociatedAndNoStrategyGiven :
-        DeleteCategoryException(message = "The category has associated tasks but not migration / deletation strategy where given for this task.")
+    object TaskAssociatedException :
+        DeleteCategoryException(message = "The category has associated tasks.")
+
+    object MigrationIdInvalid :
+        DeleteCategoryException(message = "The delete strategy implies a migration of the tasks to another category, but the category id given was invalid.")
 }
 
 /**

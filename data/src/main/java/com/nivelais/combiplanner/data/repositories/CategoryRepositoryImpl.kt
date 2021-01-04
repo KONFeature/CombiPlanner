@@ -56,6 +56,35 @@ class CategoryRepositoryImpl(
      */
     @Throws(DeleteCategoryException::class)
     override suspend fun delete(id: Long) {
+        // Get the category we need to delete
+        val categoryEntity = categoryDao.get(id)
+        if (categoryEntity == null) {
+            // If we didn't find it exit directly
+            return
+        } else if (categoryEntity.tasks.isNotEmpty()) {
+            // Throw a strategy required exception
+            throw DeleteCategoryException.TaskAssociatedException
+        }
+
+        // Finally delete this category
         categoryDao.deleteById(id)
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Throws(DeleteCategoryException::class)
+    override suspend fun migrate(initialId: Long, targetId: Long) {
+        // If the two id are the same throw an exception
+        if (initialId == targetId) throw DeleteCategoryException.MigrationIdInvalid
+        // Fetch the initial and target category
+        val initialCategory = categoryDao.get(initialId)
+            ?: throw DeleteCategoryException.MigrationIdInvalid
+        val targetCategory = categoryDao.get(targetId)
+            ?: throw DeleteCategoryException.MigrationIdInvalid
+        // Migrate all the task to the other category
+        initialCategory.tasks.forEach { task ->
+            task.category.setAndPutTarget(targetCategory)
+        }
     }
 }
