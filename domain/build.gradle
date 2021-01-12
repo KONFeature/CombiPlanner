@@ -11,4 +11,12 @@ java {
 dependencies {
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutines_version"
+
+    // Slf4j (Logging)
+    implementation "org.slf4j:slf4j-android:$slf4j_version"
+
+    // Log4j
+    implementation "org.apache.logging.log4j:log4j-api:$logback_version"
+    annotationProcessor "org.apache.logging.log4j:log4j-core:$logback_version"
 }

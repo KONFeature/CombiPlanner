@@ -1,15 +1,16 @@
 package com.nivelais.combiplanner.app.ui
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.compose.ui.platform.setContent
-import com.nivelais.combiplanner.app.ui.modules.Navigator
+import com.nivelais.combiplanner.app.ui.modules.main.Navigator
 import com.nivelais.combiplanner.app.ui.theme.CombiPlannerTheme
 
 /**
  * Entry point of the application
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

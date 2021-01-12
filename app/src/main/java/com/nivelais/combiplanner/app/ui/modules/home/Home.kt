@@ -1,20 +1,32 @@
 package com.nivelais.combiplanner.app.ui.modules.home
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.nivelais.combiplanner.app.ui.modules.Route
+import com.nivelais.combiplanner.R
+import com.nivelais.combiplanner.app.ui.modules.home.tasks.Tasks
+import com.nivelais.combiplanner.app.ui.modules.main.Route
+import com.nivelais.combiplanner.app.ui.modules.main.navigate
+import com.nivelais.combiplanner.app.ui.widgets.CategoryPicker
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.androidx.compose.get
+import org.koin.androidx.compose.getViewModel
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
-fun Home(navController: NavController) {
+fun HomePage(
+    viewModel: HomeViewModel = getViewModel(),
+    navController: NavController = get()
+) {
+    var filterCardVisibility by remember { viewModel.filterVisibilityState }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -22,19 +34,85 @@ fun Home(navController: NavController) {
             .padding(16.dp)
             .fillMaxWidth()
     ) {
-        Text(
-            text = "Home",
-            style = MaterialTheme.typography.h1
-        )
-        Button(
-            onClick = {
-                navController.navigate(Route.SETTINGS)
-            }) {
+        // Bar with the different possible helper
+        Row {
             Text(
-                text = "Go to settings",
-                style = MaterialTheme.typography.h6
+                text = stringResource(id = R.string.home_task_title),
+                style = MaterialTheme.typography.h4,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.padding(8.dp))
+            // Button used to launch the task creation
+            FilterButton(
+                onClick = { filterCardVisibility = !filterCardVisibility },
+            )
+            Spacer(modifier = Modifier.padding(8.dp))
+            AddButton(
+                onClick = { navController.navigate(Route.Task()) },
+            )
+        }
+
+        // If the filter card is visible display it
+        if (filterCardVisibility) {
+            Spacer(modifier = Modifier.padding(8.dp))
+            FilterCard {
+                // Category picker
+                Text(
+                    text = stringResource(id = R.string.home_category_title),
+                    style = MaterialTheme.typography.body2
+                )
+                Spacer(modifier = Modifier.padding(8.dp))
+                val categoriesState = viewModel.categoriesFlow.collectAsState()
+                categoriesState.value?.let { categories ->
+                    CategoryPicker(
+                        categories = categories,
+                        categorySelected = viewModel.selectedCategoryState.value,
+                        onCategoryPicked = { viewModel.onCategorySelected(it) }
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        // Show the tasks
+        Tasks(categoryState = viewModel.selectedCategoryState)
+    }
+}
+
+@Composable
+private fun FilterButton(onClick: () -> Unit) {
+    FloatingActionButton(
+        onClick = onClick,
+    ) {
+        Icon(Icons.Filled.FilterAlt)
+    }
+}
+
+@Composable
+private fun AddButton(onClick: () -> Unit) {
+    FloatingActionButton(
+        onClick = onClick,
+    ) {
+        Icon(Icons.Filled.Add)
+    }
+}
+
+@Composable
+private fun FilterCard(
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Box(
+        modifier = modifier.padding(4.dp)
+    ) {
+        Card {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                content = content
             )
         }
     }
-
 }

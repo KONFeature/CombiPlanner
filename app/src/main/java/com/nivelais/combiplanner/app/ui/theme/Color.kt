@@ -10,8 +10,8 @@ val CombiPlannerColors = darkColors(
     primary = PrimaryColor,
     onPrimary = Color.Black,
     primaryVariant = PrimaryColor,
-    secondary = PrimaryColor,
+    secondary = AccentColor,
     onSecondary = Color.Black,
-    error = AccentColor,
+    error = Color.Red,
     onError = Color.Black
 )
