@@ -18,7 +18,6 @@ interface TaskRepository {
     @Throws(SaveTaskException::class)
     suspend fun create(
         name: String,
-        description: String?,
         category: Category,
         entries: List<TaskEntry>
     ): Task
@@ -30,7 +29,6 @@ interface TaskRepository {
     suspend fun update(
         id: Long,
         name: String,
-        description: String?,
         category: Category,
         entries: List<TaskEntry>
     )

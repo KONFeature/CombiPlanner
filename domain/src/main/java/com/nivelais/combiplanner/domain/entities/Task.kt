@@ -6,7 +6,6 @@ package com.nivelais.combiplanner.domain.entities
 data class Task(
     var id: Long = 0,
     var name: String,
-    var description: String? = null,
     var category: Category,
     val entries: List<TaskEntry> = emptyList()
 )

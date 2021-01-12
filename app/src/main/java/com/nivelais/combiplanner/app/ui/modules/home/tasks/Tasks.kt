@@ -21,12 +21,13 @@ import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun Tasks(
-    navController: NavController,
+    navController: NavController = get(),
     categoryState: State<Category?> = mutableStateOf(null),
     viewModel: TasksViewModel = getViewModel()
 ) {
@@ -70,7 +71,8 @@ private fun TasksGrid(
                 taskRow.forEach { task ->
                     TaskCard(
                         task = task,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
                             .padding(4.dp)
                             .clickable(onClick = {
                                 onTaskClicked(task)
@@ -129,7 +131,9 @@ private fun TaskCardBox(
     ) {
         Card {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 content = content
             )
         }

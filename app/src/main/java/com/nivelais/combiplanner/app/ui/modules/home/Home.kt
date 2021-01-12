@@ -17,23 +17,22 @@ import com.nivelais.combiplanner.app.ui.modules.main.Route
 import com.nivelais.combiplanner.app.ui.modules.main.navigate
 import com.nivelais.combiplanner.app.ui.widgets.CategoryPicker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun HomePage(
     viewModel: HomeViewModel = getViewModel(),
-    navController: NavController
+    navController: NavController = get()
 ) {
-    onActive {
-        viewModel.fetchCategories()
-    }
-
     var filterCardVisibility by remember { viewModel.filterVisibilityState }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(16.dp).fillMaxWidth()
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
     ) {
         // Bar with the different possible helper
         Row {
@@ -77,7 +76,7 @@ fun HomePage(
         Spacer(modifier = Modifier.padding(8.dp))
 
         // Show the tasks
-        Tasks(navController = navController, categoryState = viewModel.selectedCategoryState)
+        Tasks(categoryState = viewModel.selectedCategoryState)
     }
 }
 
@@ -109,7 +108,9 @@ private fun FilterCard(
     ) {
         Card {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 content = content
             )
         }

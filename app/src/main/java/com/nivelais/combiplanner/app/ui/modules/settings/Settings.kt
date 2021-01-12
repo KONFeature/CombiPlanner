@@ -8,7 +8,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.onActive
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -24,11 +23,6 @@ import org.koin.androidx.compose.getViewModel
 fun SettingsPage(
     viewModel: SettingsViewModel = getViewModel()
 ) {
-    onActive {
-        // Launch the categories fetching
-        viewModel.fetchCategories()
-    }
-
     // Categories part of our settings
     Categories(viewModel.categoriesFlow.collectAsState())
 }
@@ -39,7 +33,9 @@ private fun Categories(
 ) {
     categoriesState.value?.let { categories ->
         LazyColumn(
-            modifier = Modifier.padding(16.dp).fillMaxWidth()
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
         ) {
             item {
                 Text(

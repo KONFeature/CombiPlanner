@@ -14,10 +14,10 @@ class SettingsViewModel : GenericViewModel() {
      */
     val categoriesFlow = getCategoriesUseCase.stateFlow
 
-    /**
-     * Call the use case to fetch all of our category
-     */
-    fun fetchCategories() = getCategoriesUseCase.run(Unit)
+    init {
+        // Load all the categories
+        getCategoriesUseCase.run(Unit)
+    }
 
     override fun clearUseCases() {
         getCategoriesUseCase.clear()

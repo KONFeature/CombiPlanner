@@ -23,8 +23,10 @@ class HomeViewModel : GenericViewModel() {
      */
     val categoriesFlow = getCategoriesUseCase.stateFlow
 
-    // Load all the categories
-    fun fetchCategories() = getCategoriesUseCase.run(Unit)
+    init {
+        // Load all the categories
+        getCategoriesUseCase.run(Unit)
+    }
 
     /**
      * Handle the selection of a new category

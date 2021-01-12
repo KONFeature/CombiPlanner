@@ -18,17 +18,17 @@ import com.nivelais.combiplanner.app.ui.widgets.CategoryPicker
 import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskResult
 import com.nivelais.combiplanner.domain.usecases.task.SaveTaskResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun TaskPage(
-    navController: NavController,
-    taskId: Long?,
     viewModel: TaskViewModel = getViewModel(),
+    navController: NavController = get(),
+    taskId: Long?,
 ) {
     onActive {
-        viewModel.fetchCategories()
         // Load the base task
         viewModel.getInitialTask(taskId)
     }
@@ -62,7 +62,9 @@ fun TaskPage(
     var category by remember { viewModel.categoryState }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
         // Header part
         Row(

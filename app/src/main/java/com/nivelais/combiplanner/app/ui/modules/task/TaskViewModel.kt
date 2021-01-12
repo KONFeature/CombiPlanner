@@ -68,6 +68,9 @@ class TaskViewModel : GenericViewModel() {
 
     init {
         viewModelScope.launch {
+            // Load all the categories
+            getCategoriesUseCase.execute(Unit)
+            // Listen to the save status
             saveTaskUseCase.stateFlow.collect {
                 when (it) {
                     SaveTaskResult.WAITING -> {
@@ -133,11 +136,6 @@ class TaskViewModel : GenericViewModel() {
     }
 
     /**
-     * Call the use case to fetch all of our category
-     */
-    fun fetchCategories() = getCategoriesUseCase.run(Unit)
-
-    /**
      * Save this task
      */
     fun save() {
@@ -148,7 +146,6 @@ class TaskViewModel : GenericViewModel() {
                 id = initialTaskId,
                 category = category,
                 name = nameState.value,
-                description = null,
                 entries = entries
             )
             saveTaskUseCase.run(params)

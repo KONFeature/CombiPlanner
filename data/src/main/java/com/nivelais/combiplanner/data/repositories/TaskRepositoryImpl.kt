@@ -34,13 +34,12 @@ class TaskRepositoryImpl(
     @Throws(SaveTaskException::class)
     override suspend fun create(
         name: String,
-        description: String?,
         category: Category,
         entries: List<TaskEntry>
     ): Task {
         checkName(name, true)
         // Create the task entity
-        val entity = TaskEntity(name = name, description = description)
+        val entity = TaskEntity(name = name)
         entity.category.targetId = category.id
         entity.entries.addAll(taskEntryDatabaseMapper.datasToEntities(entries))
 
@@ -56,7 +55,6 @@ class TaskRepositoryImpl(
     override suspend fun update(
         id: Long,
         name: String,
-        description: String?,
         category: Category,
         entries: List<TaskEntry>
     ) {
@@ -66,7 +64,6 @@ class TaskRepositoryImpl(
         taskEntity?.let { task ->
             // Update our resolved task
             task.name = name
-            task.description = description
             task.category.targetId = category.id
             // TODO : Track deletion
             // Update it's entries

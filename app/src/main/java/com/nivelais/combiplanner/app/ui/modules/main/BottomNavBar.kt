@@ -16,9 +16,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.nivelais.combiplanner.R
+import org.koin.androidx.compose.get
 
 @Composable
-fun BottomNavBar(navController: NavController) {
+fun BottomNavBar(navController: NavController = get()) {
     BottomAppBar {
         // Create each of our nav buttons
         navigationTargets().forEach { navTarget ->

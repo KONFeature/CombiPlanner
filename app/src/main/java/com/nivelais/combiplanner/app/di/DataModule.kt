@@ -17,7 +17,9 @@ import org.koin.dsl.module
  *  - Database
  *  - Repository
  */
-val dataModule = module {
+val dataModule = module(
+    createdAtStart = true
+) {
 
     // Init ObjectBox
     single {

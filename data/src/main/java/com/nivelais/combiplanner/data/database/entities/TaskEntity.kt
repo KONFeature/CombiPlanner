@@ -12,7 +12,6 @@ import io.objectbox.relation.ToOne
 data class TaskEntity(
     @Id var id: Long = 0,
     var name: String = "Unknown",
-    var description: String? = null,
 ) {
     lateinit var category: ToOne<CategoryEntity>
 

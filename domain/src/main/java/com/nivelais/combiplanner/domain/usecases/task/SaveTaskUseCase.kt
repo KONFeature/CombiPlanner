@@ -25,7 +25,6 @@ class SaveTaskUseCase(
                 taskRepository.update(
                     initialId,
                     params.name,
-                    params.description,
                     params.category,
                     params.entries
                 )
@@ -34,7 +33,6 @@ class SaveTaskUseCase(
                 // Creation operation
                 val createdTask = taskRepository.create(
                     params.name,
-                    params.description,
                     params.category,
                     params.entries
                 )
@@ -64,7 +62,6 @@ class SaveTaskUseCase(
 data class SaveTaskParams(
     val id: Long?,
     val name: String,
-    val description: String?,
     val entries: List<TaskEntry>,
     val category: Category
 )
