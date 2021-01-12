@@ -17,13 +17,12 @@ import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 
-fun TaskEntries(
-    scope: LazyListScope,
+fun LazyListScope.taskEntries(
     entries: List<TaskEntry>,
     onEntriesUpdated: (List<TaskEntry>) -> Unit,
     viewModel: TaskEntriesViewModel = TaskEntriesViewModel(entries = entries)
 ) {
-    scope.apply {
+    apply {
         item {
             Text(
                 text = stringResource(id = R.string.task_entries_title),

@@ -1,7 +1,9 @@
 package com.nivelais.combiplanner.data.database.dao
 
+import com.nivelais.combiplanner.data.database.count
 import com.nivelais.combiplanner.data.database.entities.CategoryEntity
 import com.nivelais.combiplanner.data.database.entities.CategoryEntity_
+import com.nivelais.combiplanner.data.database.getOrNull
 import com.nivelais.combiplanner.data.database.observeAll
 import io.objectbox.Box
 import io.objectbox.BoxStore
@@ -36,15 +38,15 @@ class CategoryDao(boxStore: BoxStore) {
     /**
      * Count the number of category corresponding to the name
      */
-    fun countByName(name: String) = box.query {
+    fun countByName(name: String) = box.count {
         equal(CategoryEntity_.name, name)
-    }.count()
+    }
 
     /**
-     * Find a category by it's id (not using the direct getter of objectbox to prevent null pointer)
+     * Find a category by it's id (not using the direct getter of ObjectBox to prevent null pointer)
      */
-    fun get(id: Long) = box.query {
+    fun get(id: Long) = box.getOrNull {
         equal(CategoryEntity_.id, id)
-    }.findFirst()
+    }
 
 }

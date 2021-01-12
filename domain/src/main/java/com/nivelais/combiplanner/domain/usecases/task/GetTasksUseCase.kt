@@ -19,8 +19,6 @@ class GetTasksUseCase(
     @OptIn(FlowPreview::class)
     override suspend fun execute(params: GetTasksParams) {
         log.debug("Listening to all the task for the category {}", params.category)
-
-        // TODO : Check if in case of multiple execute we need to cancel previous flow
         val taskFlow = taskRepository.observeAll(params.category)
         resultFlow.emitAll(taskFlow)
     }

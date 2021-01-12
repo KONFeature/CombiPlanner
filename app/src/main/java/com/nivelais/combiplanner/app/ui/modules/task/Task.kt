@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nivelais.combiplanner.R
-import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntries
+import com.nivelais.combiplanner.app.ui.modules.task.entries.taskEntries
 import com.nivelais.combiplanner.app.ui.widgets.CategoryPicker
 import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskResult
 import com.nivelais.combiplanner.domain.usecases.task.SaveTaskResult
@@ -127,8 +127,7 @@ fun TaskPage(
 
             // Task entries
             // The entries for our task
-            TaskEntries(
-                scope = this,
+            taskEntries(
                 entries = viewModel.entries,
                 onEntriesUpdated = {
                     viewModel.entries = it

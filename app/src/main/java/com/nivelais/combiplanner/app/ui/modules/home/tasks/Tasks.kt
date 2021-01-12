@@ -46,7 +46,7 @@ fun Tasks(
                 navController.navigate(Route.Task(task.id))
             })
     } ?: run {
-        // Else display a lmoading indicator
+        // Else display a loading indicator
         // TODO : Shimmer effect ???
         Text(
             text = "Tasks are currently loading",

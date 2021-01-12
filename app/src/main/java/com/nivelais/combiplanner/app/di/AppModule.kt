@@ -12,8 +12,6 @@ import org.koin.dsl.module
 /**
  * Inject all the dependency required by our app layer :
  *  - View Model
- *
- *  TODO : Scoped view model and use cases ?
  */
 val appModule = module {
 

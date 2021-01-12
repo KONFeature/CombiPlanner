@@ -10,6 +10,9 @@ import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Mappings
 
+/**
+ * Mapper for our task entity to pojo
+ */
 @Mapper(injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 abstract class TaskDatabaseMapper {
 
@@ -24,7 +27,9 @@ abstract class TaskDatabaseMapper {
         taskEntity: TaskEntity
     ): Task
 
-    // TODO : Map ToOne relations
+    /**
+     * Map ToOne relations of our task
+     */
     fun mapCategory(categoryEntity: ToOne<CategoryEntity>): Category =
         Category(
             id = categoryEntity.targetId,

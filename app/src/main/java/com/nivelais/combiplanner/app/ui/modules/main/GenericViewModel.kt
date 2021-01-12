@@ -7,7 +7,7 @@ import org.koin.core.scope.Scope
 import org.koin.core.scope.newScope
 
 /**
- * Generic view model binded to a Koin Scope
+ * Generic view model bind to a Koin Scope
  */
 open class GenericViewModel : ViewModel(), KoinScopeComponent {
 

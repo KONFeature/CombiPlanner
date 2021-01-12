@@ -139,8 +139,7 @@ class TaskViewModel : GenericViewModel() {
      * Save this task
      */
     fun save() {
-        // TODO : Better way to do this
-        // TODO : Error text when no category picked / name input is null
+        // If a category is picked launch the save job
         categoryState.value?.let { category ->
             val params = SaveTaskParams(
                 id = initialTaskId,
@@ -150,6 +149,7 @@ class TaskViewModel : GenericViewModel() {
             )
             saveTaskUseCase.run(params)
         } ?: run {
+            // Else display an error
             errorResState.value = R.string.task_save_error_no_category
         }
     }

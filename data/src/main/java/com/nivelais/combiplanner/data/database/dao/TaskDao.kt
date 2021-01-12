@@ -1,7 +1,9 @@
 package com.nivelais.combiplanner.data.database.dao
 
+import com.nivelais.combiplanner.data.database.count
 import com.nivelais.combiplanner.data.database.entities.TaskEntity
 import com.nivelais.combiplanner.data.database.entities.TaskEntity_
+import com.nivelais.combiplanner.data.database.getOrNull
 import com.nivelais.combiplanner.data.database.observe
 import com.nivelais.combiplanner.data.database.observeAll
 import io.objectbox.Box
@@ -41,9 +43,9 @@ class TaskDao(boxStore: BoxStore) {
      * Get all the task entities we got in the database
      */
     fun observeForCategory(categoryId: Long) =
-        box.query {
+        box.observe {
             equal(TaskEntity_.categoryId, categoryId)
-        }.observe()
+        }
 
     /**
      * Get all the task entities we got in the database
@@ -55,11 +57,11 @@ class TaskDao(boxStore: BoxStore) {
 
 
     /**
-     * Find a task by it's id (not using the direct getter of objectbox to prevent null pointer)
+     * Find a task by it's id (not using the direct getter of ObjectBox to prevent null pointer)
      */
-    fun get(id: Long) = box.query {
+    fun get(id: Long) = box.getOrNull {
         equal(TaskEntity_.id, id)
-    }.findFirst()
+    }
 
     /**
      * Delete a task
@@ -69,7 +71,7 @@ class TaskDao(boxStore: BoxStore) {
     /**
      * Count the number of task corresponding to the name
      */
-    fun countByName(name: String) = box.query {
+    fun countByName(name: String) = box.count {
         equal(TaskEntity_.name, name)
-    }.count()
+    }
 }

@@ -10,7 +10,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
-import com.nivelais.combiplanner.app.di.injectNavController
+import com.nivelais.combiplanner.app.di.InjectNavController
 import com.nivelais.combiplanner.app.ui.modules.home.HomePage
 import com.nivelais.combiplanner.app.ui.modules.settings.SettingsPage
 import com.nivelais.combiplanner.app.ui.modules.task.TaskPage
@@ -22,12 +22,12 @@ import com.nivelais.combiplanner.app.ui.modules.task.TaskPage
 fun Navigator() {
     val navController = rememberNavController()
     // Inject the nav controller in our koin context
-    injectNavController(navController = navController)
+    InjectNavController(navController = navController)
 
     Scaffold(
         bottomBar = { BottomNavBar() }
     ) {
-        // Encapsulate the nav host in a box to prevent bottom hided under bottom bar
+        // Encapsulate the nav host in a box to prevent bottom hidden under bottom bar
         Box(
             modifier = Modifier.padding(bottom = 48.dp)
         ) {
@@ -39,7 +39,7 @@ fun Navigator() {
                 composable(Route.Home.name) { HomePage() }
                 // Settings route
                 composable(Route.Settings.name) { SettingsPage() }
-                // Task route (with the route id as optionnal arg)
+                // Task route (with the route id as optional arg)
                 composable(
                     Route.TaskHost.name,
                     arguments = listOf(navArgument("taskId") {

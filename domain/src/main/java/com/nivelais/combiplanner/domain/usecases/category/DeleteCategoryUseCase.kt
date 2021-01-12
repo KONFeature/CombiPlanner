@@ -46,7 +46,7 @@ class DeleteCategoryUseCase(
 
         } catch (exception: Throwable) {
             log.error(
-                "An unknown error occured during the deletion of the category with id {} and strategy {}",
+                "An unknown error occurred during the deletion of the category with id {} and strategy {}",
                 params.id, params.strategy, exception
             )
             resultFlow.emit(DeleteCategoryResult.ERROR)

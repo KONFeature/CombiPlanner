@@ -60,5 +60,4 @@ enum class CreateCategoryResult {
     INVALID_NAME_ERROR,
     DUPLICATE_NAME_ERROR,
     ERROR,
-    // TODO : Error dependening on exception that can be throwned by the repository
 }
