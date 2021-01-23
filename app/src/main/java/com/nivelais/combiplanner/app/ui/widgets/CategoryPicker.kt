@@ -1,7 +1,10 @@
 package com.nivelais.combiplanner.app.ui.widgets
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.ExperimentalLayout
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -22,11 +25,11 @@ fun CategoryPicker(
     onCategoryPicked: (Category) -> Unit
 ) {
     // The flow row of our categories
-    FlowRow(
-        mainAxisSize = SizeMode.Expand,
-        mainAxisAlignment = FlowMainAxisAlignment.SpaceEvenly,
-        mainAxisSpacing = 8.dp,
-        crossAxisSpacing = 8.dp
+    SimpleFlowRow(
+        verticalGap = 8.dp,
+        horizontalGap = 8.dp,
+        alignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth().padding(8.dp)
     ) {
         categories.forEach { category ->
             Row {

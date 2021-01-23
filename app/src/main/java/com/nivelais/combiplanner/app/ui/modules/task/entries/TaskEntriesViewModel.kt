@@ -10,12 +10,39 @@ import com.nivelais.combiplanner.domain.entities.TaskEntry
 /**
  * View model used to handle all the logic related to the management of our task entries
  */
-class TaskEntriesViewModel(entries: List<TaskEntry>) : GenericViewModel() {
+class TaskEntriesViewModel(
+    entries: List<TaskEntry>,
+    private val onEntriesUpdated: (List<TaskEntry>) -> Unit
+) : GenericViewModel() {
+
+    /**
+     * All the entries in this view
+     */
+    private val entriesState: SnapshotStateList<TaskEntryState>
 
     /**
      * List containing all of our entries
      */
-    val entriesState: SnapshotStateList<TaskEntryState>
+    val remainingEntriesState: SnapshotStateList<TaskEntryState>
+        get() = entriesState.filter { !it.isDoneState.value }.toMutableStateList()
+
+    /**
+     * List containing the entries already done
+     */
+    val doneEntriesState: SnapshotStateList<TaskEntryState>
+        get() = entriesState.filter { it.isDoneState.value }.toMutableStateList()
+
+    /**
+     * The entries mapped
+     */
+    private val entries: List<TaskEntry>
+        get() = entriesState.map { entryState ->
+            TaskEntry(
+                id = entryState.initialId,
+                name = entryState.nameState.value,
+                isDone = entryState.isDoneState.value
+            )
+        }
 
     init {
         entriesState = entries.map { taskEntry ->
@@ -30,18 +57,29 @@ class TaskEntriesViewModel(entries: List<TaskEntry>) : GenericViewModel() {
     /**
      * Add a new entry in our list
      */
-    fun addEntry() = entriesState.add(
-        TaskEntryState(
-            initialId = 0L,
-            nameState = mutableStateOf(""),
-            isDoneState = mutableStateOf(false)
+    fun addEntry() {
+        entriesState.add(
+            TaskEntryState(
+                initialId = 0L,
+                nameState = mutableStateOf(""),
+                isDoneState = mutableStateOf(false)
+            )
         )
-    )
+        entriesUpdated()
+    }
 
     /**
      * Delete an entry at a specified index
      */
-    fun deleteEntry(index: Int) = entriesState.removeAt(index = index)
+    fun deleteEntry(entry: TaskEntryState) {
+        entriesState.remove(entry)
+        entriesUpdated()
+    }
+
+    /**
+     * Function called when the entries are updated
+     */
+    fun entriesUpdated() = onEntriesUpdated(entries)
 
     /**
      * Get the updated task list

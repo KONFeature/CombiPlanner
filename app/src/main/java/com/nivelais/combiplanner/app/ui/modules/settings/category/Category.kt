@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.widgets.CategoryPicker
 import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
+import com.nivelais.combiplanner.app.ui.widgets.SimpleFlowRow
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.usecases.category.DeletionStrategy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -93,7 +94,9 @@ private fun CategoryBox(
     ) {
         Card {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 content = content
             )
         }
@@ -133,11 +136,8 @@ private fun DeleteStrategyPicker(
     onStrategyPicked: (DeletionStrategy) -> Unit
 ) {
     // The flow row of our categories
-    FlowRow(
-        mainAxisSize = SizeMode.Expand,
-        mainAxisAlignment = FlowMainAxisAlignment.SpaceEvenly,
-        mainAxisSpacing = 8.dp,
-        crossAxisSpacing = 8.dp
+    Column(
+        modifier = Modifier.padding(8.dp),
     ) {
         Row {
             Checkbox(

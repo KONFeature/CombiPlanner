@@ -1,5 +1,6 @@
 package com.nivelais.combiplanner.app.ui.modules.task.entries
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -20,37 +22,24 @@ import com.nivelais.combiplanner.domain.entities.TaskEntry
 fun LazyListScope.taskEntries(
     entries: List<TaskEntry>,
     onEntriesUpdated: (List<TaskEntry>) -> Unit,
-    viewModel: TaskEntriesViewModel = TaskEntriesViewModel(entries = entries)
+    viewModel: TaskEntriesViewModel = TaskEntriesViewModel(
+        entries = entries, onEntriesUpdated = onEntriesUpdated
+    )
 ) {
     apply {
-        item {
-            Text(
-                text = stringResource(id = R.string.task_entries_title),
-                style = MaterialTheme.typography.body2
-            )
-        }
+        // Remaining entries
+        taskEntriesPart(
+            titleRes = R.string.task_entries_todo_title,
+            entries = viewModel.remainingEntriesState,
+            viewModel = viewModel
+        )
 
-        // Items with the task entry
-        itemsIndexed(viewModel.entriesState) { index, entry ->
-
-            // A line with the entry name, done status and delete listener
-            TaskEntryLine(
-                name = entry.nameState.value,
-                onNameChange = {
-                    entry.nameState.value = it
-                    onEntriesUpdated(viewModel.getUpdatedEntries())
-                },
-                isDone = entry.isDoneState.value,
-                onDoneChange = {
-                    entry.isDoneState.value = it
-                    onEntriesUpdated(viewModel.getUpdatedEntries())
-                },
-                onDeleteClick = {
-                    viewModel.deleteEntry(index = index)
-                    onEntriesUpdated(viewModel.getUpdatedEntries())
-                }
-            )
-        }
+        // Done entries
+        taskEntriesPart(
+            titleRes = R.string.task_entries_done_title,
+            entries = viewModel.doneEntriesState,
+            viewModel = viewModel
+        )
 
         // Item to create a new task
         item {
@@ -59,12 +48,48 @@ fun LazyListScope.taskEntries(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     viewModel.addEntry()
-                    onEntriesUpdated(viewModel.getUpdatedEntries())
                 }
             ) {
                 AddEntryButtonContent()
             }
         }
+    }
+}
+
+private fun LazyListScope.taskEntriesPart(
+    @StringRes titleRes: Int,
+    entries: SnapshotStateList<TaskEntriesViewModel.TaskEntryState>,
+    viewModel: TaskEntriesViewModel
+) {
+    // If we got no entry we can exit directly
+    if (entries.isEmpty()) return
+
+    item {
+        Text(
+            text = stringResource(id = titleRes),
+            style = MaterialTheme.typography.body2
+        )
+    }
+
+    // Items with the task entry
+    items(entries) { entry ->
+
+        // A line with the entry name, done status and delete listener
+        TaskEntryLine(
+            name = entry.nameState.value,
+            onNameChange = {
+                entry.nameState.value = it
+                viewModel.entriesUpdated()
+            },
+            isDone = entry.isDoneState.value,
+            onDoneChange = {
+                entry.isDoneState.value = it
+                viewModel.entriesUpdated()
+            },
+            onDeleteClick = {
+                viewModel.deleteEntry(entry = entry)
+            }
+        )
     }
 }
 
@@ -77,7 +102,9 @@ private fun TaskEntryLine(
     onDeleteClick: (() -> Unit),
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Checkbox(
@@ -85,7 +112,7 @@ private fun TaskEntryLine(
             onCheckedChange = onDoneChange
         )
         Spacer(modifier = Modifier.padding(8.dp))
-        TextField(
+        OutlinedTextField(
             modifier = Modifier.weight(1f),
             value = name,
             onValueChange = onNameChange,
