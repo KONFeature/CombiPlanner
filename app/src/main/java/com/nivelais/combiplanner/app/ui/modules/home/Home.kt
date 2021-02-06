@@ -15,7 +15,7 @@ import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.home.tasks.Tasks
 import com.nivelais.combiplanner.app.ui.modules.main.Route
 import com.nivelais.combiplanner.app.ui.modules.main.navigate
-import com.nivelais.combiplanner.app.ui.widgets.CategoryPicker
+import com.nivelais.combiplanner.app.ui.modules.category.picker.CategoryPicker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
@@ -27,6 +27,7 @@ fun HomePage(
     navController: NavController = get()
 ) {
     var filterCardVisibility by remember { viewModel.filterVisibilityState }
+    var categoryFilter by remember { viewModel.selectedCategoryState }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -62,14 +63,11 @@ fun HomePage(
                     style = MaterialTheme.typography.body2
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
-                val categoriesState = viewModel.categoriesFlow.collectAsState()
-                categoriesState.value?.let { categories ->
-                    CategoryPicker(
-                        categories = categories,
-                        categorySelected = viewModel.selectedCategoryState.value,
-                        onCategoryPicked = { viewModel.onCategorySelected(it) }
-                    )
-                }
+                CategoryPicker(
+                    onCategoryPicked = {
+                        categoryFilter = it
+                    }
+                )
             }
         }
 

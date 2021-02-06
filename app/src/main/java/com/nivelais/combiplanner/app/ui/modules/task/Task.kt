@@ -13,8 +13,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nivelais.combiplanner.R
+import com.nivelais.combiplanner.app.ui.modules.category.picker.CategoryPicker
 import com.nivelais.combiplanner.app.ui.modules.task.entries.taskEntries
-import com.nivelais.combiplanner.app.ui.widgets.CategoryPicker
 import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskResult
 import com.nivelais.combiplanner.domain.usecases.task.SaveTaskResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -64,7 +64,6 @@ fun TaskPage(
 
     // The state for the name and category of this task
     var name by remember { viewModel.nameState }
-    var category by remember { viewModel.categoryState }
 
     Column(
         modifier = Modifier
@@ -114,18 +113,10 @@ fun TaskPage(
                     style = MaterialTheme.typography.body2
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
-                viewModel.categoriesFlow
-                    .collectAsState()
-                    .value?.let { categories ->
-                        CategoryPicker(
-                            categories = categories,
-                            categorySelected = category,
-                            onCategoryPicked = {
-                                category = it
-                            })
-                    } ?: run {
-                    Text(text = stringResource(id = R.string.task_category_loading))
-                }
+                CategoryPicker(
+                    onCategoryPicked = {
+                        viewModel.categoryState.value = it
+                    })
                 Spacer(modifier = Modifier.padding(8.dp))
             }
 

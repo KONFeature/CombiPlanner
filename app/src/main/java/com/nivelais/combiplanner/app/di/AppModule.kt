@@ -1,5 +1,6 @@
 package com.nivelais.combiplanner.app.di
 
+import com.nivelais.combiplanner.app.ui.modules.category.picker.CategoryPickerViewModel
 import com.nivelais.combiplanner.app.ui.modules.home.HomeViewModel
 import com.nivelais.combiplanner.app.ui.modules.home.tasks.TasksViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.SettingsViewModel
@@ -26,5 +27,8 @@ val appModule = module {
 
     // Task
     viewModel { TaskViewModel() }
+
+    // Category picker
+    viewModel { CategoryPickerViewModel() }
 
 }

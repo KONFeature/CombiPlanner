@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
-import com.nivelais.combiplanner.app.ui.widgets.CategoryPicker
+import com.nivelais.combiplanner.app.ui.modules.category.picker.CategoryPicker
+import com.nivelais.combiplanner.app.ui.modules.category.picker.StatelessCategoriesPicker
 import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
-import com.nivelais.combiplanner.app.ui.widgets.SimpleFlowRow
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.usecases.category.DeletionStrategy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -72,7 +72,7 @@ fun CategoryCard(
                 style = MaterialTheme.typography.body2
             )
             Spacer(modifier = Modifier.padding(8.dp))
-            CategoryPicker(
+            StatelessCategoriesPicker(
                 categories = categories,
                 categorySelected = viewModel.selectedCategoryState.value,
                 onCategoryPicked = {

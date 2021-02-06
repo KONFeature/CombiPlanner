@@ -8,7 +8,6 @@ import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
 import com.nivelais.combiplanner.domain.entities.TaskEntry
-import com.nivelais.combiplanner.domain.usecases.category.GetCategoriesUseCase
 import com.nivelais.combiplanner.domain.usecases.task.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -36,9 +35,6 @@ class TaskViewModel : GenericViewModel() {
     // Use case to get a task by it's id
     private val getTaskUseCase: GetTaskUseCase by inject()
 
-    // Use case to list all the categories
-    private val getCategoriesUseCase: GetCategoriesUseCase by inject()
-
     // Use case to save our task
     private val saveTaskUseCase: SaveTaskUseCase by inject()
 
@@ -52,11 +48,6 @@ class TaskViewModel : GenericViewModel() {
     val isNameInErrorState: MutableState<Boolean> = mutableStateOf(false)
 
     /**
-     * State flow of our categories
-     */
-    val categoriesFlow = getCategoriesUseCase.stateFlow
-
-    /**
      * The flow for the saving of this task
      */
     val saveFlow = saveTaskUseCase.stateFlow
@@ -68,8 +59,6 @@ class TaskViewModel : GenericViewModel() {
 
     init {
         viewModelScope.launch {
-            // Load all the categories
-            getCategoriesUseCase.execute(Unit)
             // Listen to the save status
             saveTaskUseCase.stateFlow.collect {
                 when (it) {
@@ -172,7 +161,6 @@ class TaskViewModel : GenericViewModel() {
 
     override fun clearUseCases() {
         getTaskUseCase.clear()
-        getCategoriesUseCase.clear()
         saveTaskUseCase.clear()
     }
 }

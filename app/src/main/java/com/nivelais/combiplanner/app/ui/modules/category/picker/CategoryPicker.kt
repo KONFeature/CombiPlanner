@@ -1,4 +1,4 @@
-package com.nivelais.combiplanner.app.ui.widgets
+package com.nivelais.combiplanner.app.ui.modules.category.picker
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ExperimentalLayout
@@ -9,17 +9,43 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
+import com.nivelais.combiplanner.app.ui.widgets.SimpleFlowRow
 import com.nivelais.combiplanner.domain.entities.Category
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.androidx.compose.getViewModel
 
 /**
  * Widget to perform category filtering
  */
-@OptIn(ExperimentalLayout::class)
+@OptIn(ExperimentalLayout::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun CategoryPicker(
+    viewModel: CategoryPickerViewModel = getViewModel(),
+    onCategoryPicked: (Category?) -> Unit
+) {
+    // Listen to the categories flow
+    viewModel.categoriesFlow
+        .collectAsState()
+        .value
+        ?.let { categories ->
+            // The flow row of our categories
+            StatelessCategoriesPicker(
+                categories = categories,
+                categorySelected = viewModel.selectedCategoryState.value,
+                onCategoryPicked = {
+                    viewModel.onCategorySelected(it)
+                    onCategoryPicked(viewModel.selectedCategoryState.value)
+                })
+        }
+}
+
+@Composable
+fun StatelessCategoriesPicker(
     categories: List<Category>,
     categorySelected: Category?,
     onCategoryPicked: (Category) -> Unit
@@ -29,7 +55,9 @@ fun CategoryPicker(
         verticalGap = 8.dp,
         horizontalGap = 8.dp,
         alignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth().padding(8.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
     ) {
         categories.forEach { category ->
             Row {
