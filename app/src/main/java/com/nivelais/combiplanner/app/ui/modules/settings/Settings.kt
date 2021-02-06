@@ -3,6 +3,7 @@ package com.nivelais.combiplanner.app.ui.modules.settings
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -43,7 +44,7 @@ private fun Categories(
                     style = MaterialTheme.typography.h4
                 )
             }
-            items(categories) { category ->
+            items(items = categories) { category ->
                 CategoryCard(category = category, categories = categories)
             }
             item {

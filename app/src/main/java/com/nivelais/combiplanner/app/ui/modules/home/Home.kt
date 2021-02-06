@@ -85,7 +85,7 @@ private fun FilterButton(onClick: () -> Unit) {
     FloatingActionButton(
         onClick = onClick,
     ) {
-        Icon(Icons.Filled.FilterAlt)
+        Icon(Icons.Filled.FilterAlt, "Toggle filter menu")
     }
 }
 
@@ -94,7 +94,7 @@ private fun AddButton(onClick: () -> Unit) {
     FloatingActionButton(
         onClick = onClick,
     ) {
-        Icon(Icons.Filled.Add)
+        Icon(Icons.Filled.Add, "Add a task")
     }
 }
 

@@ -24,7 +24,10 @@ fun BottomNavBar(navController: NavController = get()) {
         // Create each of our nav buttons
         navigationTargets().forEach { navTarget ->
             BottomNavigationItem(
-                icon = { Icon(navTarget.icon) },
+                icon = {
+                    Icon(
+                        navTarget.icon,
+                        "Navigate to ${stringResource(id = navTarget.labelId)}") },
                 selected = isCurrentRoute(navController = navController, target = navTarget),
                 onClick = {
                     navController.navigate(navTarget.route) {

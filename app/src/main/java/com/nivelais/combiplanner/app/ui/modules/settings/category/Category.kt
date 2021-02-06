@@ -121,7 +121,7 @@ private fun CategoryHeader(name: String, color: Long?, onDeleteClick: () -> Unit
         Spacer(modifier = Modifier.padding(8.dp))
         // Delete button
         OutlinedButton(onClick = onDeleteClick) {
-            Icon(Icons.Filled.DeleteForever)
+            Icon(Icons.Filled.DeleteForever, "Delete $name category")
         }
     }
 }

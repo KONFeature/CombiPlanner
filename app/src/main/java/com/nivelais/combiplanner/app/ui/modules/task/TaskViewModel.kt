@@ -127,6 +127,13 @@ class TaskViewModel : GenericViewModel() {
     }
 
     /**
+     * Dispose the get task job
+     */
+    fun disposeGetTaskJob() {
+        getTaskUseCase.clear()
+    }
+
+    /**
      * Init the base field for our view when the task is loaded
      */
     private fun initBaseField(task: Task?) {

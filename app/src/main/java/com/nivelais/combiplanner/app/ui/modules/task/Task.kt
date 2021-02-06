@@ -28,9 +28,14 @@ fun TaskPage(
     navController: NavController = get(),
     taskId: Long?,
 ) {
-    onActive {
-        // Load the base task
+    DisposableEffect(taskId) {
+        // Load the initial task
         viewModel.getInitialTask(taskId)
+
+        onDispose {
+            // If the user exit directly dispose this job
+            viewModel.disposeGetTaskJob()
+        }
     }
 
     // Check the loading state (if we are loading the view exit with a progress indicator)
@@ -75,18 +80,17 @@ fun TaskPage(
                 modifier = Modifier.weight(1f),
                 name = name,
                 isError = isNameError,
-                onNameChange = { name = it }
-            )
+                onNameChange = { name = it })
             Spacer(modifier = Modifier.padding(8.dp))
             // Save button
             IconButton(onClick = { viewModel.save() }) {
-                Icon(Icons.Default.Save)
+                Icon(Icons.Default.Save, "Save the changes")
             }
             // Delete button if that's not a new task
             if (viewModel.initialTaskId != null) {
                 Spacer(modifier = Modifier.padding(8.dp))
                 IconButton(onClick = { viewModel.delete() }) {
-                    Icon(Icons.Default.Delete)
+                    Icon(Icons.Default.Delete, "Delete this task")
                 }
             }
         }

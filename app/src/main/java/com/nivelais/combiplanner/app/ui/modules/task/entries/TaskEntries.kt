@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -72,7 +73,7 @@ private fun LazyListScope.taskEntriesPart(
     }
 
     // Items with the task entry
-    items(entries) { entry ->
+    items(items = entries) { entry ->
 
         // A line with the entry name, done status and delete listener
         TaskEntryLine(
@@ -123,7 +124,7 @@ private fun TaskEntryLine(
         IconButton(
             onClick = onDeleteClick
         ) {
-            Icon(Icons.Default.Delete)
+            Icon(Icons.Default.Delete, "Delete the entry")
         }
     }
 }
@@ -133,7 +134,7 @@ private fun AddEntryButtonContent() {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(Icons.Default.AddCircle)
+        Icon(Icons.Default.AddCircle, "Add an entry")
         Spacer(modifier = Modifier.padding(8.dp))
         Text(text = stringResource(id = R.string.task_entries_add_button))
     }

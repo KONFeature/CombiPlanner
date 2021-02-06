@@ -9,6 +9,9 @@ import com.nivelais.combiplanner.domain.entities.TaskEntry
 
 /**
  * View model used to handle all the logic related to the management of our task entries
+ * TODO : Prevent rebuilding each time
+ * TODO : Koin injection for this view model ? parameter injection ?
+ * TODO : How to fetch the updated list of entries from the parent view model ?
  */
 class TaskEntriesViewModel(
     entries: List<TaskEntry>,
