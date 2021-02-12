@@ -27,7 +27,6 @@ fun HomePage(
     navController: NavController = get()
 ) {
     var filterCardVisibility by remember { viewModel.filterVisibilityState }
-    var categoryFilter by remember { viewModel.selectedCategoryState }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,7 +64,7 @@ fun HomePage(
                 Spacer(modifier = Modifier.padding(8.dp))
                 CategoryPicker(
                     onCategoryPicked = {
-                        categoryFilter = it
+                        viewModel.selectedCategoryState.value = it
                     }
                 )
             }

@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.More
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -45,14 +46,9 @@ fun LazyListScope.taskEntries(
         // Item to create a new task
         item {
             Spacer(modifier = Modifier.padding(16.dp))
-            OutlinedButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    viewModel.addEntry()
-                }
-            ) {
-                AddEntryButtonContent()
-            }
+            AddEntryLine(onAddClick = {
+                viewModel.addEntry()
+            })
         }
     }
 }
@@ -125,6 +121,29 @@ private fun TaskEntryLine(
             onClick = onDeleteClick
         ) {
             Icon(Icons.Default.Delete, "Delete the entry")
+        }
+    }
+}
+
+@Composable
+private fun AddEntryLine(
+    onAddClick: () -> Unit
+) {
+    Row {
+        OutlinedButton(
+            modifier = Modifier.weight(1f),
+            onClick = {
+                onAddClick()
+            }
+        ) {
+            AddEntryButtonContent()
+        }
+        IconButton(
+            onClick = {
+
+            }
+        ) {
+            Icon(Icons.Filled.More, "Show advanced entry options")
         }
     }
 }
