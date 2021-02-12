@@ -20,6 +20,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.domain.entities.TaskEntry
+import androidx.core.app.ActivityCompat.startActivityForResult
+
+import android.content.Intent
+import android.provider.MediaStore
+import androidx.activity.result.ActivityResultLauncher
+
 
 fun LazyListScope.taskEntries(
     entries: List<TaskEntry>,
@@ -140,7 +146,9 @@ private fun AddEntryLine(
         }
         IconButton(
             onClick = {
-
+                // TODO : Show / Hide advanced entry menu (card -> upload pics + depends on other task + description)
+                val pickPhoto = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                // TODO : How to launch the intent within jetpack compose ??
             }
         ) {
             Icon(Icons.Filled.More, "Show advanced entry options")

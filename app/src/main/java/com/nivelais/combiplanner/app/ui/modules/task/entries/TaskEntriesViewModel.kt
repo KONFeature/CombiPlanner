@@ -21,7 +21,13 @@ class TaskEntriesViewModel(
     /**
      * All the entries in this view
      */
-    private val entriesState: SnapshotStateList<TaskEntryState>
+    private val entriesState: SnapshotStateList<TaskEntryState> = entries.map { taskEntry ->
+        TaskEntryState(
+            initialId = taskEntry.id,
+            nameState = mutableStateOf(taskEntry.name),
+            isDoneState = mutableStateOf(taskEntry.isDone)
+        )
+    }.toMutableStateList()
 
     /**
      * List containing all of our entries
@@ -46,16 +52,6 @@ class TaskEntriesViewModel(
                 isDone = entryState.isDoneState.value
             )
         }
-
-    init {
-        entriesState = entries.map { taskEntry ->
-            TaskEntryState(
-                initialId = taskEntry.id,
-                nameState = mutableStateOf(taskEntry.name),
-                isDoneState = mutableStateOf(taskEntry.isDone)
-            )
-        }.toMutableStateList()
-    }
 
     /**
      * Add a new entry in our list

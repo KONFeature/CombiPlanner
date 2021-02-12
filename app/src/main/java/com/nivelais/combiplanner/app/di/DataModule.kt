@@ -1,9 +1,11 @@
 package com.nivelais.combiplanner.app.di
 
 import com.nivelais.combiplanner.data.database.dao.CategoryDao
+import com.nivelais.combiplanner.data.database.dao.PictureDao
 import com.nivelais.combiplanner.data.database.dao.TaskDao
 import com.nivelais.combiplanner.data.database.dao.TaskEntryDao
 import com.nivelais.combiplanner.data.database.entities.MyObjectBox
+import com.nivelais.combiplanner.data.database.mapper.CategoryDatabaseMapper
 import com.nivelais.combiplanner.data.repositories.CategoryRepositoryImpl
 import com.nivelais.combiplanner.data.repositories.TaskRepositoryImpl
 import com.nivelais.combiplanner.domain.repositories.CategoryRepository
@@ -33,6 +35,7 @@ val dataModule = module(
     single { CategoryDao(get()) }
     single { TaskDao(get()) }
     single { TaskEntryDao(get()) }
+    single { PictureDao(get()) }
 
     // Repository implementations
     single<CategoryRepository> { CategoryRepositoryImpl(get()) }

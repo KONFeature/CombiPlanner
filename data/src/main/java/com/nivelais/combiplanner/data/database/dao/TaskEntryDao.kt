@@ -6,7 +6,7 @@ import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
 
 /**
- * Dao used to manage our task object
+ * Dao used to manage our task entry object
  */
 class TaskEntryDao(boxStore: BoxStore) {
 

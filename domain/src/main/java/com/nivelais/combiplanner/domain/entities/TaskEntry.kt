@@ -6,5 +6,6 @@ package com.nivelais.combiplanner.domain.entities
 data class TaskEntry(
     var id: Long = 0,
     var name: String,
-    var isDone: Boolean = false
+    var isDone: Boolean = false,
+    var taskDependencies : List<Task> = emptyList(),
 )
