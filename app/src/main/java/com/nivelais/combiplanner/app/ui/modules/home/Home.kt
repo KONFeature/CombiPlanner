@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nivelais.combiplanner.R
@@ -81,6 +82,7 @@ fun HomePage(
 private fun FilterButton(onClick: () -> Unit) {
     FloatingActionButton(
         onClick = onClick,
+        backgroundColor = MaterialTheme.colors.primaryVariant
     ) {
         Icon(Icons.Filled.FilterAlt, "Toggle filter menu")
     }
@@ -90,6 +92,7 @@ private fun FilterButton(onClick: () -> Unit) {
 private fun AddButton(onClick: () -> Unit) {
     FloatingActionButton(
         onClick = onClick,
+        backgroundColor = MaterialTheme.colors.primaryVariant
     ) {
         Icon(Icons.Filled.Add, "Add a task")
     }

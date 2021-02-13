@@ -25,16 +25,30 @@ import androidx.core.app.ActivityCompat.startActivityForResult
 import android.content.Intent
 import android.provider.MediaStore
 import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.input.ImeAction
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.androidx.compose.getViewModel
+import org.koin.core.parameter.parametersOf
 
 
-fun LazyListScope.taskEntries(
-    entries: List<TaskEntry>,
-    onEntriesUpdated: (List<TaskEntry>) -> Unit,
-    viewModel: TaskEntriesViewModel = TaskEntriesViewModel(
-        entries = entries, onEntriesUpdated = onEntriesUpdated
-    )
+@OptIn(ExperimentalCoroutinesApi::class)
+@Composable
+fun TaskEntries(
+    taskId: Long?,
+    viewModel: TaskEntriesViewModel = getViewModel { parametersOf(taskId) },
+    header: LazyListScope.() -> Unit,
+    footer: LazyListScope.() -> Unit
 ) {
-    apply {
+    viewModel.entriesState.collectAsState()
+
+    LazyColumn {
+        header()
+
+
         // Remaining entries
         taskEntriesPart(
             titleRes = R.string.task_entries_todo_title,
@@ -49,19 +63,14 @@ fun LazyListScope.taskEntries(
             viewModel = viewModel
         )
 
-        // Item to create a new task
-        item {
-            Spacer(modifier = Modifier.padding(16.dp))
-            AddEntryLine(onAddClick = {
-                viewModel.addEntry()
-            })
-        }
+
+        footer()
     }
 }
 
 private fun LazyListScope.taskEntriesPart(
     @StringRes titleRes: Int,
-    entries: SnapshotStateList<TaskEntriesViewModel.TaskEntryState>,
+    entries: SnapshotStateList<TaskEntry>,
     viewModel: TaskEntriesViewModel
 ) {
     // If we got no entry we can exit directly
@@ -76,21 +85,21 @@ private fun LazyListScope.taskEntriesPart(
 
     // Items with the task entry
     items(items = entries) { entry ->
+        val taskName = mutableStateOf(entry.name)
+        val isDone = mutableStateOf(entry.isDone)
 
         // A line with the entry name, done status and delete listener
         TaskEntryLine(
-            name = entry.nameState.value,
+            name = taskName.value,
             onNameChange = {
-                entry.nameState.value = it
-                viewModel.entriesUpdated()
+                taskName.value = it
             },
-            isDone = entry.isDoneState.value,
+            isDone = isDone.value,
             onDoneChange = {
-                entry.isDoneState.value = it
-                viewModel.entriesUpdated()
+                isDone.value = it
             },
             onDeleteClick = {
-                viewModel.deleteEntry(entry = entry)
+                viewModel.deleteEntry(entryId = entry.id)
             }
         )
     }
@@ -121,7 +130,13 @@ private fun TaskEntryLine(
             onValueChange = onNameChange,
             placeholder = {
                 Text(text = stringResource(id = R.string.task_entries_name_placeholder))
-            })
+            },
+            onImeActionPerformed = { action, _ ->
+                if (action == ImeAction.Done) {
+                    // TODO : Perform an update of the entity
+                }
+            }
+        )
         // In the case of a new entry we display a little button to add the task
         IconButton(
             onClick = onDeleteClick
@@ -132,7 +147,7 @@ private fun TaskEntryLine(
 }
 
 @Composable
-private fun AddEntryLine(
+fun AddEntryLine(
     onAddClick: () -> Unit
 ) {
     Row {
@@ -147,11 +162,11 @@ private fun AddEntryLine(
         IconButton(
             onClick = {
                 // TODO : Show / Hide advanced entry menu (card -> upload pics + depends on other task + description)
-                val pickPhoto = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+//                val pickPhoto = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 // TODO : How to launch the intent within jetpack compose ??
             }
         ) {
-            Icon(Icons.Filled.More, "Show advanced entry options")
+            Icon(Icons.Filled.ExpandMore, "Show advanced entry options")
         }
     }
 }

@@ -7,13 +7,15 @@ import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.usecases.category.GetCategoriesUseCase
 import org.koin.core.scope.inject
 
-class CategoryPickerViewModel : GenericViewModel() {
+class CategoryPickerViewModel(
+    private val initialCategory: Category? = null
+) : GenericViewModel() {
 
     // View model used to get all the categories
     private val getCategoriesUseCase: GetCategoriesUseCase by inject()
 
     // State for the current category selected
-    val selectedCategoryState: MutableState<Category?> = mutableStateOf(null)
+    val selectedCategoryState: MutableState<Category?> = mutableStateOf(initialCategory)
 
     /**
      * State flow of our categories

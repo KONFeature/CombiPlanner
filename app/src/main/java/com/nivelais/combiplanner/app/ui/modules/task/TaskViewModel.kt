@@ -9,6 +9,8 @@ import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 import com.nivelais.combiplanner.domain.usecases.task.*
+import com.nivelais.combiplanner.domain.usecases.task.entry.CreateEntryParams
+import com.nivelais.combiplanner.domain.usecases.task.entry.CreateEntryUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.scope.inject
@@ -31,6 +33,7 @@ class TaskViewModel : GenericViewModel() {
     lateinit var nameState: MutableState<String>
     lateinit var categoryState: MutableState<Category?>
     lateinit var entries: List<TaskEntry>
+    var idState: MutableState<Long?> = mutableStateOf(null)
 
     // Use case to get a task by it's id
     private val getTaskUseCase: GetTaskUseCase by inject()
@@ -40,6 +43,9 @@ class TaskViewModel : GenericViewModel() {
 
     // Use case to delete our task
     private val deleteTaskUseCase: DeleteTaskUseCase by inject()
+
+    // Use case to add an entry to our task
+    private val createEntryUseCase: CreateEntryUseCase by inject()
 
     // If we got any error put it here
     val errorResState: MutableState<Int?> = mutableStateOf(null)
@@ -92,6 +98,7 @@ class TaskViewModel : GenericViewModel() {
      */
     fun getInitialTask(id: Long?) {
         log.info("Loading task for the id '$id'")
+        idState.value = id
         // Convert not found id to null
         val usableId = if (id == -1L || id == 0L) null else id
         // Backup the initial task id
@@ -129,6 +136,7 @@ class TaskViewModel : GenericViewModel() {
         nameState = mutableStateOf(task?.name ?: "")
         categoryState = mutableStateOf(task?.category)
         entries = task?.entries ?: emptyList()
+        idState.value = task?.id?:initialTaskId
     }
 
     /**
@@ -156,6 +164,15 @@ class TaskViewModel : GenericViewModel() {
     fun delete() {
         initialTaskId?.let { taskId ->
             deleteTaskUseCase.run(DeleteTaskParams(id = taskId))
+        }
+    }
+
+    /**
+     * Add an entry to our task
+     */
+    fun addEntry() {
+        idState.value?.let { taskId ->
+            createEntryUseCase.run(CreateEntryParams(taskId = taskId, name = ""))
         }
     }
 

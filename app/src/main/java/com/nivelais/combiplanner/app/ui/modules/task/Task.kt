@@ -14,7 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.category.picker.CategoryPicker
-import com.nivelais.combiplanner.app.ui.modules.task.entries.taskEntries
+import com.nivelais.combiplanner.app.ui.modules.task.entries.AddEntryLine
+import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntries
 import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskResult
 import com.nivelais.combiplanner.domain.usecases.task.SaveTaskResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -104,30 +105,64 @@ fun TaskPage(
             )
         }
 
-        LazyColumn {
 
-            // Category selection
-            item {
-                Text(
-                    text = stringResource(id = R.string.task_category_title),
-                    style = MaterialTheme.typography.body2
-                )
-                Spacer(modifier = Modifier.padding(8.dp))
-                CategoryPicker(
-                    onCategoryPicked = {
-                        viewModel.categoryState.value = it
-                    })
-                Spacer(modifier = Modifier.padding(8.dp))
+        // The entries for our task (only if we got a task in the database)
+        TaskEntries(
+            taskId = viewModel.idState.value,
+            header = {
+                apply {
+                    // Category selection
+                    item {
+                        Text(
+                            text = stringResource(id = R.string.task_category_title),
+                            style = MaterialTheme.typography.body2
+                        )
+                        Spacer(modifier = Modifier.padding(8.dp))
+                        CategoryPicker(
+                            initialCategory = viewModel.categoryState.value,
+                            onCategoryPicked = {
+                                viewModel.categoryState.value = it
+                            })
+                        Spacer(modifier = Modifier.padding(8.dp))
+                    }
+                }
+            },
+            footer = {
+                apply {
+                    // Item to create a new task
+                    item {
+                        Spacer(modifier = Modifier.padding(16.dp))
+                        AddEntryLine(onAddClick = {
+                            // TODO : Handle this event
+                            viewModel.addEntry()
+                        })
+                    }
+                }
             }
+        )
 
-            // Task entries
-            // The entries for our task
-            taskEntries(
-                entries = viewModel.entries,
-                onEntriesUpdated = {
-                    viewModel.entries = it
-                })
-        }
+
+//        LazyColumn {
+//
+//            // Category selection
+//            item {
+//                Text(
+//                    text = stringResource(id = R.string.task_category_title),
+//                    style = MaterialTheme.typography.body2
+//                )
+//                Spacer(modifier = Modifier.padding(8.dp))
+//                CategoryPicker(
+//                    onCategoryPicked = {
+//                        viewModel.categoryState.value = it
+//                    })
+//                Spacer(modifier = Modifier.padding(8.dp))
+//            }
+//
+//            // The entries for our task (only if we got a task in the database)
+//            viewModel.idState.value?.let { taskId ->
+//                taskEntries(taskId = taskId)
+//            }
+//        }
     }
 }
 

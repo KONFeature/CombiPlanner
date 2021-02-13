@@ -9,6 +9,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ import com.nivelais.combiplanner.app.ui.widgets.SimpleFlowRow
 import com.nivelais.combiplanner.domain.entities.Category
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.getViewModel
+import org.koin.core.parameter.parametersOf
 
 /**
  * Widget to perform category filtering
@@ -25,7 +27,8 @@ import org.koin.androidx.compose.getViewModel
 @OptIn(ExperimentalLayout::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun CategoryPicker(
-    viewModel: CategoryPickerViewModel = getViewModel(),
+    viewModel: CategoryPickerViewModel = getViewModel { parametersOf(initialCategory) },
+    initialCategory: Category? = null,
     onCategoryPicked: (Category?) -> Unit
 ) {
     // Listen to the categories flow

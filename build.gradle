@@ -1,10 +1,10 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.4.30'
+    ext.kotlin_version = '1.4.21-2'
     ext.coroutines_version = '1.4.2'
     ext.nav_version = '2.3.3'
-    ext.compose_version = '1.0.0-alpha12'
-    ext.nav_compose_version = '1.0.0-alpha07'
+    ext.compose_version = '1.0.0-alpha11'
+    ext.nav_compose_version = '1.0.0-alpha05'
     ext.koin_version = '2.2.2'
     ext.objectbox_version = '2.8.1'
     ext.mapstruct_version = '1.4.2.Final'
@@ -59,6 +59,7 @@ subprojects {
 
             // Allow unstable dependencies TODO : To remove when koin will be compatible with kotlin 1.4.30
             freeCompilerArgs += '-Xallow-unstable-dependencies'
+            freeCompilerArgs += '-Xskip-prerelease-check'
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"

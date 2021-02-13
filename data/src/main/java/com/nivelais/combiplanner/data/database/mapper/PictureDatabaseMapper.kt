@@ -17,12 +17,4 @@ interface PictureDatabaseMapper {
     fun entitiesToDatas(
         pictureEntities: List<PictureEntity>
     ): List<Picture>
-
-    fun dataToEntity(
-        picture: Picture
-    ): PictureEntity
-
-    fun datasToEntities(
-        pictures: List<Picture>
-    ): List<PictureEntity>
 }

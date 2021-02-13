@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 
 /**
- * Use case used to get a given task from it's id (or create a new one if no id present°
+ * Use case used to get a given task from it's id (or create a new one if no id present)
  */
 class GetTaskUseCase(
     override val observingScope: CoroutineScope,

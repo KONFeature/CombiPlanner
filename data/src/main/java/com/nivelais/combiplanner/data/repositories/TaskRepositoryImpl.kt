@@ -3,6 +3,7 @@ package com.nivelais.combiplanner.data.repositories
 import com.nivelais.combiplanner.data.database.dao.TaskDao
 import com.nivelais.combiplanner.data.database.dao.TaskEntryDao
 import com.nivelais.combiplanner.data.database.entities.TaskEntity
+import com.nivelais.combiplanner.data.database.entities.TaskEntryEntity
 import com.nivelais.combiplanner.data.database.mapper.TaskDatabaseMapper
 import com.nivelais.combiplanner.data.database.mapper.TaskEntryDatabaseMapper
 import com.nivelais.combiplanner.domain.entities.Category
@@ -41,7 +42,7 @@ class TaskRepositoryImpl(
         // Create the task entity
         val entity = TaskEntity(name = name)
         entity.category.targetId = category.id
-        entity.entries.addAll(taskEntryDatabaseMapper.datasToEntities(entries))
+        entity.entries.addAll(entries.map { TaskEntryEntity(name = it.name, isDone = it.isDone) })
 
         // Insert it in the database and return the mapped result
         taskDao.save(entity)
@@ -67,11 +68,11 @@ class TaskRepositoryImpl(
             task.category.targetId = category.id
             // TODO : Track deletion
             // Update it's entries
-            val entryEntities = taskEntryDatabaseMapper.datasToEntities(entries)
-            taskEntryDao.save(entryEntities)
-            task.entries.clear()
-            task.entries.addAll(entryEntities)
-            task.entries.applyChangesToDb()
+//            val entryEntities = taskEntryDatabaseMapper.datasToEntities(entries)
+//            taskEntryDao.save(entryEntities)
+//            task.entries.clear()
+//            task.entries.addAll(entryEntities)
+//            task.entries.applyChangesToDb()
             taskDao.save(task)
         }
     }

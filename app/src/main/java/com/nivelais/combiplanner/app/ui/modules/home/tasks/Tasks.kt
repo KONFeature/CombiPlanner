@@ -12,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.AmbientConfiguration
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -40,7 +39,7 @@ fun Tasks(
     val tasksState = viewModel.tasksFlow.collectAsState()
 
     tasksState.value?.let { tasks ->
-        val orientation = LocalConfiguration.current.orientation
+        val orientation = AmbientConfiguration.current.orientation
         TasksGrid(
             tasks = tasks,
             columnCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 4 else 2,
