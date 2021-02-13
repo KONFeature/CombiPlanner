@@ -76,7 +76,7 @@ class TaskEntryRepositoryImpl(
      * @inheritDoc
      */
     override suspend fun delete(id: Long) {
-        TODO("Not yet implemented")
+        taskEntryDao.delete(id)
     }
 
     /**

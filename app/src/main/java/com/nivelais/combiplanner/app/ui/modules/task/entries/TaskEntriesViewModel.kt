@@ -11,7 +11,9 @@ import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskUseCase
 import com.nivelais.combiplanner.domain.usecases.task.GetTaskUseCase
 import com.nivelais.combiplanner.domain.usecases.task.SaveTaskUseCase
 import com.nivelais.combiplanner.domain.usecases.task.entry.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import org.koin.core.scope.inject
 
 /**
@@ -27,11 +29,6 @@ class TaskEntriesViewModel(
     // Use case to get our entities from the entry id
     private val getEntriesUseCase: GetEntriesUseCase by inject()
 
-    // Use cases to create, update or delete our task
-    private val createEntryUseCase: CreateEntryUseCase by inject()
-    private val updateEntryUseCase: UpdateEntryUseCase by inject()
-    private val deleteEntryUseCase: DeleteEntryUseCase by inject()
-
     init {
         // When we launch this view load the entries for the given task id
         taskId?.let {
@@ -45,74 +42,7 @@ class TaskEntriesViewModel(
      */
     val entriesState: StateFlow<GetEntriesResult> = getEntriesUseCase.stateFlow
 
-    /**
-     * List containing all of our entries
-     */
-    val remainingEntriesState: SnapshotStateList<TaskEntry>
-        get() = entriesState.value.remainingEntries.toMutableStateList()
-
-    /**
-     * List containing the entries already done
-     */
-    val doneEntriesState: SnapshotStateList<TaskEntry>
-        get() = entriesState.value.doneEntries.toMutableStateList()
-
-    /**
-     * The entries mapped
-     */
-//    private val entries: List<TaskEntry>
-//        get() = entriesState.map { entryState ->
-//            TaskEntry(
-//                id = entryState.initialId,
-//                name = entryState.nameState.value,
-//                isDone = entryState.isDoneState.value
-//            )
-//        }
-
-    /**
-     * Add a new entry in our list
-     */
-//    fun addEntry() {
-//        entriesState.add(
-//            TaskEntryState(
-//                initialId = 0L,
-//                nameState = mutableStateOf(""),
-//                isDoneState = mutableStateOf(false)
-//            )
-//        )
-//        entriesUpdated()
-//    }
-
-    /**
-     * Delete an entry at a specified index
-     */
-    fun deleteEntry(entryId: Long) {
-        deleteEntryUseCase.run(DeleteEntryParams(entryId = entryId))
+    override fun clearUseCases() {
+        getEntriesUseCase.clear()
     }
-
-    /**
-     * Function called when the entries are updated
-     */
-//    fun entriesUpdated() = onEntriesUpdated(entries)
-
-    /**
-     * Get the updated task list
-     */
-//    fun getUpdatedEntries(): List<TaskEntry> =
-//        entriesState.map { entryState ->
-//            TaskEntry(
-//                id = entryState.initialId,
-//                name = entryState.nameState.value,
-//                isDone = entryState.isDoneState.value
-//            )
-//        }
-
-    /**
-     * Class containing the state for each one of our task entries
-     */
-    data class TaskEntryState(
-        val initialId: Long,
-        val nameState: MutableState<String>,
-        val isDoneState: MutableState<Boolean>
-    )
 }

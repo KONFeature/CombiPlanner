@@ -35,9 +35,9 @@ class UpdateEntryUseCase(
  */
 data class UpdateEntryParams(
     val entryId: Long,
-    val name: String?,
-    val isDone: Boolean?,
-    val taskDependencies: List<Task>?
+    val name: String? = null,
+    val isDone: Boolean? = null,
+    val taskDependencies: List<Task>? = null
 )
 
 

@@ -33,8 +33,8 @@ abstract class FlowableUseCase<in Params, Result> : CoroutineScope {
      * The inter state flow the child use case will update
      */
     protected val resultFlow: MutableSharedFlow<Result> = MutableSharedFlow(
-        replay = 1,
-        extraBufferCapacity = 2,
+        replay = 5,
+        extraBufferCapacity = 10,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 

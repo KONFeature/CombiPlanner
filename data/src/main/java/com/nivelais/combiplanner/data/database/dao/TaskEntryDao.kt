@@ -54,4 +54,12 @@ class TaskEntryDao(boxStore: BoxStore) {
         box.observe {
             backlink(TaskEntity_.entries).equal(TaskEntity_.id, taskId)
         }
+
+    /**
+     * Get all the task entries entities we got in the database for a given task
+     */
+    fun getForTask(taskId: Long) =
+        box.getOrNull {
+            backlink(TaskEntity_.entries).equal(TaskEntity_.id, taskId)
+        }
 }
