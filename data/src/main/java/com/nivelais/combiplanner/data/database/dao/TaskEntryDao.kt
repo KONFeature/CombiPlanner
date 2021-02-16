@@ -8,12 +8,11 @@ import com.nivelais.combiplanner.data.database.observe
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
-import io.objectbox.kotlin.query
 
 /**
  * Dao used to manage our task entry object
  */
-class TaskEntryDao(boxStore: BoxStore) {
+class TaskEntryDao(val boxStore: BoxStore) {
 
     /**
      * Box used to access our task entries
@@ -52,14 +51,6 @@ class TaskEntryDao(boxStore: BoxStore) {
      */
     fun observeForTask(taskId: Long) =
         box.observe {
-            backlink(TaskEntity_.entries).equal(TaskEntity_.id, taskId)
-        }
-
-    /**
-     * Get all the task entries entities we got in the database for a given task
-     */
-    fun getForTask(taskId: Long) =
-        box.getOrNull {
             backlink(TaskEntity_.entries).equal(TaskEntity_.id, taskId)
         }
 }

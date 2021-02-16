@@ -11,6 +11,7 @@ import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryResult
 import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryUseCase
 import com.nivelais.combiplanner.domain.usecases.category.DeletionStrategy
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.scope.inject
 
@@ -34,7 +35,7 @@ class CategoryViewModel : GenericViewModel() {
     init {
         // Collect the value of our deletion use case
         viewModelScope.launch {
-            deleteCategoriesUseCase.stateFlow.collect {
+            deleteCategoriesUseCase.stateFlow.collectLatest {
                 when (it) {
                     DeleteCategoryResult.WAITING -> {
                         // Nothing

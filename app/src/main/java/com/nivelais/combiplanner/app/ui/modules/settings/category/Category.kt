@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
-import com.nivelais.combiplanner.app.ui.modules.category.picker.CategoryPicker
 import com.nivelais.combiplanner.app.ui.modules.category.picker.StatelessCategoriesPicker
 import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
 import com.nivelais.combiplanner.domain.entities.Category

@@ -3,7 +3,10 @@ package com.nivelais.combiplanner.app.ui.modules.task.entry
 import androidx.compose.runtime.mutableStateOf
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.TaskEntry
-import com.nivelais.combiplanner.domain.usecases.task.entry.*
+import com.nivelais.combiplanner.domain.usecases.task.entry.DeleteEntryParams
+import com.nivelais.combiplanner.domain.usecases.task.entry.DeleteEntryUseCase
+import com.nivelais.combiplanner.domain.usecases.task.entry.UpdateEntryParams
+import com.nivelais.combiplanner.domain.usecases.task.entry.UpdateEntryUseCase
 import org.koin.core.scope.inject
 
 /**
@@ -17,7 +20,6 @@ class TaskEntryViewModel(
 ) : GenericViewModel() {
 
     // Use cases to create, update or delete our task
-    private val createEntryUseCase: CreateEntryUseCase by inject()
     private val updateEntryUseCase: UpdateEntryUseCase by inject()
     private val deleteEntryUseCase: DeleteEntryUseCase by inject()
 
@@ -32,6 +34,9 @@ class TaskEntryViewModel(
         deleteEntryUseCase.run(DeleteEntryParams(entryId = taskEntry.id))
     }
 
+    /**
+     * When the name of the task entry is changed
+     */
     fun onNameChange(name: String) {
         nameState.value = name
         updateEntryUseCase.run(
@@ -42,6 +47,9 @@ class TaskEntryViewModel(
         )
     }
 
+    /**
+     * When the is done state of the entry is changed
+     */
     fun onIsDoneChanged(isDone: Boolean) {
         isDoneState.value = isDone
         updateEntryUseCase.run(
@@ -52,12 +60,7 @@ class TaskEntryViewModel(
         )
     }
 
-    fun updateEntry() {
-
-    }
-
     override fun clearUseCases() {
-        createEntryUseCase.clear()
         updateEntryUseCase.clear()
         deleteEntryUseCase.clear()
     }

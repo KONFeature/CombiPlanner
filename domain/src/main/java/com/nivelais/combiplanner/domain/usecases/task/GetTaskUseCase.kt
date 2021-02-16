@@ -22,16 +22,18 @@ class GetTaskUseCase(
             taskRepository.get(taskId)
         }
 
+        // TODO : Don't send back the entries of the task, to limit the amount of data passing by the flow
+
         task?.let {
             // If we got a task post it
             resultFlow.emit(GetTaskResult.Success(it))
         } ?: run {
             // Else post a not found status
-            resultFlow.emit(GetTaskResult.NotFound())
+            resultFlow.emit(GetTaskResult.NotFound)
         }
     }
 
-    override fun initialValue() = GetTaskResult.Loading()
+    override fun initialValue() = GetTaskResult.Loading
 }
 
 /**
@@ -45,7 +47,7 @@ data class GetTaskParams(
  * Result for this use case
  */
 sealed class GetTaskResult(val task: Task?) {
-    class Loading : GetTaskResult(null)
+    object Loading : GetTaskResult(null)
     class Success(task: Task) : GetTaskResult(task)
-    class NotFound : GetTaskResult(null)
+    object NotFound : GetTaskResult(null)
 }

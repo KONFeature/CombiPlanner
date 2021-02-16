@@ -25,35 +25,34 @@ class SaveTaskUseCase(
                 taskRepository.update(
                     initialId,
                     params.name,
-                    params.category,
-                    params.entries
+                    params.category
                 )
+                resultFlow.emit(SaveTaskResult.Success(initialId))
                 log.info("Task updated with success {}")
             } ?: run {
                 // Creation operation
                 val createdTask = taskRepository.create(
                     params.name,
-                    params.category,
-                    params.entries
+                    params.category
                 )
+                resultFlow.emit(SaveTaskResult.Success(createdTask.id))
                 log.info("New task created {}", createdTask)
             }
-            resultFlow.emit(SaveTaskResult.SUCCESS)
         } catch (exception: SaveTaskException) {
             log.warn("Error when saving the task", exception)
             when(exception) {
                 is SaveTaskException.InvalidNameException ->
-                    resultFlow.emit(SaveTaskResult.INVALID_NAME)
+                    resultFlow.emit(SaveTaskResult.InvalidName)
                 is SaveTaskException.DuplicateNameException ->
-                    resultFlow.emit(SaveTaskResult.DUPLICATE_NAME)
+                    resultFlow.emit(SaveTaskResult.DuplicateName)
             }
         } catch (exception: Throwable) {
             log.error("Unknown error occurred when saving the task", exception)
-            resultFlow.emit(SaveTaskResult.ERROR)
+            resultFlow.emit(SaveTaskResult.Error)
         }
     }
 
-    override fun initialValue() = SaveTaskResult.WAITING
+    override fun initialValue() = SaveTaskResult.Waiting
 }
 
 /**
@@ -62,7 +61,6 @@ class SaveTaskUseCase(
 data class SaveTaskParams(
     val id: Long?,
     val name: String,
-    val entries: List<TaskEntry>,
     val category: Category
 )
 
@@ -70,10 +68,10 @@ data class SaveTaskParams(
 /**
  * Possible result of this use case
  */
-enum class SaveTaskResult {
-    WAITING,
-    SUCCESS,
-    INVALID_NAME,
-    DUPLICATE_NAME,
-    ERROR
+sealed class SaveTaskResult {
+    object Waiting : SaveTaskResult()
+    data class Success(val taskId: Long) : SaveTaskResult()
+    object InvalidName : SaveTaskResult()
+    object DuplicateName : SaveTaskResult()
+    object Error : SaveTaskResult()
 }

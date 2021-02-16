@@ -5,6 +5,7 @@ import com.nivelais.combiplanner.domain.repositories.TaskEntryRepository
 import com.nivelais.combiplanner.domain.usecases.core.FlowableUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.map
 
@@ -20,12 +21,16 @@ class GetEntriesUseCase(
     override suspend fun execute(params: GetEntriesParams) {
         log.debug("Listening to the entries for the task with id {}", params.taskId)
         val entriesFlow = taskEntryRepository.observeForTask(params.taskId)
-        resultFlow.emitAll(entriesFlow.map { allEntries ->
-            GetEntriesResult(
-                remainingEntries = allEntries.filter { !it.isDone },
-                doneEntries = allEntries.filter { it.isDone }
-            )
-        })
+        try {
+            entriesFlow.collectLatest { allEntries ->
+                resultFlow.emit(GetEntriesResult(
+                    remainingEntries = allEntries.filter { !it.isDone },
+                    doneEntries = allEntries.filter { it.isDone }
+                ))
+            }
+        } catch(exception: Throwable) {
+            log.error("Error occured when emitting the task entries", exception)
+        }
     }
 
     override fun initialValue() = GetEntriesResult(

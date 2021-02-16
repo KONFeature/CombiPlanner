@@ -5,7 +5,6 @@ import com.nivelais.combiplanner.data.database.dao.PictureDao
 import com.nivelais.combiplanner.data.database.dao.TaskDao
 import com.nivelais.combiplanner.data.database.dao.TaskEntryDao
 import com.nivelais.combiplanner.data.database.entities.MyObjectBox
-import com.nivelais.combiplanner.data.database.mapper.CategoryDatabaseMapper
 import com.nivelais.combiplanner.data.repositories.CategoryRepositoryImpl
 import com.nivelais.combiplanner.data.repositories.TaskEntryRepositoryImpl
 import com.nivelais.combiplanner.data.repositories.TaskRepositoryImpl

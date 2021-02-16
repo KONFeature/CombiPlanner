@@ -11,6 +11,7 @@ import com.nivelais.combiplanner.domain.usecases.category.CreateCategoryParams
 import com.nivelais.combiplanner.domain.usecases.category.CreateCategoryResult
 import com.nivelais.combiplanner.domain.usecases.category.CreateCategoryUseCase
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.scope.inject
 
@@ -42,7 +43,7 @@ class CreateCategoryViewModel : GenericViewModel() {
     init {
         // Collect the value of our creation use case
         viewModelScope.launch {
-            createCategoryUseCase.stateFlow.collect {
+            createCategoryUseCase.stateFlow.collectLatest {
                 when (it) {
                     CreateCategoryResult.SUCCESS -> {
                         // If the creation is in success reset our field

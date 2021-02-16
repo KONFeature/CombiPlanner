@@ -9,9 +9,9 @@ import com.nivelais.combiplanner.app.ui.modules.settings.SettingsViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.category.CategoryViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.create_category.CreateCategoryViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.TaskViewModel
+import com.nivelais.combiplanner.app.ui.modules.task.add_entry.AddEntryViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntriesViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.entry.TaskEntryViewModel
-import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.usecases.category.CreateCategoryUseCase
 import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryUseCase
 import com.nivelais.combiplanner.domain.usecases.category.GetCategoriesUseCase
@@ -19,7 +19,10 @@ import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskUseCase
 import com.nivelais.combiplanner.domain.usecases.task.GetTaskUseCase
 import com.nivelais.combiplanner.domain.usecases.task.GetTasksUseCase
 import com.nivelais.combiplanner.domain.usecases.task.SaveTaskUseCase
-import com.nivelais.combiplanner.domain.usecases.task.entry.*
+import com.nivelais.combiplanner.domain.usecases.task.entry.CreateEntryUseCase
+import com.nivelais.combiplanner.domain.usecases.task.entry.DeleteEntryUseCase
+import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesUseCase
+import com.nivelais.combiplanner.domain.usecases.task.entry.UpdateEntryUseCase
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
@@ -43,20 +46,21 @@ val domainModule = module {
         scoped { SaveTaskUseCase(get(), get()) }
         scoped { GetTaskUseCase(get(), get()) }
         scoped { DeleteTaskUseCase(get(), get()) }
-        scoped { CreateEntryUseCase(get(), get()) }
     }
     scope<TaskEntriesViewModel> {
         scoped { viewModelCoroutineScope() }
         scoped { GetEntriesUseCase(get(), get()) }
-        scoped { CreateEntryUseCase(get(), get()) }
         scoped { UpdateEntryUseCase(get(), get()) }
         scoped { DeleteEntryUseCase(get(), get()) }
     }
     scope<TaskEntryViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { CreateEntryUseCase(get(), get()) }
         scoped { UpdateEntryUseCase(get(), get()) }
         scoped { DeleteEntryUseCase(get(), get()) }
+    }
+    scope<AddEntryViewModel> {
+        scoped { viewModelCoroutineScope() }
+        scoped { CreateEntryUseCase(get(), get()) }
     }
 
     // Settings part

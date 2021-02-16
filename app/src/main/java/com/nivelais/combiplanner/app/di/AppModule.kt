@@ -7,6 +7,7 @@ import com.nivelais.combiplanner.app.ui.modules.settings.SettingsViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.category.CategoryViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.create_category.CreateCategoryViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.TaskViewModel
+import com.nivelais.combiplanner.app.ui.modules.task.add_entry.AddEntryViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntriesViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.entry.TaskEntryViewModel
 import com.nivelais.combiplanner.domain.entities.Category
@@ -31,7 +32,8 @@ val appModule = module {
 
     // Task
     viewModel { TaskViewModel() }
-    viewModel { (taskId: Long?) -> TaskEntriesViewModel(taskId = taskId) }
+    viewModel { TaskEntriesViewModel() }
+    viewModel { AddEntryViewModel() }
     factory { (taskEntry: TaskEntry) -> TaskEntryViewModel(taskEntry = taskEntry) }
 
     // Category picker

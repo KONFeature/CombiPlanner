@@ -1,11 +1,9 @@
 package com.nivelais.combiplanner.app.ui.modules.task
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,10 +12,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.category.picker.CategoryPicker
-import com.nivelais.combiplanner.app.ui.modules.task.entries.AddEntryLine
+import com.nivelais.combiplanner.app.ui.modules.task.add_entry.AddEntryLine
 import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntries
 import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskResult
-import com.nivelais.combiplanner.domain.usecases.task.SaveTaskResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
@@ -31,11 +28,11 @@ fun TaskPage(
 ) {
     DisposableEffect(taskId) {
         // Load the initial task
-        viewModel.getInitialTask(taskId)
+        viewModel.loadInitialTask(taskId)
 
         onDispose {
             // If the user exit directly dispose this job
-            viewModel.disposeGetTaskJob()
+            viewModel.disposeLoadInitialTask()
         }
     }
 
@@ -46,13 +43,6 @@ fun TaskPage(
         return
     }
 
-    // The state of the save process
-    val saveState = viewModel.saveFlow.collectAsState()
-    if (saveState.value == SaveTaskResult.SUCCESS) {
-        // If the save is in success we go back
-        navController.popBackStack()
-    }
-
     // The state of the delete process
     val deleteState = viewModel.deleteFlow.collectAsState()
     if (deleteState.value == DeleteTaskResult.SUCCESS) {
@@ -60,11 +50,14 @@ fun TaskPage(
         navController.popBackStack()
     }
 
-    val errorRes by remember { viewModel.errorResState }
-    val isNameError by remember { viewModel.isNameInErrorState }
+    // The state of the ressource for the error occured (if any)
+    val errorTextRessource by remember { viewModel.errorResState }
 
     // The state for the name and category of this task
     var name by remember { viewModel.nameState }
+
+    // The state for our current task id
+    val currentTaskId by remember { viewModel.idState }
 
     Column(
         modifier = Modifier
@@ -79,15 +72,13 @@ fun TaskPage(
             NameInput(
                 modifier = Modifier.weight(1f),
                 name = name,
-                isError = isNameError,
-                onNameChange = { name = it })
-            Spacer(modifier = Modifier.padding(8.dp))
-            // Save button
-            IconButton(onClick = { viewModel.save() }) {
-                Icon(Icons.Default.Save, "Save the changes")
-            }
+                isError = errorTextRessource != null,
+                onNameChange = {
+                    name = it
+                    viewModel.save()
+                })
             // Delete button if that's not a new task
-            if (viewModel.initialTaskId != null) {
+            if (currentTaskId != null) {
                 Spacer(modifier = Modifier.padding(8.dp))
                 IconButton(onClick = { viewModel.delete() }) {
                     Icon(Icons.Default.Delete, "Delete this task")
@@ -97,7 +88,7 @@ fun TaskPage(
         Spacer(modifier = Modifier.padding(8.dp))
 
         // If we got an error display it
-        errorRes?.let {
+        errorTextRessource?.let {
             Text(
                 text = stringResource(id = it),
                 style = MaterialTheme.typography.body1,
@@ -105,64 +96,34 @@ fun TaskPage(
             )
         }
 
-
         // The entries for our task (only if we got a task in the database)
         TaskEntries(
-            taskId = viewModel.idState.value,
+            taskId = currentTaskId,
             header = {
-                apply {
-                    // Category selection
-                    item {
-                        Text(
-                            text = stringResource(id = R.string.task_category_title),
-                            style = MaterialTheme.typography.body2
-                        )
-                        Spacer(modifier = Modifier.padding(8.dp))
-                        CategoryPicker(
-                            initialCategory = viewModel.categoryState.value,
-                            onCategoryPicked = {
-                                viewModel.categoryState.value = it
-                            })
-                        Spacer(modifier = Modifier.padding(8.dp))
-                    }
+                // Category selection
+                item {
+                    Text(
+                        text = stringResource(id = R.string.task_category_title),
+                        style = MaterialTheme.typography.body2
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    CategoryPicker(
+                        initialCategory = viewModel.categoryState.value,
+                        onCategoryPicked = {
+                            viewModel.categoryState.value = it
+                            viewModel.save()
+                        })
+                    Spacer(modifier = Modifier.padding(8.dp))
                 }
             },
             footer = {
-                apply {
-                    // Item to create a new task
-                    item {
-                        Spacer(modifier = Modifier.padding(16.dp))
-                        AddEntryLine(onAddClick = {
-                            // TODO : Handle this event
-                            viewModel.addEntry()
-                        })
-                    }
+                // Item to create a new task
+                item {
+                    Spacer(modifier = Modifier.padding(16.dp))
+                    AddEntryLine(taskId = currentTaskId)
                 }
             }
         )
-
-
-//        LazyColumn {
-//
-//            // Category selection
-//            item {
-//                Text(
-//                    text = stringResource(id = R.string.task_category_title),
-//                    style = MaterialTheme.typography.body2
-//                )
-//                Spacer(modifier = Modifier.padding(8.dp))
-//                CategoryPicker(
-//                    onCategoryPicked = {
-//                        viewModel.categoryState.value = it
-//                    })
-//                Spacer(modifier = Modifier.padding(8.dp))
-//            }
-//
-//            // The entries for our task (only if we got a task in the database)
-//            viewModel.idState.value?.let { taskId ->
-//                taskEntries(taskId = taskId)
-//            }
-//        }
     }
 }
 

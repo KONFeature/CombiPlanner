@@ -1,19 +1,17 @@
 package com.nivelais.combiplanner.app.ui.modules.task.entries
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
+import androidx.lifecycle.viewModelScope
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.TaskEntry
-import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskUseCase
-import com.nivelais.combiplanner.domain.usecases.task.GetTaskUseCase
-import com.nivelais.combiplanner.domain.usecases.task.SaveTaskUseCase
-import com.nivelais.combiplanner.domain.usecases.task.entry.*
-import kotlinx.coroutines.flow.Flow
+import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesParams
+import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesResult
+import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesUseCase
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.core.scope.inject
 
 /**
@@ -22,25 +20,53 @@ import org.koin.core.scope.inject
  * TODO : Koin injection for this view model ? parameter injection ?
  * TODO : How to fetch the updated list of entries from the parent view model ?
  */
-class TaskEntriesViewModel(
-    taskId: Long?
-) : GenericViewModel() {
+class TaskEntriesViewModel : GenericViewModel() {
 
     // Use case to get our entities from the entry id
     private val getEntriesUseCase: GetEntriesUseCase by inject()
 
-    init {
-        // When we launch this view load the entries for the given task id
-        taskId?.let {
-            // TODO : Handle no task id
-            getEntriesUseCase.run(GetEntriesParams(taskId = it))
+    // Access to the entries associated with our task
+    val entriesState : StateFlow<GetEntriesResult>
+        get() = getEntriesUseCase.stateFlow
+
+    /**
+     * The job that listen on the task entries
+     */
+    private var entriesListenerJob: Job? = null
+
+    val doneEntries: SnapshotStateList<TaskEntry> = mutableStateListOf()
+    val remainingEntries: SnapshotStateList<TaskEntry> = mutableStateListOf()
+
+    /**
+     * Listen to the task entries
+     */
+    fun listenToEntries(taskId: Long?) {
+        // Setup the listener
+        entriesListenerJob = viewModelScope.launch {
+            getEntriesUseCase.stateFlow.collectLatest { getEntriesResult ->
+                log.info(
+                    "Received {} and {} entries to display",
+                    getEntriesResult.remainingEntries.size,
+                    getEntriesResult.doneEntries.size
+                )
+
+                // TODO : Cleaner way to do this (HashMap with id as param and then comparaison for perf ?)
+                doneEntries.clear()
+                doneEntries.addAll(getEntriesResult.doneEntries)
+                remainingEntries.clear()
+                remainingEntries.addAll(getEntriesResult.remainingEntries)
+            }
         }
+        // Run the use case
+        taskId?.let { getEntriesUseCase.run(GetEntriesParams(taskId = it)) }
     }
 
     /**
-     * All the entries in this view
+     * Cancel the listener on the task entries
      */
-    val entriesState: StateFlow<GetEntriesResult> = getEntriesUseCase.stateFlow
+    fun disposeEntriesListener() {
+        entriesListenerJob?.cancel()
+    }
 
     override fun clearUseCases() {
         getEntriesUseCase.clear()

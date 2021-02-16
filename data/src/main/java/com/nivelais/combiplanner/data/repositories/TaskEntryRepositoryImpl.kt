@@ -31,23 +31,29 @@ class TaskEntryRepositoryImpl(
         isDone: Boolean,
         taskDependencies: List<Task>
     ): TaskEntry {
-        // Create the new task entry and save it
-        val entity = TaskEntryEntity(
+        // Create our new entity
+        val taskEntry = TaskEntryEntity(
             name = name,
             isDone = isDone
         )
-        taskEntryDao.save(entity)
+
+        // Find the task we need to associated it with
+        taskDao.get(taskId)?.apply {
+            // If we got the task, run all the db in a transaction
+            taskEntryDao.boxStore.runInTx {
+                // Persist the task entry
+                taskEntryDao.save(taskEntry)
+
+                // Link it to the task
+                entries.add(taskEntry)
+                entries.applyChangesToDb()
+            }
+        }
 
         // TODO : Handle the task dependencies
 
-        // Link it to our task
-        taskDao.get(taskId)?.apply {
-            entries.add(entity)
-            entries.applyChangesToDb()
-        }
-
         // Return our fresh entity
-        return taskEntryDatabaseMapper.entityToData(entity)
+        return taskEntryDatabaseMapper.entityToData(taskEntry)
     }
 
     /**
