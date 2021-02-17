@@ -38,7 +38,9 @@ fun HomePage(
             .fillMaxWidth()
     ) {
         // Bar with the different possible helper
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = stringResource(id = R.string.home_task_title),
                 style = MaterialTheme.typography.h4,
@@ -62,7 +64,7 @@ fun HomePage(
                 // Category picker
                 Text(
                     text = stringResource(id = R.string.home_category_title),
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.h6
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
                 CategoryPicker(

@@ -1,5 +1,6 @@
 package com.nivelais.combiplanner.app.ui.modules.settings
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,6 +44,7 @@ private fun Categories(
                     text = stringResource(id = R.string.settings_part_category),
                     style = MaterialTheme.typography.h4
                 )
+                Spacer(modifier = Modifier.padding(8.dp))
             }
             items(items = categories) { category ->
                 CategoryCard(category = category, categories = categories)

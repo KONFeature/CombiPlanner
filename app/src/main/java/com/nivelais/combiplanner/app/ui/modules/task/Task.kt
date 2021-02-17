@@ -1,9 +1,12 @@
 package com.nivelais.combiplanner.app.ui.modules.task
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.category.picker.CategoryPicker
-import com.nivelais.combiplanner.app.ui.modules.task.add_entry.AddEntryLine
+import com.nivelais.combiplanner.app.ui.modules.task.add_entry.AddEntry
 import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntries
 import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -59,6 +62,9 @@ fun TaskPage(
     // The state for our current task id
     val currentTaskId by remember { viewModel.idState }
 
+    // The state to display the category picker or not
+    var isCategoryPickerDisplayed by remember { viewModel.isCategoryPickerDisplayedState }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -101,29 +107,56 @@ fun TaskPage(
             taskId = currentTaskId,
             header = {
                 // Category selection
+                categoryPickerHeader(
+                    isDroppedDown = isCategoryPickerDisplayed,
+                    onDropDownClicked = {
+                        isCategoryPickerDisplayed = !isCategoryPickerDisplayed
+                    }
+                )
+                if(isCategoryPickerDisplayed) {
+                    item {
+                        Spacer(modifier = Modifier.padding(8.dp))
+                        CategoryPicker(
+                            initialCategory = viewModel.categoryState.value,
+                            onCategoryPicked = {
+                                viewModel.categoryState.value = it
+                                viewModel.save()
+                            })
+                    }
+                }
                 item {
-                    Text(
-                        text = stringResource(id = R.string.task_category_title),
-                        style = MaterialTheme.typography.body2
-                    )
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    CategoryPicker(
-                        initialCategory = viewModel.categoryState.value,
-                        onCategoryPicked = {
-                            viewModel.categoryState.value = it
-                            viewModel.save()
-                        })
-                    Spacer(modifier = Modifier.padding(8.dp))
+                    Divider(thickness = 1.dp, modifier = Modifier.padding(8.dp))
                 }
             },
             footer = {
                 // Item to create a new task
                 item {
-                    Spacer(modifier = Modifier.padding(16.dp))
-                    AddEntryLine(taskId = currentTaskId)
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    AddEntry(taskId = currentTaskId)
                 }
             }
         )
+    }
+}
+
+private fun LazyListScope.categoryPickerHeader(
+    isDroppedDown: Boolean,
+    onDropDownClicked: () -> Unit
+) {
+    item {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Text(
+                text = stringResource(id = R.string.task_category_title),
+                style = MaterialTheme.typography.h6,
+                modifier = Modifier.weight(1f)
+            )
+            IconButton(onClick = onDropDownClicked) {
+                val icon = if(isDroppedDown) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore
+                Icon(icon, "Toggle the category picker visibility")
+            }
+        }
     }
 }
 

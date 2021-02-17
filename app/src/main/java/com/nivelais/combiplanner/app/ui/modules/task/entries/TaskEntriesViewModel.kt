@@ -56,6 +56,10 @@ class TaskEntriesViewModel : GenericViewModel() {
                 remainingEntries.clear()
                 remainingEntries.addAll(getEntriesResult.remainingEntries)
             }
+        }.apply {
+            invokeOnCompletion {
+                log.info("Completion called because of", it)
+            }
         }
         // Run the use case
         taskId?.let { getEntriesUseCase.run(GetEntriesParams(taskId = it)) }

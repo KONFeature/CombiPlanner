@@ -27,7 +27,7 @@ class TaskViewModel : GenericViewModel() {
     private val deleteTaskUseCase: DeleteTaskUseCase by inject()
 
     /**
-     * Value to know if we are currently loading the initial task
+     * State used to know if we are currently loading the initial task
      */
     val isLoadingState = mutableStateOf(true)
 
@@ -36,6 +36,11 @@ class TaskViewModel : GenericViewModel() {
      */
     var idState: MutableState<Long?> = mutableStateOf(null)
         private set
+
+    /**
+     * State used to know if the category picker is displayed or not
+     */
+    val isCategoryPickerDisplayedState = mutableStateOf(true)
 
     /*
      * The states for the name, category and entries of the current task
@@ -89,6 +94,8 @@ class TaskViewModel : GenericViewModel() {
         log.info("Loading task for the id '$id'")
         // Convert not found id to null
         val usableId = if (id == -1L || id == 0L) null else id
+        // Hide the category picker if the value isn't null
+        isCategoryPickerDisplayedState.value = usableId == null
         // Backup the initial task id
         idState.value = usableId
         // Observe the get task flow

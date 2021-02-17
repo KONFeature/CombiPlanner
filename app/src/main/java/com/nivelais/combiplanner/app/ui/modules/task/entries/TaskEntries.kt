@@ -64,7 +64,7 @@ private fun LazyListScope.taskEntriesPart(
     item {
         Text(
             text = stringResource(id = titleRes),
-            style = MaterialTheme.typography.body2
+            style = MaterialTheme.typography.subtitle1
         )
     }
 
