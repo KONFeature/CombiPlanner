@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
@@ -74,6 +75,11 @@ fun TaskPage(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Button to go back
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(Icons.Filled.ArrowBack, "Go back to the previous activity")
+            }
+            Spacer(modifier = Modifier.padding(8.dp))
             // Name of the task
             NameInput(
                 modifier = Modifier.weight(1f),

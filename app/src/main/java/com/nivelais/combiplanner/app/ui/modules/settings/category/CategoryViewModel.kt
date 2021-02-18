@@ -10,7 +10,6 @@ import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryParams
 import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryResult
 import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryUseCase
 import com.nivelais.combiplanner.domain.usecases.category.DeletionStrategy
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.scope.inject
@@ -20,10 +19,14 @@ class CategoryViewModel : GenericViewModel() {
     // Use case to remove a given category
     private val deleteCategoriesUseCase: DeleteCategoryUseCase by inject()
 
-    // Is the deletion strategy required
-    val deletionStrategyRequiredState = mutableStateOf(false)
+    /**
+     * State telling us if the deletion strategy is required for the deletion or not
+     */
+    val isDeletionStrategyRequiredState = mutableStateOf(false)
 
-    // If we got any error during the deletion put it here
+    /**
+     * If an error occurred during the deletion we load the error ressources here
+     */
     val deletionErrorResState: MutableState<Int?> = mutableStateOf(null)
 
     // State for the current category selected (for the migration strategy)
@@ -32,7 +35,24 @@ class CategoryViewModel : GenericViewModel() {
     // The current strategy
     val selectedDeletionStrategyState: MutableState<DeletionStrategy?> = mutableStateOf(null)
 
-    init {
+    /**
+     * Call the use case to delete a category
+     */
+    fun deleteCategory(category: Category) {
+        listenToDeletion()
+        deleteCategoriesUseCase.run(
+            DeleteCategoryParams(
+                id = category.id,
+                strategy = selectedDeletionStrategyState.value
+            )
+        )
+    }
+
+    /**
+     * Listen to the deletion result of the category and update the view accordingly
+     */
+    private fun listenToDeletion() {
+
         // Collect the value of our deletion use case
         viewModelScope.launch {
             deleteCategoriesUseCase.stateFlow.collectLatest {
@@ -43,19 +63,19 @@ class CategoryViewModel : GenericViewModel() {
                     DeleteCategoryResult.SUCCESS -> {
                         // Reset our different state
                         deletionErrorResState.value = null
-                        deletionStrategyRequiredState.value = false
+                        isDeletionStrategyRequiredState.value = false
                     }
                     DeleteCategoryResult.STRATEGY_REQUIRED -> {
                         deletionErrorResState.value = R.string.category_delete_error_strategy_required
-                        deletionStrategyRequiredState.value = true
+                        isDeletionStrategyRequiredState.value = true
                     }
                     DeleteCategoryResult.INVALID_TARGET_CATEGORY -> {
                         deletionErrorResState.value = R.string.category_delete_error_invalid_target_category
-                        deletionStrategyRequiredState.value = true
+                        isDeletionStrategyRequiredState.value = true
                     }
                     DeleteCategoryResult.ERROR -> {
                         deletionErrorResState.value = R.string.category_delete_error
-                        deletionStrategyRequiredState.value = true
+                        isDeletionStrategyRequiredState.value = true
                     }
                 }
             }
@@ -63,15 +83,13 @@ class CategoryViewModel : GenericViewModel() {
     }
 
     /**
-     * Call the use case to delete a category
+     * Dismiss the deletion strategy picker dialog
      */
-    fun deleteCategory(category: Category) {
-        deleteCategoriesUseCase.run(
-            DeleteCategoryParams(
-                id = category.id,
-                strategy = selectedDeletionStrategyState.value
-            )
-        )
+    fun dismissDeletionStrategyDialog() {
+        isDeletionStrategyRequiredState.value = false
+        deletionErrorResState.value = null
+        selectedDeletionStrategyState.value = null
+        selectedCategoryState.value = null
     }
 
     override fun clearUseCases() {
