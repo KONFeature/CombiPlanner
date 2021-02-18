@@ -2,13 +2,18 @@ package com.nivelais.combiplanner.app.ui.modules.category.picker
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.lifecycle.viewModelScope
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.usecases.category.GetCategoriesUseCase
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.core.scope.inject
 
 class CategoryPickerViewModel(
-    private val initialCategory: Category? = null
+    initialCategory: Category? = null
 ) : GenericViewModel() {
 
     // View model used to get all the categories
@@ -18,13 +23,23 @@ class CategoryPickerViewModel(
     val selectedCategoryState: MutableState<Category?> = mutableStateOf(initialCategory)
 
     /**
-     * State flow of our categories
+     * The list of categories displayed in our view
      */
-    val categoriesFlow = getCategoriesUseCase.stateFlow
+    val categories: SnapshotStateList<Category> = SnapshotStateList()
+
+    /**
+     * Job that listen on our categories
+     */
+    private var categoriesListenerJob: Job? = null
 
     init {
         // Load all the categories
-        getCategoriesUseCase.run(Unit)
+        categoriesListenerJob = viewModelScope.launch {
+            getCategoriesUseCase.launch(Unit).collect {
+                categories.clear()
+                categories.addAll(it)
+            }
+        }
     }
 
     /**
@@ -39,6 +54,6 @@ class CategoryPickerViewModel(
     }
 
     override fun clearUseCases() {
-        getCategoriesUseCase.clear()
+        categoriesListenerJob?.cancel()
     }
 }

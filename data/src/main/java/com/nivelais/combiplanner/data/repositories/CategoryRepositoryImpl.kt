@@ -45,7 +45,7 @@ class CategoryRepositoryImpl(
     /**
      * @inheritDoc
      */
-    override suspend fun observeAll(): Flow<List<Category>> =
+    override fun observeAll(): Flow<List<Category>> =
         categoryDao.getAll()
             .map { entities ->
                 return@map categoryDatabaseMapper.entitiesToDatas(entities)

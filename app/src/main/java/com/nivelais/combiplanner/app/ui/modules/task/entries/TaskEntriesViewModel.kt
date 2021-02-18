@@ -6,10 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesParams
-import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesResult
 import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesUseCase
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.scope.inject
@@ -22,12 +20,12 @@ import org.koin.core.scope.inject
  */
 class TaskEntriesViewModel : GenericViewModel() {
 
+    init {
+        log.error("Intit 123456789")
+    }
+
     // Use case to get our entities from the entry id
     private val getEntriesUseCase: GetEntriesUseCase by inject()
-
-    // Access to the entries associated with our task
-    val entriesState : StateFlow<GetEntriesResult>
-        get() = getEntriesUseCase.stateFlow
 
     /**
      * The job that listen on the task entries
@@ -43,26 +41,29 @@ class TaskEntriesViewModel : GenericViewModel() {
     fun listenToEntries(taskId: Long?) {
         // Setup the listener
         entriesListenerJob = viewModelScope.launch {
-            getEntriesUseCase.stateFlow.collectLatest { getEntriesResult ->
-                log.info(
-                    "Received {} and {} entries to display",
-                    getEntriesResult.remainingEntries.size,
-                    getEntriesResult.doneEntries.size
-                )
+            // Run the use case
+            taskId?.let {
+                getEntriesUseCase.launch(GetEntriesParams(taskId = it))
+                    .collectLatest { getEntriesResult ->
+                        log.info(
+                            "Received {} and {} entries to display",
+                            getEntriesResult.remainingEntries.size,
+                            getEntriesResult.doneEntries.size
+                        )
 
-                // TODO : Cleaner way to do this (HashMap with id as param and then comparaison for perf ?)
-                doneEntries.clear()
-                doneEntries.addAll(getEntriesResult.doneEntries)
-                remainingEntries.clear()
-                remainingEntries.addAll(getEntriesResult.remainingEntries)
+                        // TODO : Cleaner way to do this (HashMap with id as param and then comparaison for perf ?)
+                        doneEntries.clear()
+                        doneEntries.addAll(getEntriesResult.doneEntries)
+                        remainingEntries.clear()
+                        remainingEntries.addAll(getEntriesResult.remainingEntries)
+
+                    }
             }
         }.apply {
             invokeOnCompletion {
                 log.info("Completion called because of", it)
             }
         }
-        // Run the use case
-        taskId?.let { getEntriesUseCase.run(GetEntriesParams(taskId = it)) }
     }
 
     /**
@@ -73,6 +74,5 @@ class TaskEntriesViewModel : GenericViewModel() {
     }
 
     override fun clearUseCases() {
-        getEntriesUseCase.clear()
     }
 }

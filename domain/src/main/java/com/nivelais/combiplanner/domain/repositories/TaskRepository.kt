@@ -39,7 +39,7 @@ interface TaskRepository {
     /**
      * Get all the task (For a given category or not)
      */
-    suspend fun observeAll(category: Category?): Flow<List<Task>>
+    fun observeAll(category: Category?): Flow<List<Task>>
 
     /**
      * Delete a list of tasks from a category id

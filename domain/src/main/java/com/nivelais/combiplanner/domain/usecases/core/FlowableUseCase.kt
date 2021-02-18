@@ -33,8 +33,8 @@ abstract class FlowableUseCase<in Params, Result> : CoroutineScope {
      * The inter state flow the child use case will update
      */
     protected val resultFlow: MutableSharedFlow<Result> = MutableSharedFlow(
-        replay = 5,
-        extraBufferCapacity = 10,
+        replay = 1,
+        extraBufferCapacity = 3,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
@@ -42,7 +42,7 @@ abstract class FlowableUseCase<in Params, Result> : CoroutineScope {
      * Convert the result flow to a state flow listenable by the view model
      */
     val stateFlow: StateFlow<Result>
-        get() = resultFlow.stateIn(observingScope, SharingStarted.WhileSubscribed(), initialValue())
+        get() = resultFlow.stateIn(observingScope, SharingStarted.Lazily, initialValue())
 
     /**
      * Get the initial value when this use case is launched

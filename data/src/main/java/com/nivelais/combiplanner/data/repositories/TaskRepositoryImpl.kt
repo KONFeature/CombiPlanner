@@ -95,7 +95,7 @@ class TaskRepositoryImpl(
     /**
      * @inheritDoc
      */
-    override suspend fun observeAll(category: Category?): Flow<List<Task>> {
+    override fun observeAll(category: Category?): Flow<List<Task>> {
         // Get the right flow
         val entitiesFlow = category?.let {
             taskDao.observeForCategory(it.id)

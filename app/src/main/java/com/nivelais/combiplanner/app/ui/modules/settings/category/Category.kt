@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -24,8 +27,7 @@ fun CategoryCard(
     category: Category,
     categories: List<Category>
 ) {
-
-    var errorRes by remember { viewModel.deletionErrorResState }
+    val errorRes by remember { viewModel.deletionErrorResState }
 
     CategoryBox {
         // The base content of the category card
@@ -44,8 +46,9 @@ fun CategoryCard(
                 color = MaterialTheme.colors.error
             )
         }
-        // If we need to specify a migration strategy do it
-        var isStrategyToSpecify by remember { viewModel.isDeletionStrategyRequiredState }
+
+        // If we need to specify a migration strategy show the dialog
+        val isStrategyToSpecify by remember { viewModel.isDeletionStrategyRequiredState }
         if (isStrategyToSpecify) {
             MigrationStrategyAlert(
                 viewModel = viewModel,
@@ -115,6 +118,62 @@ private fun MigrationStrategyAlert(
     var deletionStrategy by remember { viewModel.selectedDeletionStrategyState }
 
     // TODO : Otpimize that part
+    MigrationStrategyAlertBox(
+        onDismiss = onDismiss,
+        onDeleteClicked = onDeleteClicked
+    ) {
+        // If we got an error display it
+        errorRes?.let {
+            Spacer(modifier = Modifier.padding(8.dp))
+            Text(
+                text = stringResource(id = it),
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.error
+            )
+        }
+        // If we need to specify a migration strategy do it
+        if (isStrategyToSpecify) {
+            Spacer(modifier = Modifier.padding(8.dp))
+            Text(
+                text = stringResource(id = R.string.category_deletion_strategy_picker),
+                style = MaterialTheme.typography.body2
+            )
+            Spacer(modifier = Modifier.padding(8.dp))
+            DeleteStrategyPicker(
+                currentStrategy = deletionStrategy,
+                onStrategyPicked = { deletionStrategy = it })
+        }
+        // If the current strategy is category then show the category picker
+        if (isStrategyToSpecify && deletionStrategy is DeletionStrategy.Migrate) {
+            // Category picker
+            Spacer(modifier = Modifier.padding(8.dp))
+            Text(
+                text = stringResource(id = R.string.category_categories_picker),
+                style = MaterialTheme.typography.body2
+            )
+            Spacer(modifier = Modifier.padding(8.dp))
+            StatelessCategoriesPicker(
+                categories = categories,
+                categorySelected = viewModel.selectedCategoryState.value,
+                onCategoryPicked = {
+                    // Update the selected category and the migration target
+                    viewModel.selectedCategoryState.value = it
+                    (deletionStrategy as DeletionStrategy.Migrate).newCategoryId = it.id
+                }
+            )
+        }
+    }
+}
+
+/**
+ * Alert box displayed when a deletion strategy is required
+ */
+@Composable
+private fun MigrationStrategyAlertBox(
+    onDismiss: () -> Unit,
+    onDeleteClicked: () -> Unit,
+    content: @Composable() (ColumnScope.() -> Unit)
+) {
     AlertDialog(
         onDismissRequest = onDismiss,
         buttons = {
@@ -137,48 +196,7 @@ private fun MigrationStrategyAlert(
             }
         },
         text = {
-            Column {
-                // If we got an error display it
-                errorRes?.let {
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Text(
-                        text = stringResource(id = it),
-                        style = MaterialTheme.typography.body1,
-                        color = MaterialTheme.colors.error
-                    )
-                }
-                // If we need to specify a migration strategy do it
-                if (isStrategyToSpecify) {
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Text(
-                        text = stringResource(id = R.string.category_deletion_strategy_picker),
-                        style = MaterialTheme.typography.body2
-                    )
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    DeleteStrategyPicker(
-                        currentStrategy = deletionStrategy,
-                        onStrategyPicked = { deletionStrategy = it })
-                }
-                // If the current strategy is category then show the category picker
-                if (isStrategyToSpecify && deletionStrategy is DeletionStrategy.Migrate) {
-                    // Category picker
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Text(
-                        text = stringResource(id = R.string.category_categories_picker),
-                        style = MaterialTheme.typography.body2
-                    )
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    StatelessCategoriesPicker(
-                        categories = categories,
-                        categorySelected = viewModel.selectedCategoryState.value,
-                        onCategoryPicked = {
-                            // Update the selected category and the migration target
-                            viewModel.selectedCategoryState.value = it
-                            (deletionStrategy as DeletionStrategy.Migrate).newCategoryId = it.id
-                        }
-                    )
-                }
-            }
+            Column(content = content)
         }
     )
 }

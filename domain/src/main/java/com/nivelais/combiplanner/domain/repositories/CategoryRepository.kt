@@ -19,7 +19,7 @@ interface CategoryRepository {
     /**
      * Get all the category for a given
      */
-    suspend fun observeAll(): Flow<List<Category>>
+    fun observeAll(): Flow<List<Category>>
 
     /**
      * Delete a category

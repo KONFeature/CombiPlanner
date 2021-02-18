@@ -9,7 +9,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,20 +29,14 @@ fun CategoryPicker(
     initialCategory: Category? = null,
     onCategoryPicked: (Category?) -> Unit
 ) {
-    // Listen to the categories flow
-    viewModel.categoriesFlow
-        .collectAsState()
-        .value
-        ?.let { categories ->
-            // The flow row of our categories
-            StatelessCategoriesPicker(
-                categories = categories,
-                categorySelected = viewModel.selectedCategoryState.value,
-                onCategoryPicked = {
-                    viewModel.onCategorySelected(it)
-                    onCategoryPicked(viewModel.selectedCategoryState.value)
-                })
-        }
+    // The flow row of our categories
+    StatelessCategoriesPicker(
+        categories = viewModel.categories,
+        categorySelected = viewModel.selectedCategoryState.value,
+        onCategoryPicked = {
+            viewModel.onCategorySelected(it)
+            onCategoryPicked(viewModel.selectedCategoryState.value)
+        })
 }
 
 @Composable

@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -20,6 +19,7 @@ import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.main.Route
 import com.nivelais.combiplanner.app.ui.modules.main.navigate
 import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
+import com.nivelais.combiplanner.app.utils.safeItems
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,24 +37,13 @@ fun Tasks(
     val currentCategory by remember { categoryState }
     viewModel.fetchTasks(category = currentCategory)
 
-    val tasksState = viewModel.tasksFlow.collectAsState()
-
-    tasksState.value?.let { tasks ->
-        val orientation = AmbientConfiguration.current.orientation
-        TasksGrid(
-            tasks = tasks,
-            columnCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 4 else 2,
-            onTaskClicked = { task ->
-                navController.navigate(Route.Task(task.id))
-            })
-    } ?: run {
-        // Else display a loading indicator
-        // TODO : Shimmer effect ???
-        Text(
-            text = "Tasks are currently loading",
-            style = MaterialTheme.typography.h3
-        )
-    }
+    val orientation = AmbientConfiguration.current.orientation
+    TasksGrid(
+        tasks = viewModel.tasks,
+        columnCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 4 else 2,
+        onTaskClicked = { task ->
+            navController.navigate(Route.Task(task.id))
+        })
 }
 
 @Composable
@@ -68,7 +57,7 @@ private fun TasksGrid(
 
     // If we got value display all the task
     LazyColumn {
-        items(items = tasksChunked) { taskRow ->
+        safeItems(items = tasksChunked) { taskRow ->
             Row {
                 taskRow.forEach { task ->
                     TaskCard(

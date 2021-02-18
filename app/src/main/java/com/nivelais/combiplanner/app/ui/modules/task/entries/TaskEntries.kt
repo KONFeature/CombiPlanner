@@ -10,6 +10,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.res.stringResource
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.task.entry.TaskEntryView
+import com.nivelais.combiplanner.app.utils.safeItems
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.getViewModel
@@ -32,8 +33,6 @@ fun TaskEntries(
             viewModel.disposeEntriesListener()
         }
     }
-//    val entries = viewModel.entriesState.collectAsState()
-//    val entries = viewModel.entriesState.collectAsState()
 
     LazyColumn {
         header()
@@ -69,10 +68,8 @@ private fun LazyListScope.taskEntriesPart(
     }
 
     // Items with the task entry
-    items(count = entries.size) { index ->
+    safeItems(entries) { entry ->
         // A line with the entry name, done status and delete listener
-        entries.getOrNull(index)?.let { entry ->
-            TaskEntryView(taskEntry = entry)
-        }
+        TaskEntryView(taskEntry = entry)
     }
 }

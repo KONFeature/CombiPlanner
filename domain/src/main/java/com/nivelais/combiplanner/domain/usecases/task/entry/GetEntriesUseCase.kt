@@ -2,11 +2,9 @@ package com.nivelais.combiplanner.domain.usecases.task.entry
 
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 import com.nivelais.combiplanner.domain.repositories.TaskEntryRepository
-import com.nivelais.combiplanner.domain.usecases.core.FlowableUseCase
+import com.nivelais.combiplanner.domain.usecases.core.SimpleFlowUseCase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
@@ -15,28 +13,18 @@ import kotlinx.coroutines.flow.map
 class GetEntriesUseCase(
     override val observingScope: CoroutineScope,
     private val taskEntryRepository: TaskEntryRepository
-) : FlowableUseCase<GetEntriesParams, GetEntriesResult>() {
+) : SimpleFlowUseCase<GetEntriesParams, GetEntriesResult>() {
 
-    @OptIn(FlowPreview::class)
-    override suspend fun execute(params: GetEntriesParams) {
+    override fun execute(params: GetEntriesParams): Flow<GetEntriesResult> {
         log.debug("Listening to the entries for the task with id {}", params.taskId)
-        val entriesFlow = taskEntryRepository.observeForTask(params.taskId)
-        try {
-            entriesFlow.collectLatest { allEntries ->
-                resultFlow.emit(GetEntriesResult(
-                    remainingEntries = allEntries.filter { !it.isDone },
-                    doneEntries = allEntries.filter { it.isDone }
-                ))
-            }
-        } catch(exception: Throwable) {
-            log.error("Error occured when emitting the task entries", exception)
+        return taskEntryRepository.observeForTask(params.taskId).map { allEntries ->
+            GetEntriesResult(
+                remainingEntries = allEntries.filter { !it.isDone },
+                doneEntries = allEntries.filter { it.isDone }
+            )
         }
     }
 
-    override fun initialValue() = GetEntriesResult(
-        remainingEntries = emptyList(),
-        doneEntries = emptyList()
-    )
 }
 
 /**

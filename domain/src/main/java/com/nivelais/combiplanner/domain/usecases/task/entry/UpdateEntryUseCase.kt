@@ -17,6 +17,7 @@ class UpdateEntryUseCase(
     @OptIn(FlowPreview::class)
     override suspend fun execute(params: UpdateEntryParams) {
         log.info("Updating a task entry with param {}", params)
+        resultFlow.emit(UpdateEntryResult.WAITING)
         taskEntryRepository.update(
             id = params.entryId,
             name = params.name,

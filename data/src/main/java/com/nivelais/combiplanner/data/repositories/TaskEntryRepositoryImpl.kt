@@ -88,7 +88,7 @@ class TaskEntryRepositoryImpl(
     /**
      * @inheritDoc
      */
-    override suspend fun observeForTask(taskId: Long): Flow<List<TaskEntry>> =
+    override fun observeForTask(taskId: Long): Flow<List<TaskEntry>> =
         taskEntryDao.observeForTask(taskId = taskId).map { entities ->
             taskEntryDatabaseMapper.entitiesToDatas(entities)
         }

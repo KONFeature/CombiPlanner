@@ -58,10 +58,12 @@ fun CreateCategory(
         )
         // Create button
         Spacer(modifier = Modifier.padding(8.dp))
-        OutlinedButton(
+        Button(
             onClick = {
                 viewModel.launchCreation()
-            }) {
+            },
+            enabled = categoryName.text.isNotBlank(),
+        ) {
             Text(
                 text = stringResource(id = R.string.create_category_button)
             )

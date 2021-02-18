@@ -40,5 +40,5 @@ interface TaskEntryRepository {
     /**
      * Get all the task entry (For a given task)
      */
-    suspend fun observeForTask(taskId: Long): Flow<List<TaskEntry>>
+    fun observeForTask(taskId: Long): Flow<List<TaskEntry>>
 }
