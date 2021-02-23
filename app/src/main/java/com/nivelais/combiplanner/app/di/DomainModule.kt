@@ -43,24 +43,22 @@ val domainModule = module {
     // Task part
     scope<TaskViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { SaveTaskUseCase(get(), get()) }
-        scoped { GetTaskUseCase(get(), get()) }
-        scoped { DeleteTaskUseCase(get(), get()) }
+        scoped { SaveTaskUseCase(get()) }
+        scoped { GetTaskUseCase(get()) }
+        scoped { DeleteTaskUseCase(get()) }
     }
     scope<TaskEntriesViewModel> {
         scoped { viewModelCoroutineScope() }
         scoped { GetEntriesUseCase(get(), get()) }
-        scoped { UpdateEntryUseCase(get(), get()) }
-        scoped { DeleteEntryUseCase(get(), get()) }
     }
     scope<TaskEntryViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { UpdateEntryUseCase(get(), get()) }
-        scoped { DeleteEntryUseCase(get(), get()) }
+        scoped { UpdateEntryUseCase(get()) }
+        scoped { DeleteEntryUseCase(get()) }
     }
     scope<AddEntryViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { CreateEntryUseCase(get(), get()) }
+        scoped { CreateEntryUseCase(get()) }
     }
 
     // Settings part
@@ -70,11 +68,11 @@ val domainModule = module {
     }
     scope<CategoryViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { DeleteCategoryUseCase(get(), get(), get()) }
+        scoped { DeleteCategoryUseCase(get(), get()) }
     }
     scope<CreateCategoryViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { CreateCategoryUseCase(get(), get()) }
+        scoped { CreateCategoryUseCase(get()) }
     }
 
     // Generic widgets

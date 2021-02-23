@@ -7,13 +7,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
+import com.nivelais.combiplanner.app.utils.runAndCollect
 import com.nivelais.combiplanner.domain.usecases.category.CreateCategoryParams
 import com.nivelais.combiplanner.domain.usecases.category.CreateCategoryResult
 import com.nivelais.combiplanner.domain.usecases.category.CreateCategoryUseCase
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
 import org.koin.core.scope.inject
 
 class CreateCategoryViewModel : GenericViewModel() {
@@ -28,6 +26,9 @@ class CreateCategoryViewModel : GenericViewModel() {
     // If we got any error in the name put it here
     val nameErrorResState: MutableState<Int?> = mutableStateOf(null)
 
+    // The job that listen on the category creation use case
+    private var createCategoryListenerJob: Job? = null
+
     /**
      * All the different color available
      */
@@ -41,52 +42,47 @@ class CreateCategoryViewModel : GenericViewModel() {
         Color(0xff9E691B),
     )
 
-    init {
-        // Collect the value of our creation use case
-        viewModelScope.launch {
-            // TODO : Debug that (why first call ok, second fcked up, and again and again)
-            createCategoryUseCase.stateFlow.collect {
-                when (it) {
-                    CreateCategoryResult.SUCCESS -> {
-                        // If the creation is in success reset our field
-                        nameState.value = TextFieldValue()
-                        colorState.value = null
-                        nameErrorResState.value = null
-                    }
-                    CreateCategoryResult.INVALID_NAME_ERROR -> {
-                        // In case of an invalid name error
-                        nameErrorResState.value = R.string.create_category_error_invalid_name
-                    }
-                    CreateCategoryResult.DUPLICATE_NAME_ERROR -> {
-                        // In case of an duplicate name error
-                        nameErrorResState.value = R.string.create_category_error_duplicate_name
-                    }
-                    CreateCategoryResult.ERROR -> {
-                        // In case of an unknown error
-                        nameErrorResState.value = R.string.create_category_error
-                    }
-                    else -> {
-                        // Do nothing in the other case
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * Call to proceed to the category creation
      */
     @OptIn(ExperimentalUnsignedTypes::class)
     fun launchCreation() {
-        createCategoryUseCase.run(
+        createCategoryListenerJob?.cancel()
+        createCategoryListenerJob = createCategoryUseCase.runAndCollect(
             CreateCategoryParams(
                 name = nameState.value.text,
                 color = colorState.value?.value?.toLong()
-            )
-        )
+            ),
+            viewModelScope
+        ) { result ->
+            when (result) {
+                CreateCategoryResult.SUCCESS -> {
+                    // If the creation is in success reset our field
+                    nameState.value = TextFieldValue()
+                    colorState.value = null
+                    nameErrorResState.value = null
+                }
+                CreateCategoryResult.INVALID_NAME_ERROR -> {
+                    // In case of an invalid name error
+                    nameErrorResState.value = R.string.create_category_error_invalid_name
+                }
+                CreateCategoryResult.DUPLICATE_NAME_ERROR -> {
+                    // In case of an duplicate name error
+                    nameErrorResState.value = R.string.create_category_error_duplicate_name
+                }
+                CreateCategoryResult.ERROR -> {
+                    // In case of an unknown error
+                    nameErrorResState.value = R.string.create_category_error
+                }
+                else -> {
+                    // Do nothing in the other case
+                }
+            }
+        }
     }
 
     override fun clearUseCases() {
+        createCategoryListenerJob?.cancel()
         createCategoryUseCase.clear()
     }
 }

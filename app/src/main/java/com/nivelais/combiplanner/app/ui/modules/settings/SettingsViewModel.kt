@@ -1,13 +1,10 @@
 package com.nivelais.combiplanner.app.ui.modules.settings
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.lifecycle.viewModelScope
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.usecases.category.GetCategoriesUseCase
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.koin.core.scope.inject
 
 class SettingsViewModel : GenericViewModel() {
@@ -27,11 +24,9 @@ class SettingsViewModel : GenericViewModel() {
 
     init {
         // Load all the categories
-        categoriesListenerJob = viewModelScope.launch {
-            getCategoriesUseCase.launch(Unit).collect {
-                categories.clear()
-                categories.addAll(it)
-            }
+        categoriesListenerJob = getCategoriesUseCase.observe(Unit) {
+            categories.clear()
+            categories.addAll(it)
         }
     }
 

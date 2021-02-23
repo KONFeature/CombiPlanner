@@ -18,7 +18,6 @@ import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.category.picker.CategoryPicker
 import com.nivelais.combiplanner.app.ui.modules.task.add_entry.AddEntry
 import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntries
-import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
@@ -47,30 +46,24 @@ fun TaskPage(
         return
     }
 
-    // The state of the delete process
-    val deleteState = viewModel.deleteFlow.collectAsState()
-    if (deleteState.value == DeleteTaskResult.SUCCESS) {
+    // Check the go back state
+    val needToGoBack by remember { viewModel.isNeedGoBackState }
+    if (needToGoBack) {
         // If the delete is in success we go back
         navController.popBackStack()
     }
-
-    // The state of the ressource for the error occured (if any)
-    val errorTextRessource by remember { viewModel.errorResState }
-
-    // The state for the name and category of this task
-    var name by remember { viewModel.nameState }
-
-    // The state for our current task id
-    val currentTaskId by remember { viewModel.idState }
-
-    // The state to display the category picker or not
-    var isCategoryPickerDisplayed by remember { viewModel.isCategoryPickerDisplayedState }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        // The state for the error text, task name, id, and is category displayed
+        val errorTextResource by remember { viewModel.errorResState }
+        var name by remember { viewModel.nameState }
+        val currentTaskId by remember { viewModel.idState }
+        var isCategoryPickerDisplayed by remember { viewModel.isCategoryPickerDisplayedState }
+
         // Header part
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -84,7 +77,7 @@ fun TaskPage(
             NameInput(
                 modifier = Modifier.weight(1f),
                 name = name,
-                isError = errorTextRessource != null,
+                isError = errorTextResource != null,
                 onNameChange = {
                     name = it
                     viewModel.save()
@@ -100,7 +93,7 @@ fun TaskPage(
         Spacer(modifier = Modifier.padding(8.dp))
 
         // If we got an error display it
-        errorTextRessource?.let {
+        errorTextResource?.let {
             Text(
                 text = stringResource(id = it),
                 style = MaterialTheme.typography.body1,
@@ -119,7 +112,7 @@ fun TaskPage(
                         isCategoryPickerDisplayed = !isCategoryPickerDisplayed
                     }
                 )
-                if(isCategoryPickerDisplayed) {
+                if (isCategoryPickerDisplayed) {
                     item {
                         Spacer(modifier = Modifier.padding(8.dp))
                         CategoryPicker(
@@ -152,14 +145,14 @@ private fun LazyListScope.categoryPickerHeader(
     item {
         Row(
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             Text(
                 text = stringResource(id = R.string.task_category_title),
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier.weight(1f)
             )
             IconButton(onClick = onDropDownClicked) {
-                val icon = if(isDroppedDown) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore
+                val icon = if (isDroppedDown) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore
                 Icon(icon, "Toggle the category picker visibility")
             }
         }

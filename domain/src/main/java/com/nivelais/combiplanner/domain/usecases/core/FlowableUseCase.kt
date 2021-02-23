@@ -3,31 +3,29 @@ package com.nivelais.combiplanner.domain.usecases.core
 import com.nivelais.combiplanner.domain.common.logger
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlin.coroutines.CoroutineContext
 
 /**+
  * Simple use case that return a flowable
- * TODO : Improve that, surely a better way to handle state flow and a coroutine scoped execute function
  */
-abstract class FlowableUseCase<in Params, Result> : CoroutineScope {
+abstract class FlowableUseCase<in Param, Result> : CoroutineScope {
 
     // Logger for all of our use cases
     val log by logger
 
     /**
+     * The dispatcher that will be used for our use case
+     */
+    protected open val dispatcher = Dispatchers.IO
+
+    /**
      * The coroutine scope we will use to compute this use case
      */
     override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + Dispatchers.IO
-
-    /**
-     * The coroutine scope we will use for the state flow
-     */
-    abstract val observingScope: CoroutineScope
+        get() = SupervisorJob() + dispatcher
 
     /**
      * The inter state flow the child use case will update
@@ -39,25 +37,20 @@ abstract class FlowableUseCase<in Params, Result> : CoroutineScope {
     )
 
     /**
-     * Convert the result flow to a state flow listenable by the view model
+     * Result flow in read only mode for accessor
      */
-    val stateFlow: StateFlow<Result>
-        get() = resultFlow.stateIn(observingScope, SharingStarted.Lazily, initialValue())
-
-    /**
-     * Get the initial value when this use case is launched
-     */
-    abstract fun initialValue(): Result
+    val flow: Flow<Result>
+        get() = resultFlow.asSharedFlow()
 
     /**
      * Execute the use case
      */
-    abstract suspend fun execute(params: Params)
+    protected abstract suspend fun execute(params: Param)
 
     /**
      * Launch this use case from the scope provided as param
      */
-    fun run(params: Params) {
+    fun run(params: Param) {
         log.debug("Launching this use case with the computation scope")
         launch {
             execute(params)

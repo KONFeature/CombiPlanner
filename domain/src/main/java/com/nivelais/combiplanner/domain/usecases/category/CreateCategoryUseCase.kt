@@ -3,14 +3,12 @@ package com.nivelais.combiplanner.domain.usecases.category
 import com.nivelais.combiplanner.domain.exceptions.CreateCategoryException
 import com.nivelais.combiplanner.domain.repositories.CategoryRepository
 import com.nivelais.combiplanner.domain.usecases.core.FlowableUseCase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 
 /**
  * Use case used to create a new category
  */
 class CreateCategoryUseCase(
-    override val observingScope: CoroutineScope,
     private val categoryRepository: CategoryRepository
 ) : FlowableUseCase<CreateCategoryParams, CreateCategoryResult>() {
 
@@ -37,9 +35,6 @@ class CreateCategoryUseCase(
             resultFlow.emit(CreateCategoryResult.ERROR)
         }
     }
-
-    override fun initialValue(): CreateCategoryResult =
-        CreateCategoryResult.LOADING
 }
 
 /**
@@ -55,7 +50,6 @@ data class CreateCategoryParams(
  * Possible result of this use case
  */
 enum class CreateCategoryResult {
-    LOADING,
     SUCCESS,
     INVALID_NAME_ERROR,
     DUPLICATE_NAME_ERROR,

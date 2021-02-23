@@ -2,14 +2,11 @@ package com.nivelais.combiplanner.app.ui.modules.task.entries
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.lifecycle.viewModelScope
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesParams
 import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesUseCase
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.koin.core.scope.inject
 
 /**
@@ -19,10 +16,6 @@ import org.koin.core.scope.inject
  * TODO : How to fetch the updated list of entries from the parent view model ?
  */
 class TaskEntriesViewModel : GenericViewModel() {
-
-    init {
-        log.error("Intit 123456789")
-    }
 
     // Use case to get our entities from the entry id
     private val getEntriesUseCase: GetEntriesUseCase by inject()
@@ -39,31 +32,24 @@ class TaskEntriesViewModel : GenericViewModel() {
      * Listen to the task entries
      */
     fun listenToEntries(taskId: Long?) {
+        if (taskId == null) return
+
         // Setup the listener
-        entriesListenerJob = viewModelScope.launch {
-            // Run the use case
-            taskId?.let {
-                getEntriesUseCase.launch(GetEntriesParams(taskId = it))
-                    .collectLatest { getEntriesResult ->
-                        log.info(
-                            "Received {} and {} entries to display",
-                            getEntriesResult.remainingEntries.size,
-                            getEntriesResult.doneEntries.size
-                        )
+        entriesListenerJob =
+            getEntriesUseCase.observe(GetEntriesParams(taskId = taskId)) { getEntriesResult ->
+                log.info(
+                    "Received {} and {} entries to display",
+                    getEntriesResult.remainingEntries.size,
+                    getEntriesResult.doneEntries.size
+                )
 
-                        // TODO : Cleaner way to do this (HashMap with id as param and then comparaison for perf ?)
-                        doneEntries.clear()
-                        doneEntries.addAll(getEntriesResult.doneEntries)
-                        remainingEntries.clear()
-                        remainingEntries.addAll(getEntriesResult.remainingEntries)
+                // TODO : Cleaner way to do this (HashMap with id as param and then comparaison for perf ?)
+                doneEntries.clear()
+                doneEntries.addAll(getEntriesResult.doneEntries)
+                remainingEntries.clear()
+                remainingEntries.addAll(getEntriesResult.remainingEntries)
 
-                    }
             }
-        }.apply {
-            invokeOnCompletion {
-                log.info("Completion called because of", it)
-            }
-        }
     }
 
     /**

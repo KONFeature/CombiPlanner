@@ -5,13 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
+import com.nivelais.combiplanner.app.utils.runAndCollect
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryParams
 import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryResult
 import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryUseCase
 import com.nivelais.combiplanner.domain.usecases.category.DeletionStrategy
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
 import org.koin.core.scope.inject
 
 class CategoryViewModel : GenericViewModel() {
@@ -35,48 +35,39 @@ class CategoryViewModel : GenericViewModel() {
     // The current strategy
     val selectedDeletionStrategyState: MutableState<DeletionStrategy?> = mutableStateOf(null)
 
+    // The listener on the deletion scope
+    private var deleteListenerJob: Job? = null
+
     /**
      * Call the use case to delete a category
      */
     fun deleteCategory(category: Category) {
-        listenToDeletion()
-        deleteCategoriesUseCase.run(
+        deleteListenerJob?.cancel()
+        deleteListenerJob = deleteCategoriesUseCase.runAndCollect(
             DeleteCategoryParams(
                 id = category.id,
                 strategy = selectedDeletionStrategyState.value
-            )
-        )
-    }
-
-    /**
-     * Listen to the deletion result of the category and update the view accordingly
-     */
-    private fun listenToDeletion() {
-
-        // Collect the value of our deletion use case
-        viewModelScope.launch {
-            deleteCategoriesUseCase.stateFlow.collectLatest {
-                when (it) {
-                    DeleteCategoryResult.WAITING -> {
-                        // Nothing
-                    }
-                    DeleteCategoryResult.SUCCESS -> {
-                        // Reset our different state
-                        deletionErrorResState.value = null
-                        isDeletionStrategyRequiredState.value = false
-                    }
-                    DeleteCategoryResult.STRATEGY_REQUIRED -> {
-                        deletionErrorResState.value = R.string.category_delete_error_strategy_required
-                        isDeletionStrategyRequiredState.value = true
-                    }
-                    DeleteCategoryResult.INVALID_TARGET_CATEGORY -> {
-                        deletionErrorResState.value = R.string.category_delete_error_invalid_target_category
-                        isDeletionStrategyRequiredState.value = true
-                    }
-                    DeleteCategoryResult.ERROR -> {
-                        deletionErrorResState.value = R.string.category_delete_error
-                        isDeletionStrategyRequiredState.value = true
-                    }
+            ),
+            viewModelScope
+        ) { deletionResult ->
+            when (deletionResult) {
+                DeleteCategoryResult.SUCCESS -> {
+                    // Reset our different state
+                    deletionErrorResState.value = null
+                    isDeletionStrategyRequiredState.value = false
+                }
+                DeleteCategoryResult.STRATEGY_REQUIRED -> {
+                    deletionErrorResState.value = R.string.category_delete_error_strategy_required
+                    isDeletionStrategyRequiredState.value = true
+                }
+                DeleteCategoryResult.INVALID_TARGET_CATEGORY -> {
+                    deletionErrorResState.value =
+                        R.string.category_delete_error_invalid_target_category
+                    isDeletionStrategyRequiredState.value = true
+                }
+                DeleteCategoryResult.ERROR -> {
+                    deletionErrorResState.value = R.string.category_delete_error
+                    isDeletionStrategyRequiredState.value = true
                 }
             }
         }
@@ -93,6 +84,7 @@ class CategoryViewModel : GenericViewModel() {
     }
 
     override fun clearUseCases() {
+        deleteListenerJob?.cancel()
         deleteCategoriesUseCase.clear()
     }
 }

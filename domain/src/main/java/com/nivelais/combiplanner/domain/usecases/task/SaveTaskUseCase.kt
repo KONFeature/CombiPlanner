@@ -1,24 +1,22 @@
 package com.nivelais.combiplanner.domain.usecases.task
 
 import com.nivelais.combiplanner.domain.entities.Category
-import com.nivelais.combiplanner.domain.entities.TaskEntry
 import com.nivelais.combiplanner.domain.exceptions.SaveTaskException
 import com.nivelais.combiplanner.domain.repositories.TaskRepository
 import com.nivelais.combiplanner.domain.usecases.core.FlowableUseCase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 
 /**
  * Use case used to create a new task
  */
 class SaveTaskUseCase(
-    override val observingScope: CoroutineScope,
     private val taskRepository: TaskRepository
 ) : FlowableUseCase<SaveTaskParams, SaveTaskResult>() {
 
     @OptIn(FlowPreview::class)
     override suspend fun execute(params: SaveTaskParams) {
         log.info("Saving a new task with param {}", params)
+        resultFlow.emit(SaveTaskResult.Loading)
         try {
             params.id?.let { initialId ->
                 // Update operation
@@ -51,8 +49,6 @@ class SaveTaskUseCase(
             resultFlow.emit(SaveTaskResult.Error)
         }
     }
-
-    override fun initialValue() = SaveTaskResult.Waiting
 }
 
 /**
@@ -69,7 +65,7 @@ data class SaveTaskParams(
  * Possible result of this use case
  */
 sealed class SaveTaskResult {
-    object Waiting : SaveTaskResult()
+    object Loading : SaveTaskResult()
     data class Success(val taskId: Long) : SaveTaskResult()
     object InvalidName : SaveTaskResult()
     object DuplicateName : SaveTaskResult()

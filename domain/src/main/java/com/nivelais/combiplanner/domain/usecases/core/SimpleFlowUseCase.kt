@@ -1,10 +1,11 @@
 package com.nivelais.combiplanner.domain.usecases.core
 
 import com.nivelais.combiplanner.domain.common.logger
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.*
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 /**+
  * Simple use case that return a flowable
@@ -23,13 +24,14 @@ abstract class SimpleFlowUseCase<in Params, Result> {
     /**
      * Execute the use case
      */
-    abstract fun execute(params: Params) : Flow<Result>
+    abstract fun execute(params: Params): Flow<Result>
 
     /**
-     * Launch this use case from the scope provided as param
+     * Directly observe the result of this use case
      */
-    suspend fun launch(params: Params): StateFlow<Result> {
-        log.debug("Launching this use case with the computation scope")
-        return execute(params).stateIn(observingScope)
-    }
+    fun observe(params: Params, action: suspend (value: Result) -> Unit): Job =
+        observingScope.launch {
+            log.debug("Observing this use case with the computation scope")
+            execute(params).collect(action)
+        }
 }

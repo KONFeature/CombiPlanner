@@ -3,14 +3,12 @@ package com.nivelais.combiplanner.domain.usecases.task.entry
 import com.nivelais.combiplanner.domain.entities.Task
 import com.nivelais.combiplanner.domain.repositories.TaskEntryRepository
 import com.nivelais.combiplanner.domain.usecases.core.FlowableUseCase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 
 /**
  * Use case used to create a new task entry
  */
 class CreateEntryUseCase(
-    override val observingScope: CoroutineScope,
     private val taskEntryRepository: TaskEntryRepository
 ) : FlowableUseCase<CreateEntryParams, CreateEntryResult>() {
 
@@ -27,8 +25,6 @@ class CreateEntryUseCase(
         resultFlow.emit(CreateEntryResult.SUCCESS)
         // TODO : exception
     }
-
-    override fun initialValue() = CreateEntryResult.WAITING
 }
 
 /**

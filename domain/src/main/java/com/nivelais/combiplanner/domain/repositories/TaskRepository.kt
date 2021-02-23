@@ -2,10 +2,8 @@ package com.nivelais.combiplanner.domain.repositories
 
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
-import com.nivelais.combiplanner.domain.entities.TaskEntry
 import com.nivelais.combiplanner.domain.exceptions.SaveTaskException
 import kotlinx.coroutines.flow.Flow
-import kotlin.jvm.Throws
 
 /**
  * Repository used to manage our task

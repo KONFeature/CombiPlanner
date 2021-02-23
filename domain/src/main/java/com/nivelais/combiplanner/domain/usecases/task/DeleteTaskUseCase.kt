@@ -2,14 +2,12 @@ package com.nivelais.combiplanner.domain.usecases.task
 
 import com.nivelais.combiplanner.domain.repositories.TaskRepository
 import com.nivelais.combiplanner.domain.usecases.core.FlowableUseCase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 
 /**
  * Use case used to delete a task
  */
 class DeleteTaskUseCase(
-    override val observingScope: CoroutineScope,
     private val taskRepository: TaskRepository
 ) : FlowableUseCase<DeleteTaskParams, DeleteTaskResult>() {
 
@@ -19,8 +17,6 @@ class DeleteTaskUseCase(
         taskRepository.delete(params.id)
         resultFlow.emit(DeleteTaskResult.SUCCESS)
     }
-
-    override fun initialValue() = DeleteTaskResult.WAITING
 }
 
 /**

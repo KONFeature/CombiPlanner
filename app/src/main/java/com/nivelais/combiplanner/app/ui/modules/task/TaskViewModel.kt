@@ -5,14 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
+import com.nivelais.combiplanner.app.utils.runAndCollect
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
 import com.nivelais.combiplanner.domain.usecases.task.*
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.koin.core.scope.inject
 
 class TaskViewModel : GenericViewModel() {
@@ -26,16 +23,14 @@ class TaskViewModel : GenericViewModel() {
     // Use case to delete our task
     private val deleteTaskUseCase: DeleteTaskUseCase by inject()
 
-    /**
-     * State used to know if we are currently loading the initial task
-     */
+    // State used to know if we are currently loading the initial task
     val isLoadingState = mutableStateOf(true)
 
-    /**
-     * The state for the id of the current task
-     */
+    // State to know if we need to go back or not
+    val isNeedGoBackState = mutableStateOf(false)
+
+    // The state for the id of the current task
     var idState: MutableState<Long?> = mutableStateOf(null)
-        private set
 
     /**
      * State used to know if the category picker is displayed or not
@@ -51,41 +46,14 @@ class TaskViewModel : GenericViewModel() {
     // If we got any error put it here
     val errorResState: MutableState<Int?> = mutableStateOf(null)
 
-    /**
-     * The flow pour the deletion of this task
-     */
-    val deleteFlow : StateFlow<DeleteTaskResult>
-        get() = deleteTaskUseCase.stateFlow
-
-    // The listener on the saving use case
+    // The listener on the loading use case
     private var loadInitialTaskJob: Job? = null
 
-    init {
-        viewModelScope.launch {
-            // Listen to the save status
-            saveTaskUseCase.stateFlow.collectLatest {
-                when (it) {
-                    SaveTaskResult.Waiting -> {
-                        // TODO : Small progress indicator next to the task title
-                    }
-                    is SaveTaskResult.Success -> {
-                        // Remove all the error and update the current id
-                        errorResState.value = null
-                        idState.value = it.taskId
-                    }
-                    SaveTaskResult.InvalidName -> {
-                        errorResState.value = R.string.task_save_error_invalid_name
-                    }
-                    SaveTaskResult.DuplicateName -> {
-                        errorResState.value = R.string.task_save_error_duplicate_name
-                    }
-                    SaveTaskResult.Error -> {
-                        errorResState.value = R.string.task_save_error
-                    }
-                }
-            }
-        }
-    }
+    // The listener on the saving use case
+    private var saveListenerJob: Job? = null
+
+    // The listener on the delete use case
+    private var deleteListenerJob: Job? = null
 
     /**
      * Get the initial task
@@ -99,22 +67,22 @@ class TaskViewModel : GenericViewModel() {
         // Backup the initial task id
         idState.value = usableId
         // Observe the get task flow
-        loadInitialTaskJob = viewModelScope.launch {
-            getTaskUseCase.stateFlow.collect { taskResult ->
-                when (taskResult) {
-                    GetTaskResult.Loading -> {
-                        isLoadingState.value = true
-                    }
-                    GetTaskResult.NotFound,
-                    is GetTaskResult.Success -> {
-                        initBaseField(taskResult.task)
-                        isLoadingState.value = false
-                    }
+        loadInitialTaskJob?.cancel()
+        loadInitialTaskJob = getTaskUseCase.runAndCollect(
+            GetTaskParams(id = idState.value),
+            viewModelScope
+        ) { taskResult ->
+            when (taskResult) {
+                GetTaskResult.Loading -> {
+                    isLoadingState.value = true
+                }
+                GetTaskResult.NotFound,
+                is GetTaskResult.Success -> {
+                    initBaseField(taskResult.task)
+                    isLoadingState.value = false
                 }
             }
         }
-        // Once the observer is in place run it
-        getTaskUseCase.run(GetTaskParams(id = idState.value))
     }
 
     /**
@@ -139,15 +107,45 @@ class TaskViewModel : GenericViewModel() {
     fun save() {
         // If a category is picked launch the save job
         categoryState.value?.let { category ->
-            val params = SaveTaskParams(
-                id = idState.value,
-                category = category,
-                name = nameState.value
-            )
-            saveTaskUseCase.run(params)
+            saveTask(category = category)
         } ?: run {
             // Else display an error
             errorResState.value = R.string.task_save_error_no_category
+        }
+    }
+
+    /**
+     * Launch the save task use case
+     */
+    private fun saveTask(category: Category) {
+        saveListenerJob?.cancel()
+        saveListenerJob = saveTaskUseCase.runAndCollect(
+            SaveTaskParams(
+                id = idState.value,
+                category = category,
+                name = nameState.value
+            ),
+            viewModelScope
+        ) { saveResult ->
+            when (saveResult) {
+                SaveTaskResult.Loading -> {
+                    // TODO : Small progress indicator next to the task title
+                }
+                is SaveTaskResult.Success -> {
+                    // Remove all the error and update the current id
+                    errorResState.value = null
+                    idState.value = saveResult.taskId
+                }
+                SaveTaskResult.InvalidName -> {
+                    errorResState.value = R.string.task_save_error_invalid_name
+                }
+                SaveTaskResult.DuplicateName -> {
+                    errorResState.value = R.string.task_save_error_duplicate_name
+                }
+                SaveTaskResult.Error -> {
+                    errorResState.value = R.string.task_save_error
+                }
+            }
         }
     }
 
@@ -156,11 +154,25 @@ class TaskViewModel : GenericViewModel() {
      */
     fun delete() {
         idState.value?.let { taskId ->
-            deleteTaskUseCase.run(DeleteTaskParams(id = taskId))
+            // No need to save the job, because when it's a success we clear the use case
+            deleteListenerJob?.cancel()
+            deleteListenerJob = deleteTaskUseCase.runAndCollect(
+                DeleteTaskParams(id = taskId),
+                viewModelScope
+            ) {
+                // If the deletion is in success tell the view to go back
+                if (it == DeleteTaskResult.SUCCESS) {
+                    isNeedGoBackState.value = true
+                }
+            }
         }
     }
 
     override fun clearUseCases() {
+        loadInitialTaskJob?.cancel()
+        saveListenerJob?.cancel()
+        deleteListenerJob?.cancel()
+
         getTaskUseCase.clear()
         saveTaskUseCase.clear()
         deleteTaskUseCase.clear()
