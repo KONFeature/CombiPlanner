@@ -1,7 +1,6 @@
 package com.nivelais.combiplanner.app.ui.modules.category.picker
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,13 +15,13 @@ import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
 import com.nivelais.combiplanner.app.ui.widgets.SimpleFlowRow
 import com.nivelais.combiplanner.domain.entities.Category
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.androidx.compose.getViewModel
+import com.nivelais.combiplanner.app.di.getViewModel
 import org.koin.core.parameter.parametersOf
 
 /**
  * Widget to perform category filtering
  */
-@OptIn(ExperimentalLayout::class, ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun CategoryPicker(
     viewModel: CategoryPickerViewModel = getViewModel { parametersOf(initialCategory) },

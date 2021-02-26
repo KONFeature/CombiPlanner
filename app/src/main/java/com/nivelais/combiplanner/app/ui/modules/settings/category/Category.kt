@@ -204,7 +204,6 @@ private fun MigrationStrategyAlertBox(
 /**
  * The delete strategy picker
  */
-@OptIn(ExperimentalLayout::class)
 @Composable
 private fun DeleteStrategyPicker(
     currentStrategy: DeletionStrategy?,

@@ -13,7 +13,7 @@ import com.nivelais.combiplanner.app.ui.modules.task.entry.TaskEntryView
 import com.nivelais.combiplanner.app.utils.safeItems
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.androidx.compose.getViewModel
+import com.nivelais.combiplanner.app.di.getViewModel
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -37,16 +37,10 @@ fun TaskEntries(
     LazyColumn {
         header()
 
-        // Remaining entries
+        // Entries
         taskEntriesPart(
-            titleRes = R.string.task_entries_todo_title,
-            entries = viewModel.remainingEntries
-        )
-
-        // Done entries
-        taskEntriesPart(
-            titleRes = R.string.task_entries_done_title,
-            entries = viewModel.doneEntries
+            titleRes = R.string.task_entries_title,
+            entries = viewModel.entries
         )
 
         footer()
@@ -68,8 +62,7 @@ private fun LazyListScope.taskEntriesPart(
     }
 
     // Items with the task entry
-    safeItems(entries) { entry ->
-        // A line with the entry name, done status and delete listener
-        TaskEntryView(taskEntry = entry)
+    safeItems(entries) {
+        TaskEntryView(taskEntry = it)
     }
 }

@@ -16,7 +16,7 @@ import com.nivelais.combiplanner.app.ui.modules.settings.create_category.CreateC
 import com.nivelais.combiplanner.app.utils.safeItems
 import com.nivelais.combiplanner.domain.entities.Category
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.androidx.compose.getViewModel
+import com.nivelais.combiplanner.app.di.getViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable

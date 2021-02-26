@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -17,15 +18,22 @@ import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.androidx.compose.get
+import com.nivelais.combiplanner.app.di.get
 import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun TaskEntryView(
     taskEntry: TaskEntry,
-    viewModel: TaskEntryViewModel = get { parametersOf(taskEntry) },
+    viewModel: TaskEntryViewModel = get(),
 ) {
+    // Update the entry only when the id change
+    DisposableEffect(taskEntry.id) {
+        viewModel.updateEntry(taskEntry)
+
+        onDispose {  }
+    }
+
     val name by remember { viewModel.nameState }
     val isDone by remember { viewModel.isDoneState }
 

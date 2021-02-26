@@ -34,7 +34,7 @@ val appModule = module {
     viewModel { TaskViewModel() }
     viewModel { TaskEntriesViewModel() }
     viewModel { AddEntryViewModel() }
-    factory { (taskEntry: TaskEntry) -> TaskEntryViewModel(taskEntry = taskEntry) }
+    factory { TaskEntryViewModel() }
 
     // Category picker
     viewModel { (initialCategory: Category?) -> CategoryPickerViewModel(initialCategory = initialCategory) }

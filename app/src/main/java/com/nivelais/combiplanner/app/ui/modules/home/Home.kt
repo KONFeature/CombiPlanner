@@ -20,8 +20,8 @@ import com.nivelais.combiplanner.app.ui.modules.home.tasks.Tasks
 import com.nivelais.combiplanner.app.ui.modules.main.Route
 import com.nivelais.combiplanner.app.ui.modules.main.navigate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.androidx.compose.get
-import org.koin.androidx.compose.getViewModel
+import com.nivelais.combiplanner.app.di.get
+import com.nivelais.combiplanner.app.di.getViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable

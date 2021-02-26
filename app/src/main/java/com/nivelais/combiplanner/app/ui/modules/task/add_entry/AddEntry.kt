@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.androidx.compose.getViewModel
+import com.nivelais.combiplanner.app.di.getViewModel
 
 
 @OptIn(ExperimentalCoroutinesApi::class)

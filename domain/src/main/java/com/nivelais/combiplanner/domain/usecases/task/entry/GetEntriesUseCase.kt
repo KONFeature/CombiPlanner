@@ -13,16 +13,12 @@ import kotlinx.coroutines.flow.map
 class GetEntriesUseCase(
     override val observingScope: CoroutineScope,
     private val taskEntryRepository: TaskEntryRepository
-) : SimpleFlowUseCase<GetEntriesParams, GetEntriesResult>() {
+) : SimpleFlowUseCase<GetEntriesParams, List<TaskEntry>>() {
 
-    override fun execute(params: GetEntriesParams): Flow<GetEntriesResult> {
+    override fun execute(params: GetEntriesParams): Flow<List<TaskEntry>> {
         log.debug("Listening to the entries for the task with id {}", params.taskId)
-        return taskEntryRepository.observeForTask(params.taskId).map { allEntries ->
-            GetEntriesResult(
-                remainingEntries = allEntries.filter { !it.isDone },
-                doneEntries = allEntries.filter { it.isDone }
-            )
-        }
+        return taskEntryRepository.observeForTask(params.taskId)
+            .map { entries -> entries.sortedBy { it.isDone } }
     }
 
 }
@@ -32,12 +28,4 @@ class GetEntriesUseCase(
  */
 data class GetEntriesParams(
     val taskId: Long
-)
-
-/**
- * Input for our use case
- */
-data class GetEntriesResult(
-    val remainingEntries: List<TaskEntry>,
-    val doneEntries: List<TaskEntry>,
 )

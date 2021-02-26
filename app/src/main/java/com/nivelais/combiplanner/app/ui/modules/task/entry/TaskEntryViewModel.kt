@@ -15,23 +15,27 @@ import org.koin.core.scope.inject
  * TODO : Koin injection for this view model ? parameter injection ?
  * TODO : How to fetch the updated list of entries from the parent view model ?
  */
-class TaskEntryViewModel(
-    private val taskEntry: TaskEntry
-) : GenericViewModel() {
+class TaskEntryViewModel : GenericViewModel() {
+
+    private var taskEntry: TaskEntry? = null
 
     // Use cases to create, update or delete our task
     private val updateEntryUseCase: UpdateEntryUseCase by inject()
     private val deleteEntryUseCase: DeleteEntryUseCase by inject()
 
     // The element of the view
-    val nameState = mutableStateOf(taskEntry.name)
-    val isDoneState = mutableStateOf(taskEntry.isDone)
+    val nameState = mutableStateOf(taskEntry?.name ?: "null")
+    val isDoneState = mutableStateOf(taskEntry?.isDone ?: false)
 
     /**
      * Delete an entry at a specified index
      */
     fun onDeleteClicked() {
-        deleteEntryUseCase.run(DeleteEntryParams(entryId = taskEntry.id))
+        taskEntry?.let {
+            deleteEntryUseCase.run(
+                DeleteEntryParams(entryId = it.id)
+            )
+        }
     }
 
     /**
@@ -39,12 +43,14 @@ class TaskEntryViewModel(
      */
     fun onNameChange(name: String) {
         nameState.value = name
-        updateEntryUseCase.run(
-            UpdateEntryParams(
-                entryId = taskEntry.id,
-                name = name
+        taskEntry?.let {
+            updateEntryUseCase.run(
+                UpdateEntryParams(
+                    entryId = it.id,
+                    name = name
+                )
             )
-        )
+        }
     }
 
     /**
@@ -52,12 +58,20 @@ class TaskEntryViewModel(
      */
     fun onIsDoneChanged(isDone: Boolean) {
         isDoneState.value = isDone
-        updateEntryUseCase.run(
-            UpdateEntryParams(
-                entryId = taskEntry.id,
-                isDone = isDone
+        taskEntry?.let {
+            updateEntryUseCase.run(
+                UpdateEntryParams(
+                    entryId = it.id,
+                    isDone = isDone
+                )
             )
-        )
+        }
+    }
+
+    fun updateEntry(newEntry: TaskEntry?) {
+        taskEntry = newEntry
+        nameState.value = newEntry?.name ?: "null"
+        isDoneState.value = newEntry?.isDone ?: false
     }
 
     override fun clearUseCases() {

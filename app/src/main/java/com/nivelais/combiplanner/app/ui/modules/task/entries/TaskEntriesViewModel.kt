@@ -25,8 +25,7 @@ class TaskEntriesViewModel : GenericViewModel() {
      */
     private var entriesListenerJob: Job? = null
 
-    val doneEntries: SnapshotStateList<TaskEntry> = mutableStateListOf()
-    val remainingEntries: SnapshotStateList<TaskEntry> = mutableStateListOf()
+    val entries: SnapshotStateList<TaskEntry> = mutableStateListOf()
 
     /**
      * Listen to the task entries
@@ -36,19 +35,12 @@ class TaskEntriesViewModel : GenericViewModel() {
 
         // Setup the listener
         entriesListenerJob =
-            getEntriesUseCase.observe(GetEntriesParams(taskId = taskId)) { getEntriesResult ->
+            getEntriesUseCase.observe(GetEntriesParams(taskId = taskId)) { newEntries ->
                 log.info(
-                    "Received {} and {} entries to display",
-                    getEntriesResult.remainingEntries.size,
-                    getEntriesResult.doneEntries.size
+                    "Received {} entries to display",
+                    newEntries.size,
                 )
-
-                // TODO : Cleaner way to do this (HashMap with id as param and then comparaison for perf ?)
-                doneEntries.clear()
-                doneEntries.addAll(getEntriesResult.doneEntries)
-                remainingEntries.clear()
-                remainingEntries.addAll(getEntriesResult.remainingEntries)
-
+                entries.updateFrom(newEntries)
             }
     }
 
@@ -60,5 +52,27 @@ class TaskEntriesViewModel : GenericViewModel() {
     }
 
     override fun clearUseCases() {
+        entriesListenerJob?.cancel()
+    }
+
+    /**
+     * Update a snapshot state list of entries from a single list
+     */
+    private fun SnapshotStateList<TaskEntry>.updateFrom(newEntries: List<TaskEntry>) {
+        // Remove entry not present anymore
+        val oldEntriesIterator = iterator()
+        while (oldEntriesIterator.hasNext()) {
+            val oldEntry = oldEntriesIterator.next()
+            if(newEntries.none { it.id == oldEntry.id }) {
+                oldEntriesIterator.remove()
+            }
+        }
+
+        // Add the new entries
+        newEntries.forEach { potentialNewEntry ->
+            if(none { it.id == potentialNewEntry.id }) {
+                add(potentialNewEntry)
+            }
+        }
     }
 }

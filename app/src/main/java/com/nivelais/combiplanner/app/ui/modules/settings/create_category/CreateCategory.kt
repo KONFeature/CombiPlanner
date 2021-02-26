@@ -14,7 +14,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.androidx.compose.getViewModel
+import com.nivelais.combiplanner.app.di.getViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -94,14 +94,14 @@ private fun NamePicker(
     onValueChange: (TextFieldValue) -> Unit
 ) {
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
         value = value,
         onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
         singleLine = true,
         label = {
             Text(text = stringResource(id = R.string.create_category_name_label))
         },
-        isErrorValue = isError
+        isError = isError
     )
 }
 

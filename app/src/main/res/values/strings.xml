@@ -44,8 +44,7 @@
     <string name="task_save_error_no_category">Select a category for our task</string>
     <string name="task_save_error">An error occurred during the saving of this task</string>
 
-    <string name="task_entries_todo_title">Remaining steps</string>
-    <string name="task_entries_done_title">Finished steps</string>
+    <string name="task_entries_title">Task steps</string>
     <string name="task_entries_name_placeholder">Task step</string>
     <string name="task_entries_add_button">Add an entry</string>
 </resources>

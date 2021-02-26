@@ -11,11 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AmbientConfiguration
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nivelais.combiplanner.R
+import com.nivelais.combiplanner.app.di.getViewModel
 import com.nivelais.combiplanner.app.ui.modules.main.Route
 import com.nivelais.combiplanner.app.ui.modules.main.navigate
 import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
@@ -23,8 +24,7 @@ import com.nivelais.combiplanner.app.utils.safeItems
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.androidx.compose.get
-import org.koin.androidx.compose.getViewModel
+import com.nivelais.combiplanner.app.di.get
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -37,7 +37,7 @@ fun Tasks(
     val currentCategory by remember { categoryState }
     viewModel.fetchTasks(category = currentCategory)
 
-    val orientation = AmbientConfiguration.current.orientation
+    val orientation = LocalConfiguration.current.orientation
     TasksGrid(
         tasks = viewModel.tasks,
         columnCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 4 else 2,
