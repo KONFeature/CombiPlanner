@@ -5,20 +5,23 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nivelais.combiplanner.R
+import com.nivelais.combiplanner.app.ui.modules.category.picker.CategoryPicker
 import com.nivelais.combiplanner.app.ui.modules.home.tasks.Tasks
 import com.nivelais.combiplanner.app.ui.modules.main.Route
 import com.nivelais.combiplanner.app.ui.modules.main.navigate
-import com.nivelais.combiplanner.app.ui.widgets.CategoryPicker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.androidx.compose.get
-import org.koin.androidx.compose.getViewModel
+import com.nivelais.combiplanner.app.di.get
+import com.nivelais.combiplanner.app.di.getViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -35,7 +38,9 @@ fun HomePage(
             .fillMaxWidth()
     ) {
         // Bar with the different possible helper
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = stringResource(id = R.string.home_task_title),
                 style = MaterialTheme.typography.h4,
@@ -59,17 +64,14 @@ fun HomePage(
                 // Category picker
                 Text(
                     text = stringResource(id = R.string.home_category_title),
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.h6
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
-                val categoriesState = viewModel.categoriesFlow.collectAsState()
-                categoriesState.value?.let { categories ->
-                    CategoryPicker(
-                        categories = categories,
-                        categorySelected = viewModel.selectedCategoryState.value,
-                        onCategoryPicked = { viewModel.onCategorySelected(it) }
-                    )
-                }
+                CategoryPicker(
+                    onCategoryPicked = {
+                        viewModel.selectedCategoryState.value = it
+                    }
+                )
             }
         }
 
@@ -84,8 +86,9 @@ fun HomePage(
 private fun FilterButton(onClick: () -> Unit) {
     FloatingActionButton(
         onClick = onClick,
+        backgroundColor = MaterialTheme.colors.primaryVariant
     ) {
-        Icon(Icons.Filled.FilterAlt)
+        Icon(Icons.Filled.FilterAlt, "Toggle filter menu")
     }
 }
 
@@ -93,8 +96,9 @@ private fun FilterButton(onClick: () -> Unit) {
 private fun AddButton(onClick: () -> Unit) {
     FloatingActionButton(
         onClick = onClick,
+        backgroundColor = MaterialTheme.colors.primaryVariant
     ) {
-        Icon(Icons.Filled.Add)
+        Icon(Icons.Filled.Add, "Add a task")
     }
 }
 

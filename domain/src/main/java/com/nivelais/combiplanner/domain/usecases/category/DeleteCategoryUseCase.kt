@@ -4,14 +4,12 @@ import com.nivelais.combiplanner.domain.exceptions.DeleteCategoryException
 import com.nivelais.combiplanner.domain.repositories.CategoryRepository
 import com.nivelais.combiplanner.domain.repositories.TaskRepository
 import com.nivelais.combiplanner.domain.usecases.core.FlowableUseCase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 
 /**
  * Use case used to delete a category
  */
 class DeleteCategoryUseCase(
-    override val observingScope: CoroutineScope,
     private val categoryRepository: CategoryRepository,
     private val taskRepository: TaskRepository
 ) : FlowableUseCase<DeleteCategoryParams, DeleteCategoryResult>() {
@@ -43,7 +41,6 @@ class DeleteCategoryUseCase(
                 is DeleteCategoryException.MigrationIdInvalid ->
                     resultFlow.emit(DeleteCategoryResult.INVALID_TARGET_CATEGORY)
             }
-
         } catch (exception: Throwable) {
             log.error(
                 "An unknown error occurred during the deletion of the category with id {} and strategy {}",
@@ -52,9 +49,6 @@ class DeleteCategoryUseCase(
             resultFlow.emit(DeleteCategoryResult.ERROR)
         }
     }
-
-    override fun initialValue(): DeleteCategoryResult =
-        DeleteCategoryResult.WAITING
 }
 
 /**
@@ -77,7 +71,6 @@ sealed class DeletionStrategy {
  * Possible result of this use case
  */
 enum class DeleteCategoryResult {
-    WAITING,
     SUCCESS,
     STRATEGY_REQUIRED,
     INVALID_TARGET_CATEGORY,

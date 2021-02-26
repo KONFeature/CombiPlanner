@@ -5,13 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
+import com.nivelais.combiplanner.app.utils.runAndCollect
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryParams
 import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryResult
 import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryUseCase
 import com.nivelais.combiplanner.domain.usecases.category.DeletionStrategy
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
 import org.koin.core.scope.inject
 
 class CategoryViewModel : GenericViewModel() {
@@ -19,10 +19,14 @@ class CategoryViewModel : GenericViewModel() {
     // Use case to remove a given category
     private val deleteCategoriesUseCase: DeleteCategoryUseCase by inject()
 
-    // Is the deletion strategy required
-    val deletionStrategyRequiredState = mutableStateOf(false)
+    /**
+     * State telling us if the deletion strategy is required for the deletion or not
+     */
+    val isDeletionStrategyRequiredState = mutableStateOf(false)
 
-    // If we got any error during the deletion put it here
+    /**
+     * If an error occurred during the deletion we load the error ressources here
+     */
     val deletionErrorResState: MutableState<Int?> = mutableStateOf(null)
 
     // State for the current category selected (for the migration strategy)
@@ -31,49 +35,56 @@ class CategoryViewModel : GenericViewModel() {
     // The current strategy
     val selectedDeletionStrategyState: MutableState<DeletionStrategy?> = mutableStateOf(null)
 
-    init {
-        // Collect the value of our deletion use case
-        viewModelScope.launch {
-            deleteCategoriesUseCase.stateFlow.collect {
-                when (it) {
-                    DeleteCategoryResult.WAITING -> {
-                        // Nothing
-                    }
-                    DeleteCategoryResult.SUCCESS -> {
-                        // Reset our different state
-                        deletionErrorResState.value = null
-                        deletionStrategyRequiredState.value = false
-                    }
-                    DeleteCategoryResult.STRATEGY_REQUIRED -> {
-                        deletionErrorResState.value = R.string.category_delete_error_strategy_required
-                        deletionStrategyRequiredState.value = true
-                    }
-                    DeleteCategoryResult.INVALID_TARGET_CATEGORY -> {
-                        deletionErrorResState.value = R.string.category_delete_error_invalid_target_category
-                        deletionStrategyRequiredState.value = true
-                    }
-                    DeleteCategoryResult.ERROR -> {
-                        deletionErrorResState.value = R.string.category_delete_error
-                        deletionStrategyRequiredState.value = true
-                    }
+    // The listener on the deletion scope
+    private var deleteListenerJob: Job? = null
+
+    /**
+     * Call the use case to delete a category
+     */
+    fun deleteCategory(category: Category) {
+        deleteListenerJob?.cancel()
+        deleteListenerJob = deleteCategoriesUseCase.runAndCollect(
+            DeleteCategoryParams(
+                id = category.id,
+                strategy = selectedDeletionStrategyState.value
+            ),
+            viewModelScope
+        ) { deletionResult ->
+            when (deletionResult) {
+                DeleteCategoryResult.SUCCESS -> {
+                    // Reset our different state
+                    deletionErrorResState.value = null
+                    isDeletionStrategyRequiredState.value = false
+                }
+                DeleteCategoryResult.STRATEGY_REQUIRED -> {
+                    deletionErrorResState.value = R.string.category_delete_error_strategy_required
+                    isDeletionStrategyRequiredState.value = true
+                }
+                DeleteCategoryResult.INVALID_TARGET_CATEGORY -> {
+                    deletionErrorResState.value =
+                        R.string.category_delete_error_invalid_target_category
+                    isDeletionStrategyRequiredState.value = true
+                }
+                DeleteCategoryResult.ERROR -> {
+                    deletionErrorResState.value = R.string.category_delete_error
+                    isDeletionStrategyRequiredState.value = true
                 }
             }
         }
     }
 
     /**
-     * Call the use case to delete a category
+     * Dismiss the deletion strategy picker dialog
      */
-    fun deleteCategory(category: Category) {
-        deleteCategoriesUseCase.run(
-            DeleteCategoryParams(
-                id = category.id,
-                strategy = selectedDeletionStrategyState.value
-            )
-        )
+    fun dismissDeletionStrategyDialog() {
+        isDeletionStrategyRequiredState.value = false
+        deletionErrorResState.value = null
+        selectedDeletionStrategyState.value = null
+        selectedCategoryState.value = null
     }
 
     override fun clearUseCases() {
+        deleteListenerJob?.cancel()
         deleteCategoriesUseCase.clear()
     }
 }

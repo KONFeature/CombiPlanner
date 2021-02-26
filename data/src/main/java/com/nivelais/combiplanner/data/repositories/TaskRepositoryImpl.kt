@@ -3,6 +3,7 @@ package com.nivelais.combiplanner.data.repositories
 import com.nivelais.combiplanner.data.database.dao.TaskDao
 import com.nivelais.combiplanner.data.database.dao.TaskEntryDao
 import com.nivelais.combiplanner.data.database.entities.TaskEntity
+import com.nivelais.combiplanner.data.database.entities.TaskEntryEntity
 import com.nivelais.combiplanner.data.database.mapper.TaskDatabaseMapper
 import com.nivelais.combiplanner.data.database.mapper.TaskEntryDatabaseMapper
 import com.nivelais.combiplanner.domain.entities.Category
@@ -34,14 +35,13 @@ class TaskRepositoryImpl(
     @Throws(SaveTaskException::class)
     override suspend fun create(
         name: String,
-        category: Category,
-        entries: List<TaskEntry>
+        category: Category
     ): Task {
         checkName(name, true)
         // Create the task entity
-        val entity = TaskEntity(name = name)
-        entity.category.targetId = category.id
-        entity.entries.addAll(taskEntryDatabaseMapper.datasToEntities(entries))
+        val entity = TaskEntity(name = name).apply {
+            this.category.targetId = category.id
+        }
 
         // Insert it in the database and return the mapped result
         taskDao.save(entity)
@@ -55,23 +55,16 @@ class TaskRepositoryImpl(
     override suspend fun update(
         id: Long,
         name: String,
-        category: Category,
-        entries: List<TaskEntry>
+        category: Category
     ) {
         checkName(name, false)
         // Get the entity for this id
         val taskEntity = taskDao.get(id)
         taskEntity?.let { task ->
-            // Update our resolved task
+            // Update the field of our resolved task
             task.name = name
             task.category.targetId = category.id
-            // TODO : Track deletion
-            // Update it's entries
-            val entryEntities = taskEntryDatabaseMapper.datasToEntities(entries)
-            taskEntryDao.save(entryEntities)
-            task.entries.clear()
-            task.entries.addAll(entryEntities)
-            task.entries.applyChangesToDb()
+            // Then save it
             taskDao.save(task)
         }
     }
@@ -102,7 +95,7 @@ class TaskRepositoryImpl(
     /**
      * @inheritDoc
      */
-    override suspend fun observeAll(category: Category?): Flow<List<Task>> {
+    override fun observeAll(category: Category?): Flow<List<Task>> {
         // Get the right flow
         val entitiesFlow = category?.let {
             taskDao.observeForCategory(it.id)

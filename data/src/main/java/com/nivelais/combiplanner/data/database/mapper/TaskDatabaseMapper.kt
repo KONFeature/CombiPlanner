@@ -9,6 +9,7 @@ import org.mapstruct.InjectionStrategy
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Mappings
+import org.mapstruct.factory.Mappers
 
 /**
  * Mapper for our task entity to pojo
@@ -31,10 +32,6 @@ abstract class TaskDatabaseMapper {
      * Map ToOne relations of our task
      */
     fun mapCategory(categoryEntity: ToOne<CategoryEntity>): Category =
-        Category(
-            id = categoryEntity.targetId,
-            name = categoryEntity.target.name,
-            color = categoryEntity.target.color
-        )
+        Mappers.getMapper(CategoryDatabaseMapper::class.java).entityToData(categoryEntity.target)
 
 }

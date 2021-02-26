@@ -2,13 +2,16 @@ package com.nivelais.combiplanner.app.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nivelais.combiplanner.app.ui.modules.category.picker.CategoryPickerViewModel
 import com.nivelais.combiplanner.app.ui.modules.home.HomeViewModel
 import com.nivelais.combiplanner.app.ui.modules.home.tasks.TasksViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.SettingsViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.category.CategoryViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.create_category.CreateCategoryViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.TaskViewModel
+import com.nivelais.combiplanner.app.ui.modules.task.add_entry.AddEntryViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntriesViewModel
+import com.nivelais.combiplanner.app.ui.modules.task.entry.TaskEntryViewModel
 import com.nivelais.combiplanner.domain.usecases.category.CreateCategoryUseCase
 import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryUseCase
 import com.nivelais.combiplanner.domain.usecases.category.GetCategoriesUseCase
@@ -16,6 +19,10 @@ import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskUseCase
 import com.nivelais.combiplanner.domain.usecases.task.GetTaskUseCase
 import com.nivelais.combiplanner.domain.usecases.task.GetTasksUseCase
 import com.nivelais.combiplanner.domain.usecases.task.SaveTaskUseCase
+import com.nivelais.combiplanner.domain.usecases.task.entry.CreateEntryUseCase
+import com.nivelais.combiplanner.domain.usecases.task.entry.DeleteEntryUseCase
+import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesUseCase
+import com.nivelais.combiplanner.domain.usecases.task.entry.UpdateEntryUseCase
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
@@ -27,7 +34,6 @@ val domainModule = module {
     // Home part
     scope<HomeViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { GetCategoriesUseCase(get(), get()) }
     }
     scope<TasksViewModel> {
         scoped { viewModelCoroutineScope() }
@@ -37,13 +43,22 @@ val domainModule = module {
     // Task part
     scope<TaskViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { GetCategoriesUseCase(get(), get()) }
-        scoped { SaveTaskUseCase(get(), get()) }
-        scoped { GetTaskUseCase(get(), get()) }
-        scoped { DeleteTaskUseCase(get(), get()) }
+        scoped { SaveTaskUseCase(get()) }
+        scoped { GetTaskUseCase(get()) }
+        scoped { DeleteTaskUseCase(get()) }
     }
     scope<TaskEntriesViewModel> {
         scoped { viewModelCoroutineScope() }
+        scoped { GetEntriesUseCase(get(), get()) }
+    }
+    scope<TaskEntryViewModel> {
+        scoped { viewModelCoroutineScope() }
+        scoped { UpdateEntryUseCase(get()) }
+        scoped { DeleteEntryUseCase(get()) }
+    }
+    scope<AddEntryViewModel> {
+        scoped { viewModelCoroutineScope() }
+        scoped { CreateEntryUseCase(get()) }
     }
 
     // Settings part
@@ -53,11 +68,17 @@ val domainModule = module {
     }
     scope<CategoryViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { DeleteCategoryUseCase(get(), get(), get()) }
+        scoped { DeleteCategoryUseCase(get(), get()) }
     }
     scope<CreateCategoryViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { CreateCategoryUseCase(get(), get()) }
+        scoped { CreateCategoryUseCase(get()) }
+    }
+
+    // Generic widgets
+    scope<CategoryPickerViewModel> {
+        scoped { viewModelCoroutineScope() }
+        scoped { GetCategoriesUseCase(get(), get()) }
     }
 }
 

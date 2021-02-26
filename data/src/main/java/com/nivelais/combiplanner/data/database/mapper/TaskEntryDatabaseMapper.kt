@@ -1,9 +1,11 @@
 package com.nivelais.combiplanner.data.database.mapper
 
+import com.nivelais.combiplanner.data.database.entities.TaskEntity
 import com.nivelais.combiplanner.data.database.entities.TaskEntryEntity
 import com.nivelais.combiplanner.domain.entities.TaskEntry
-import org.mapstruct.InjectionStrategy
-import org.mapstruct.Mapper
+import io.objectbox.relation.ToMany
+import org.mapstruct.*
+import org.mapstruct.factory.Mappers
 
 @Mapper(injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface TaskEntryDatabaseMapper {
@@ -16,11 +18,4 @@ interface TaskEntryDatabaseMapper {
         taskEntryEntities: List<TaskEntryEntity>
     ): List<TaskEntry>
 
-    fun dataToEntity(
-        taskEntry: TaskEntry
-    ): TaskEntryEntity
-
-    fun datasToEntities(
-        taskEntries: List<TaskEntry>
-    ): List<TaskEntryEntity>
 }

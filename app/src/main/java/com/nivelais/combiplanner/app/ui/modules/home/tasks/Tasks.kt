@@ -9,20 +9,22 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.State
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AmbientConfiguration
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nivelais.combiplanner.R
+import com.nivelais.combiplanner.app.di.getViewModel
 import com.nivelais.combiplanner.app.ui.modules.main.Route
 import com.nivelais.combiplanner.app.ui.modules.main.navigate
 import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
+import com.nivelais.combiplanner.app.utils.safeItems
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.androidx.compose.get
-import org.koin.androidx.compose.getViewModel
+import com.nivelais.combiplanner.app.di.get
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -35,24 +37,13 @@ fun Tasks(
     val currentCategory by remember { categoryState }
     viewModel.fetchTasks(category = currentCategory)
 
-    val tasksState = viewModel.tasksFlow.collectAsState()
-
-    tasksState.value?.let { tasks ->
-        val orientation = AmbientConfiguration.current.orientation
-        TasksGrid(
-            tasks = tasks,
-            columnCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 4 else 2,
-            onTaskClicked = { task ->
-                navController.navigate(Route.Task(task.id))
-            })
-    } ?: run {
-        // Else display a loading indicator
-        // TODO : Shimmer effect ???
-        Text(
-            text = "Tasks are currently loading",
-            style = MaterialTheme.typography.h3
-        )
-    }
+    val orientation = LocalConfiguration.current.orientation
+    TasksGrid(
+        tasks = viewModel.tasks,
+        columnCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 4 else 2,
+        onTaskClicked = { task ->
+            navController.navigate(Route.Task(task.id))
+        })
 }
 
 @Composable
@@ -66,7 +57,7 @@ private fun TasksGrid(
 
     // If we got value display all the task
     LazyColumn {
-        this.items(tasksChunked) { taskRow ->
+        safeItems(items = tasksChunked) { taskRow ->
             Row {
                 taskRow.forEach { task ->
                     TaskCard(
@@ -93,7 +84,9 @@ private fun TaskCard(
         modifier = modifier
     ) {
         // Header of the card (name and color indicator for category if present)
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 modifier = modifier.weight(1f),
                 text = task.name,
@@ -133,7 +126,7 @@ private fun TaskCardBox(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(8.dp),
                 content = content
             )
         }

@@ -1,13 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.4.21'
+    ext.kotlin_version = '1.4.30'
     ext.coroutines_version = '1.4.2'
-    ext.nav_version = '2.3.2'
-    ext.compose_version = '1.0.0-alpha09'
-    ext.nav_compose_version = '1.0.0-alpha04'
-    ext.koin_version = '2.2.1'
-    ext.objectbox_version = '2.8.1'
-    ext.mapstruct_version = '1.4.1.Final'
+    ext.nav_version = '2.3.3'
+    ext.compose_version = '1.0.0-beta01'
+    ext.nav_compose_version = '1.0.0-alpha08'
+    ext.koin_version = '2.2.2'
+    ext.objectbox_version = '2.9.0'
+    ext.mapstruct_version = '1.4.2.Final'
     ext.slf4j_version = '1.7.30'
     ext.logback_version = '2.14.0'
 
@@ -16,7 +16,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha04'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha08'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.koin:koin-gradle-plugin:$koin_version"
         classpath "io.objectbox:objectbox-gradle-plugin:$objectbox_version"
@@ -56,6 +56,9 @@ subprojects {
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
             freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
             freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
+
+            // Allow unstable dependencies
+            freeCompilerArgs += '-Xskip-prerelease-check'
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"

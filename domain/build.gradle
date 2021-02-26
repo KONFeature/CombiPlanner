@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'kotlin'
+    id 'kotlin-kapt'
 }
 
 java {
@@ -18,5 +19,5 @@ dependencies {
 
     // Log4j
     implementation "org.apache.logging.log4j:log4j-api:$logback_version"
-    annotationProcessor "org.apache.logging.log4j:log4j-core:$logback_version"
+    kapt "org.apache.logging.log4j:log4j-core:$logback_version"
 }

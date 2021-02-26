@@ -5,6 +5,7 @@
     <string name="generic_name">Name</string>
     <string name="generic_categories">Categories</string>
     <string name="generic_invalid_name">Invalid name</string>
+    <string name="generic_cancel">Cancel</string>
 
     <string name="home_label">Home</string>
     <string name="home_task_title">Tasks</string>
@@ -15,10 +16,13 @@
     <string name="settings_label">Settings</string>
     <string name="settings_part_category">@string/generic_categories</string>
     <string name="settings_part_category_loading">@string/generic_loading</string>
+    <string name="settings_part_auto_save">Automatically save task update</string>
 
     <string name="category_delete_error_strategy_required">This category as tasks associated, you need to specify what to do with this tasks</string>
     <string name="category_delete_error_invalid_target_category">The target category for the migration is invalid</string>
     <string name="category_delete_error">An error occurred during the category removal</string>
+    <string name="category_deletion_button">Delete</string>
+    <string name="category_cancel_button">@string/generic_cancel</string>
     <string name="category_deletion_strategy_picker">Deletion strategy</string>
     <string name="category_deletion_strategy_cascade">Delete all the tasks associated</string>
     <string name="category_deletion_strategy_migrate">Migrate tasks to another category</string>
@@ -40,7 +44,7 @@
     <string name="task_save_error_no_category">Select a category for our task</string>
     <string name="task_save_error">An error occurred during the saving of this task</string>
 
-    <string name="task_entries_title">Steps</string>
+    <string name="task_entries_title">Task steps</string>
     <string name="task_entries_name_placeholder">Task step</string>
     <string name="task_entries_add_button">Add an entry</string>
 </resources>

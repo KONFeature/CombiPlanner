@@ -2,7 +2,10 @@ package com.nivelais.combiplanner.app.ui.modules.settings.create_category
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -11,7 +14,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.androidx.compose.getViewModel
+import com.nivelais.combiplanner.app.di.getViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -55,10 +58,12 @@ fun CreateCategory(
         )
         // Create button
         Spacer(modifier = Modifier.padding(8.dp))
-        OutlinedButton(
+        Button(
             onClick = {
                 viewModel.launchCreation()
-            }) {
+            },
+            enabled = categoryName.text.isNotBlank(),
+        ) {
             Text(
                 text = stringResource(id = R.string.create_category_button)
             )
@@ -89,14 +94,14 @@ private fun NamePicker(
     onValueChange: (TextFieldValue) -> Unit
 ) {
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
         value = value,
         onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
         singleLine = true,
         label = {
             Text(text = stringResource(id = R.string.create_category_name_label))
         },
-        isErrorValue = isError
+        isError = isError
     )
 }
 

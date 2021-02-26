@@ -16,15 +16,20 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.nivelais.combiplanner.R
-import org.koin.androidx.compose.get
+import com.nivelais.combiplanner.app.di.get
 
 @Composable
-fun BottomNavBar(navController: NavController = get()) {
+fun BottomNavBar(
+    navController: NavController = get()
+) {
     BottomAppBar {
         // Create each of our nav buttons
         navigationTargets().forEach { navTarget ->
             BottomNavigationItem(
-                icon = { Icon(navTarget.icon) },
+                icon = {
+                    Icon(
+                        navTarget.icon,
+                        "Navigate to ${stringResource(id = navTarget.labelId)}") },
                 selected = isCurrentRoute(navController = navController, target = navTarget),
                 onClick = {
                     navController.navigate(navTarget.route) {

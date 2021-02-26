@@ -1,66 +1,76 @@
 package com.nivelais.combiplanner.app.ui.modules.task.entries
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.TaskEntry
+import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesParams
+import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesUseCase
+import kotlinx.coroutines.Job
+import org.koin.core.scope.inject
 
 /**
  * View model used to handle all the logic related to the management of our task entries
+ * TODO : Prevent rebuilding each time
  */
-class TaskEntriesViewModel(entries: List<TaskEntry>) : GenericViewModel() {
+class TaskEntriesViewModel : GenericViewModel() {
+
+    // Use case to get our entities from the entry id
+    private val getEntriesUseCase: GetEntriesUseCase by inject()
 
     /**
-     * List containing all of our entries
+     * The job that listen on the task entries
      */
-    val entriesState: SnapshotStateList<TaskEntryState>
+    private var entriesListenerJob: Job? = null
 
-    init {
-        entriesState = entries.map { taskEntry ->
-            TaskEntryState(
-                initialId = taskEntry.id,
-                nameState = mutableStateOf(taskEntry.name),
-                isDoneState = mutableStateOf(taskEntry.isDone)
-            )
-        }.toMutableStateList()
+    val entries: SnapshotStateList<TaskEntry> = mutableStateListOf()
+
+    /**
+     * Listen to the task entries
+     */
+    fun listenToEntries(taskId: Long?) {
+        if (taskId == null) return
+
+        // Setup the listener
+        entriesListenerJob =
+            getEntriesUseCase.observe(GetEntriesParams(taskId = taskId)) { newEntries ->
+                log.info(
+                    "Received {} entries to display",
+                    newEntries.size,
+                )
+                entries.updateFrom(newEntries)
+            }
     }
 
     /**
-     * Add a new entry in our list
+     * Cancel the listener on the task entries
      */
-    fun addEntry() = entriesState.add(
-        TaskEntryState(
-            initialId = 0L,
-            nameState = mutableStateOf(""),
-            isDoneState = mutableStateOf(false)
-        )
-    )
+    fun disposeEntriesListener() {
+        entriesListenerJob?.cancel()
+    }
+
+    override fun clearUseCases() {
+        entriesListenerJob?.cancel()
+    }
 
     /**
-     * Delete an entry at a specified index
+     * Update a snapshot state list of entries from a single list
      */
-    fun deleteEntry(index: Int) = entriesState.removeAt(index = index)
-
-    /**
-     * Get the updated task list
-     */
-    fun getUpdatedEntries(): List<TaskEntry> =
-        entriesState.map { entryState ->
-            TaskEntry(
-                id = entryState.initialId,
-                name = entryState.nameState.value,
-                isDone = entryState.isDoneState.value
-            )
+    private fun SnapshotStateList<TaskEntry>.updateFrom(newEntries: List<TaskEntry>) {
+        // Remove entry not present anymore
+        val oldEntriesIterator = iterator()
+        while (oldEntriesIterator.hasNext()) {
+            val oldEntry = oldEntriesIterator.next()
+            if(newEntries.none { it.id == oldEntry.id }) {
+                oldEntriesIterator.remove()
+            }
         }
 
-    /**
-     * Class containing the state for each one of our task entries
-     */
-    data class TaskEntryState(
-        val initialId: Long,
-        val nameState: MutableState<String>,
-        val isDoneState: MutableState<Boolean>
-    )
+        // Add the new entries
+        newEntries.forEach { potentialNewEntry ->
+            if(none { it.id == potentialNewEntry.id }) {
+                add(potentialNewEntry)
+            }
+        }
+    }
 }

@@ -1,9 +1,12 @@
 package com.nivelais.combiplanner.app.ui.modules.home.tasks
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.Category
+import com.nivelais.combiplanner.domain.entities.Task
 import com.nivelais.combiplanner.domain.usecases.task.GetTasksParams
 import com.nivelais.combiplanner.domain.usecases.task.GetTasksUseCase
+import kotlinx.coroutines.Job
 import org.koin.core.scope.inject
 
 class TasksViewModel : GenericViewModel() {
@@ -12,17 +15,26 @@ class TasksViewModel : GenericViewModel() {
     private val getTasksUseCase: GetTasksUseCase by inject()
 
     /**
-     * State flow of our tasks
+     * List of tasks displayed on the UI
      */
-    val tasksFlow = getTasksUseCase.stateFlow
+    val tasks = SnapshotStateList<Task>()
 
     /**
-     * Call the repository to fetch all of oru task
+     * Job that listener for our tasks
      */
-    fun fetchTasks(category: Category? = null) =
-        getTasksUseCase.run(GetTasksParams(category = category))
+    private var tasksListenerJob: Job? = null
+
+    /**
+     * Call the repository to fetch all of our task
+     */
+    fun fetchTasks(category: Category? = null) {
+        tasksListenerJob = getTasksUseCase.observe(GetTasksParams(category = category)) {
+            tasks.clear()
+            tasks.addAll(it)
+        }
+    }
 
     override fun clearUseCases() {
-        getTasksUseCase.clear()
+        tasksListenerJob?.cancel()
     }
 }
