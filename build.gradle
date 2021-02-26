@@ -57,8 +57,7 @@ subprojects {
             freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
             freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
 
-            // Allow unstable dependencies TODO : To remove when koin will be compatible with kotlin 1.4.30
-            freeCompilerArgs += '-Xallow-unstable-dependencies'
+            // Allow unstable dependencies
             freeCompilerArgs += '-Xskip-prerelease-check'
 
             // Set JVM target to 1.8

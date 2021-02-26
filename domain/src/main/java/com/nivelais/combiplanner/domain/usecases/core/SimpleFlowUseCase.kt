@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 
 /**+
  * Simple use case that return a flowable
- * TODO : Improve that, surely a better way to handle state flow and a coroutine scoped execute function
  */
 abstract class SimpleFlowUseCase<in Params, Result> {
 

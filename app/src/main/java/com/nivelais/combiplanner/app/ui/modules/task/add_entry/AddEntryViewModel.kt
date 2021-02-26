@@ -7,10 +7,7 @@ import com.nivelais.combiplanner.domain.usecases.task.entry.CreateEntryUseCase
 import org.koin.core.scope.inject
 
 /**
- * View model used to handle all the logic related to the management of our task entries
- * TODO : Prevent rebuilding each time
- * TODO : Koin injection for this view model ? parameter injection ?
- * TODO : How to fetch the updated list of entries from the parent view model ?
+ * View model used to handle all the logic related to the management of our add entry button
  */
 class AddEntryViewModel : GenericViewModel() {
 

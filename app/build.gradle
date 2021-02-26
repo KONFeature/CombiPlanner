@@ -77,9 +77,6 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
-    // Manually import activity compose because the first alpha is fcked up, TODO : To be removed in next version (after alpha 12)
-    //implementation 'androidx.activity:activity-compose:1.3.0-alpha02'
-
     // Navigation with Compose
     implementation "androidx.navigation:navigation-compose:$nav_compose_version"
 
