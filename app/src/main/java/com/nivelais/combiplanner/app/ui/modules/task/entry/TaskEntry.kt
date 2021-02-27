@@ -16,10 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
+import com.nivelais.combiplanner.app.di.get
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import com.nivelais.combiplanner.app.di.get
-import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable

@@ -16,11 +16,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.di.get
+import com.nivelais.combiplanner.app.di.getViewModel
 import com.nivelais.combiplanner.app.ui.modules.category.picker.CategoryPicker
 import com.nivelais.combiplanner.app.ui.modules.task.add_entry.AddEntry
 import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntries
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import com.nivelais.combiplanner.app.di.getViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -59,47 +59,23 @@ fun TaskPage(
             .padding(16.dp)
     ) {
         // The state for the error text, task name, id, and is category displayed
-        val errorTextResource by remember { viewModel.errorResState }
         var name by remember { viewModel.nameState }
+        val errorTextResource by remember { viewModel.errorResState }
         val currentTaskId by remember { viewModel.idState }
         var isCategoryPickerDisplayed by remember { viewModel.isCategoryPickerDisplayedState }
 
         // Header part
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Button to go back
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(Icons.Filled.ArrowBack, "Go back to the previous activity")
-            }
-            Spacer(modifier = Modifier.padding(8.dp))
-            // Name of the task
-            NameInput(
-                modifier = Modifier.weight(1f),
-                name = name,
-                isError = errorTextResource != null,
-                onNameChange = {
-                    name = it
-                    viewModel.save()
-                })
-            // Delete button if that's not a new task
-            if (currentTaskId != null) {
-                Spacer(modifier = Modifier.padding(8.dp))
-                IconButton(onClick = { viewModel.delete() }) {
-                    Icon(Icons.Default.Delete, "Delete this task")
-                }
-            }
-        }
-        Spacer(modifier = Modifier.padding(8.dp))
-
-        // If we got an error display it
-        errorTextResource?.let {
-            Text(
-                text = stringResource(id = it),
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.error
-            )
-        }
+        Header(
+            name = name,
+            onNameChanged = {
+                name = it
+                viewModel.save()
+            },
+            onBackClick = { navController.popBackStack() },
+            isDeleteEnabled = currentTaskId != null,
+            onDeleteClick = { viewModel.delete() },
+            errorTextResource = errorTextResource,
+        )
 
         // The entries for our task (only if we got a task in the database)
         TaskEntries(
@@ -135,6 +111,53 @@ fun TaskPage(
                 }
             }
         )
+    }
+}
+
+@Composable
+private fun Header(
+    name: String,
+    onNameChanged: (String) -> Unit,
+    onBackClick: () -> Unit,
+    isDeleteEnabled: Boolean,
+    onDeleteClick: () -> Unit,
+    errorTextResource: Int?
+) {
+    // The state for the error text, task name, id, and is category displayed
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Button to go back
+        IconButton(onClick = onBackClick) {
+            Icon(Icons.Filled.ArrowBack, "Go back to the previous activity")
+        }
+        Spacer(modifier = Modifier.padding(8.dp))
+        // Name of the task
+        NameInput(
+            modifier = Modifier.weight(1f),
+            name = name,
+            isError = errorTextResource != null,
+            onNameChange = onNameChanged
+        )
+        // Delete button if that's not a new task
+        Spacer(modifier = Modifier.padding(8.dp))
+        IconButton(
+            onClick = onDeleteClick,
+            enabled = isDeleteEnabled
+        ) {
+            Icon(Icons.Default.Delete, "Delete this task")
+        }
+    }
+    Spacer(modifier = Modifier.padding(8.dp))
+
+    // If we got an error display it
+    errorTextResource?.let {
+        Text(
+            text = stringResource(id = it),
+            style = MaterialTheme.typography.body1,
+            color = MaterialTheme.colors.error
+        )
+        Spacer(modifier = Modifier.padding(8.dp))
     }
 }
 

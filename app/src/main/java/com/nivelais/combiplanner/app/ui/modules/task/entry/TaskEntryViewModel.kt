@@ -21,7 +21,7 @@ class TaskEntryViewModel : GenericViewModel() {
     private val deleteEntryUseCase: DeleteEntryUseCase by inject()
 
     // The element of the view
-    val nameState = mutableStateOf(taskEntry?.name ?: "null")
+    val nameState = mutableStateOf(taskEntry?.name ?: "")
     val isDoneState = mutableStateOf(taskEntry?.isDone ?: false)
 
     /**

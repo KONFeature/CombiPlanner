@@ -14,7 +14,10 @@ import com.nivelais.combiplanner.domain.usecases.category.DeletionStrategy
 import kotlinx.coroutines.Job
 import org.koin.core.scope.inject
 
-class CategoryViewModel : GenericViewModel() {
+class CategoryViewModel(
+    private val category: Category,
+    private val allCategories: List<Category>,
+) : GenericViewModel() {
 
     // Use case to remove a given category
     private val deleteCategoriesUseCase: DeleteCategoryUseCase by inject()
@@ -34,6 +37,15 @@ class CategoryViewModel : GenericViewModel() {
 
     // The current strategy
     val selectedDeletionStrategyState: MutableState<DeletionStrategy?> = mutableStateOf(null)
+
+    // Val used to know if the deletion strategy require a category
+    val isCategoryRequiredForDeletion: Boolean
+        get() = isDeletionStrategyRequiredState.value &&
+                selectedDeletionStrategyState.value is DeletionStrategy.Migrate
+
+    // Val used to get the categories for the deletion strategy
+    val categoriesAvailableForMigration: List<Category>
+        get() = allCategories.filterNot { it.id == category.id }
 
     // The listener on the deletion scope
     private var deleteListenerJob: Job? = null

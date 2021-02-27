@@ -11,7 +11,6 @@ import com.nivelais.combiplanner.app.ui.modules.task.add_entry.AddEntryViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntriesViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.entry.TaskEntryViewModel
 import com.nivelais.combiplanner.domain.entities.Category
-import com.nivelais.combiplanner.domain.entities.TaskEntry
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -27,7 +26,12 @@ val appModule = module {
 
     // Settings
     viewModel { SettingsViewModel() }
-    viewModel { CategoryViewModel() }
+    viewModel { (category: Category, allCategories: List<Category>) ->
+        CategoryViewModel(
+            category = category,
+            allCategories = allCategories
+        )
+    }
     viewModel { CreateCategoryViewModel() }
 
     // Task
@@ -37,6 +41,8 @@ val appModule = module {
     factory { TaskEntryViewModel() }
 
     // Category picker
-    viewModel { (initialCategory: Category?) -> CategoryPickerViewModel(initialCategory = initialCategory) }
+    viewModel { (initialCategory: Category?) ->
+        CategoryPickerViewModel(initialCategory = initialCategory)
+    }
 
 }
