@@ -30,7 +30,7 @@ fun TaskEntryView(
     DisposableEffect(taskEntry.id) {
         viewModel.updateEntry(taskEntry)
 
-        onDispose {  }
+        onDispose { }
     }
 
     val name by remember { viewModel.nameState }
@@ -56,6 +56,9 @@ fun TaskEntryView(
             },
         )
         // In the case of a new entry we display a little button to add the task
+        // TODO : Replace delete button with arrow that toggle the detail of the entry and the advanced option (adding picture, dependency on other task etc)
+        // TODO : No card for the advanced pannel, maybe a divider at the bottom ?
+        // TODO : Or advanced pannel = alert ? With the
         IconButton(
             onClick = { viewModel.onDeleteClicked() }
         ) {

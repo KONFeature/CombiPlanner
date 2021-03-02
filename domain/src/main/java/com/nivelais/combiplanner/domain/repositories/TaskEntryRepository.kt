@@ -1,5 +1,6 @@
 package com.nivelais.combiplanner.domain.repositories
 
+import com.nivelais.combiplanner.domain.entities.Picture
 import com.nivelais.combiplanner.domain.entities.Task
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,7 @@ interface TaskEntryRepository {
         taskId: Long,
         name: String,
         isDone: Boolean = false,
+        pictures: List<Picture> = emptyList(),
         taskDependencies: List<Task> = emptyList()
     ): TaskEntry
 
@@ -26,6 +28,7 @@ interface TaskEntryRepository {
         id: Long,
         name: String?,
         isDone: Boolean?,
+        pictures: List<Picture>?,
         taskDependencies: List<Task>?
     )
 

@@ -8,11 +8,11 @@ import org.mapstruct.Mapper
 @Mapper(injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface CategoryDatabaseMapper {
 
-    fun entityToData(
-        categoryEntity: CategoryEntity
-    ): Category
-
     fun entitiesToDatas(
         categoryEntities: List<CategoryEntity>
     ): List<Category>
+
+    fun entityToData(
+        categoryEntity: CategoryEntity
+    ): Category
 }

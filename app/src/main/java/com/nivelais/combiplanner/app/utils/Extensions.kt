@@ -1,5 +1,8 @@
 package com.nivelais.combiplanner.app.utils
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Build
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
@@ -8,6 +11,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+import java.nio.ByteBuffer
 
 
 /**
@@ -40,3 +45,23 @@ inline fun <In, Out> FlowableUseCase<In, Out>.runAndCollect(
 
     return collectJob
 }
+
+/**
+ * Convert a bitmap to a byte array, with it's extensions
+ */
+fun Bitmap.toBytes() : Pair<ByteArray, String> {
+    val outputStream = ByteArrayOutputStream()
+    val format = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 20, outputStream)
+        "webp"
+    } else {
+        compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        "png"
+    }
+    return Pair(outputStream.toByteArray(), format)
+}
+
+/**
+ * Convert a byte array to a bitmap object
+ */
+fun ByteArray.toBitmap() : Bitmap = BitmapFactory.decodeByteArray(this, 0, size)

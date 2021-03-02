@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:8231332440962027331",
-      "lastPropertyId": "4:9087479259063710704",
+      "lastPropertyId": "5:7188597351882977007",
       "name": "CategoryEntity",
       "properties": [
         {
@@ -118,17 +118,22 @@
     }
   ],
   "lastEntityId": "4:6161787399075790671",
-  "lastIndexId": "1:1116925231145098315",
-  "lastRelationId": "3:5882042847919147006",
+  "lastIndexId": "2:3734703042994016318",
+  "lastRelationId": "4:7305856012519124696",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
-  "retiredIndexUids": [],
+  "retiredIndexUids": [
+    3734703042994016318
+  ],
   "retiredPropertyUids": [
     6083801505739560070,
-    6363020487120936281
+    6363020487120936281,
+    7188597351882977007
   ],
-  "retiredRelationUids": [],
+  "retiredRelationUids": [
+    7305856012519124696
+  ],
   "version": 1
 }

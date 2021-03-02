@@ -1,8 +1,11 @@
 package com.nivelais.combiplanner.app.ui.modules.task.add_entry
 
+import android.widget.Space
 import androidx.activity.compose.registerForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -15,10 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.di.getViewModel
+import com.nivelais.combiplanner.app.utils.safeItems
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
@@ -51,10 +57,26 @@ fun AddEntry(
         if (isAdvancedOptionsVisible) {
             AdvancedEntryCard {
                 Text("Discover more options here soon !")
-                IconButton(onClick = {
+
+                Spacer(modifier = Modifier.padding(8.dp))
+
+                OutlinedButton(onClick = {
                     pictureResultLauncher.launch(viewModel.intentForPicture)
                 }) {
+                    Text(text = stringResource(id = R.string.task_entries_add_photo))
                     Icon(Icons.Filled.Photo, "Take a picture")
+                }
+
+                // If we already got some pictures display them
+                if(viewModel.pictures.isNotEmpty()) {
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text("Current pictures that will be join with the entry")
+                    LazyRow {
+                        safeItems(viewModel.pictures) { picture ->
+                            Image(bitmap = picture.asImageBitmap(), contentDescription = "User picture")
+                            Spacer(modifier = Modifier.padding(8.dp))
+                        }
+                    }
                 }
             }
         }

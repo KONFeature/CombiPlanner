@@ -5,12 +5,18 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
 import androidx.activity.result.ActivityResult
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewModelScope
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
+import com.nivelais.combiplanner.app.utils.toBytes
 import com.nivelais.combiplanner.domain.usecases.task.entry.CreateEntryParams
 import com.nivelais.combiplanner.domain.usecases.task.entry.CreateEntryUseCase
 import com.skydoves.whatif.whatIfNotNull
 import com.skydoves.whatif.whatIfNotNullAs
+import kotlinx.coroutines.launch
 import org.koin.core.scope.inject
 
 /**
@@ -25,6 +31,11 @@ class AddEntryViewModel : GenericViewModel() {
      * State indicating us if we display the advanced option possible for a new entry
      */
     val isAdvancedOptionsVisibleState = mutableStateOf(false)
+
+    /**
+     * List of picture the user want for his entry
+     */
+    val pictures = mutableStateListOf<Bitmap>()
 
     // The intent use to fetch a pictures
     val intentForPicture: Intent
@@ -62,6 +73,7 @@ class AddEntryViewModel : GenericViewModel() {
         // Extract the result in the case of a new picture taken
         result.data?.extras?.get("data").whatIfNotNullAs<Bitmap> { pictureBitmap ->
             log.info("Handling picture bitmap as result, bitmap bytes : ${pictureBitmap.byteCount}")
+            pictures.add(pictureBitmap)
         }
     }
 
@@ -70,7 +82,13 @@ class AddEntryViewModel : GenericViewModel() {
      * Add an entry to our task
      */
     fun addEntry(taskId: Long) {
-        createEntryUseCase.run(CreateEntryParams(taskId = taskId, name = ""))
+        viewModelScope.launch {
+            // Convert our pictures to byte array
+            val rawPictures = pictures.map { it.toBytes() }
+
+            // Send all of that to the use case
+            createEntryUseCase.run(CreateEntryParams(taskId = taskId, name = "", rawPictures = rawPictures))
+        }
     }
 
     override fun clearUseCases() {

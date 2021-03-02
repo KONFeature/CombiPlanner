@@ -58,7 +58,7 @@ val domainModule = module {
     }
     scope<AddEntryViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { CreateEntryUseCase(get()) }
+        scoped { CreateEntryUseCase(get(), get()) }
     }
 
     // Settings part

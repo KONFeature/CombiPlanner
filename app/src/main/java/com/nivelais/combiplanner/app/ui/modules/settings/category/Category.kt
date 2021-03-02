@@ -4,6 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,6 +42,7 @@ fun CategoryCard(
             onDeleteClick = {
                 viewModel.deleteCategory(category = category)
             })
+        // TODO : toggle to display all the sub category
         // If we got an error display it
         errorRes?.let {
             Spacer(modifier = Modifier.padding(8.dp))
@@ -82,7 +86,11 @@ private fun CategoryBox(
 }
 
 @Composable
-private fun CategoryHeader(name: String, color: Long?, onDeleteClick: () -> Unit) {
+private fun CategoryHeader(
+    name: String,
+    color: Long?,
+    onDeleteClick: () -> Unit,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,

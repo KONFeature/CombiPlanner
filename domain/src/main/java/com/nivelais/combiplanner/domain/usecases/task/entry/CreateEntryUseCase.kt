@@ -1,6 +1,8 @@
 package com.nivelais.combiplanner.domain.usecases.task.entry
 
+import com.nivelais.combiplanner.domain.entities.Picture
 import com.nivelais.combiplanner.domain.entities.Task
+import com.nivelais.combiplanner.domain.repositories.PictureRepository
 import com.nivelais.combiplanner.domain.repositories.TaskEntryRepository
 import com.nivelais.combiplanner.domain.usecases.core.FlowableUseCase
 import kotlinx.coroutines.FlowPreview
@@ -9,16 +11,25 @@ import kotlinx.coroutines.FlowPreview
  * Use case used to create a new task entry
  */
 class CreateEntryUseCase(
-    private val taskEntryRepository: TaskEntryRepository
+    private val taskEntryRepository: TaskEntryRepository,
+    private val pictureRepository: PictureRepository,
 ) : FlowableUseCase<CreateEntryParams, CreateEntryResult>() {
 
     @OptIn(FlowPreview::class)
     override suspend fun execute(params: CreateEntryParams) {
         log.info("Creating a new task entry with param {}", params)
+
+        // Insert all the picture and save them
+        val pictures = params.rawPictures.map { rawPicture ->
+            pictureRepository.create(rawPicture.first, rawPicture.second)
+        }
+
+        // Create the entry with the right infos
         val createdEntry = taskEntryRepository.add(
             taskId = params.taskId,
             name = params.name,
             isDone = params.isDone,
+            pictures = pictures,
             taskDependencies = params.taskDependencies
         )
         log.info("Tak entry created with success {}", createdEntry)
@@ -34,7 +45,8 @@ data class CreateEntryParams(
     val taskId: Long,
     val name: String,
     val isDone: Boolean = false,
-    val taskDependencies: List<Task> = emptyList()
+    val rawPictures: List<Pair<ByteArray, String>> = emptyList(),
+    val taskDependencies: List<Task> = emptyList(),
 )
 
 

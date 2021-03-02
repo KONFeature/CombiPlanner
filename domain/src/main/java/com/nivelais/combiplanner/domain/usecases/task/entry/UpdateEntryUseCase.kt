@@ -1,5 +1,6 @@
 package com.nivelais.combiplanner.domain.usecases.task.entry
 
+import com.nivelais.combiplanner.domain.entities.Picture
 import com.nivelais.combiplanner.domain.entities.Task
 import com.nivelais.combiplanner.domain.repositories.TaskEntryRepository
 import com.nivelais.combiplanner.domain.usecases.core.FlowableUseCase
@@ -20,6 +21,7 @@ class UpdateEntryUseCase(
             id = params.entryId,
             name = params.name,
             isDone = params.isDone,
+            pictures = params.pictures,
             taskDependencies = params.taskDependencies
         )
         log.info("Tak entry updated with success")
@@ -34,6 +36,7 @@ data class UpdateEntryParams(
     val entryId: Long,
     val name: String? = null,
     val isDone: Boolean? = null,
+    val pictures: List<Picture>? = null,
     val taskDependencies: List<Task>? = null
 )
 

@@ -47,4 +47,5 @@
     <string name="task_entries_title">Task steps</string>
     <string name="task_entries_name_placeholder">Task step</string>
     <string name="task_entries_add_button">Add an entry</string>
+    <string name="task_entries_add_photo">Join a photo</string>
 </resources>

@@ -2,8 +2,10 @@ package com.nivelais.combiplanner.data.repositories
 
 import com.nivelais.combiplanner.data.database.dao.TaskDao
 import com.nivelais.combiplanner.data.database.dao.TaskEntryDao
+import com.nivelais.combiplanner.data.database.entities.PictureEntity
 import com.nivelais.combiplanner.data.database.entities.TaskEntryEntity
 import com.nivelais.combiplanner.data.database.mapper.TaskEntryDatabaseMapper
+import com.nivelais.combiplanner.domain.entities.Picture
 import com.nivelais.combiplanner.domain.entities.Task
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 import com.nivelais.combiplanner.domain.repositories.TaskEntryRepository
@@ -29,6 +31,7 @@ class TaskEntryRepositoryImpl(
         taskId: Long,
         name: String,
         isDone: Boolean,
+        pictures: List<Picture>,
         taskDependencies: List<Task>
     ): TaskEntry {
         // Create our new entity
@@ -44,12 +47,19 @@ class TaskEntryRepositoryImpl(
                 // Persist the task entry
                 taskEntryDao.save(taskEntry)
 
+                // And add all the pictures
+                pictures.forEach {
+                    taskEntry.pictures.add(PictureEntity(id = it.id))
+                }
+                taskEntry.pictures.applyChangesToDb()
+
                 // Link it to the task
                 entries.add(taskEntry)
                 entries.applyChangesToDb()
             }
         }
 
+        // TODO : Handle pictures
         // TODO : Handle the task dependencies
 
         // Return our fresh entity
@@ -63,6 +73,7 @@ class TaskEntryRepositoryImpl(
         id: Long,
         name: String?,
         isDone: Boolean?,
+        pictures: List<Picture>?,
         taskDependencies: List<Task>?
     ) {
         // Find the task entry
@@ -71,6 +82,7 @@ class TaskEntryRepositoryImpl(
             name?.let { taskEntry.name = it }
             isDone?.let { taskEntry.isDone = it }
 
+            // TODO : Handle pictures
             // TODO : Handle task dependencies update
 
             // Save our updated entry
@@ -83,6 +95,7 @@ class TaskEntryRepositoryImpl(
      */
     override suspend fun delete(id: Long) {
         taskEntryDao.delete(id)
+        // TODO : Handle pictures
     }
 
     /**

@@ -14,4 +14,9 @@ class PictureDao(boxStore: BoxStore) {
      * Box used to access our task entries
      */
     private val box: Box<PictureEntity> = boxStore.boxFor()
+
+    /**
+     * Save a new picture
+     */
+    fun save(pictureEntity: PictureEntity) = box.put(pictureEntity)
 }
