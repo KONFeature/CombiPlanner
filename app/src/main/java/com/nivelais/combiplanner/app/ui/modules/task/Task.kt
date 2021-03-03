@@ -77,32 +77,27 @@ fun TaskPage(
             errorTextResource = errorTextResource,
         )
 
+        // Category selection
+        CategoryPickerHeader(
+            isDroppedDown = isCategoryPickerDisplayed,
+            onDropDownClicked = {
+                isCategoryPickerDisplayed = !isCategoryPickerDisplayed
+            }
+        )
+        if (isCategoryPickerDisplayed) {
+            Spacer(modifier = Modifier.padding(8.dp))
+            CategoryPicker(
+                initialCategory = viewModel.categoryState.value,
+                onCategoryPicked = {
+                    viewModel.categoryState.value = it
+                    viewModel.save()
+                })
+        }
+
         // The entries for our task (only if we got a task in the database)
+        Divider(thickness = 1.dp, modifier = Modifier.padding(8.dp))
         TaskEntries(
             taskId = currentTaskId,
-            header = {
-                // Category selection
-                categoryPickerHeader(
-                    isDroppedDown = isCategoryPickerDisplayed,
-                    onDropDownClicked = {
-                        isCategoryPickerDisplayed = !isCategoryPickerDisplayed
-                    }
-                )
-                if (isCategoryPickerDisplayed) {
-                    item {
-                        Spacer(modifier = Modifier.padding(8.dp))
-                        CategoryPicker(
-                            initialCategory = viewModel.categoryState.value,
-                            onCategoryPicked = {
-                                viewModel.categoryState.value = it
-                                viewModel.save()
-                            })
-                    }
-                }
-                item {
-                    Divider(thickness = 1.dp, modifier = Modifier.padding(8.dp))
-                }
-            },
             footer = {
                 // Item to create a new task
                 item {
@@ -161,23 +156,22 @@ private fun Header(
     }
 }
 
-private fun LazyListScope.categoryPickerHeader(
+@Composable
+private fun CategoryPickerHeader(
     isDroppedDown: Boolean,
     onDropDownClicked: () -> Unit
 ) {
-    item {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(id = R.string.task_category_title),
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier.weight(1f)
-            )
-            IconButton(onClick = onDropDownClicked) {
-                val icon = if (isDroppedDown) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore
-                Icon(icon, "Toggle the category picker visibility")
-            }
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(id = R.string.task_category_title),
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.weight(1f)
+        )
+        IconButton(onClick = onDropDownClicked) {
+            val icon = if (isDroppedDown) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore
+            Icon(icon, "Toggle the category picker visibility")
         }
     }
 }

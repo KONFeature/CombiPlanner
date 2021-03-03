@@ -28,17 +28,10 @@ class TaskEntryRepositoryImpl(
      * @inheritDoc
      */
     override suspend fun add(
-        taskId: Long,
-        name: String,
-        isDone: Boolean,
-        pictures: List<Picture>,
-        taskDependencies: List<Task>
+        taskId: Long
     ): TaskEntry {
         // Create our new entity
-        val taskEntry = TaskEntryEntity(
-            name = name,
-            isDone = isDone
-        )
+        val taskEntry = TaskEntryEntity(name = "")
 
         // Find the task we need to associated it with
         taskDao.get(taskId)?.apply {
@@ -46,12 +39,6 @@ class TaskEntryRepositoryImpl(
             taskEntryDao.boxStore.runInTx {
                 // Persist the task entry
                 taskEntryDao.save(taskEntry)
-
-                // And add all the pictures
-                pictures.forEach {
-                    taskEntry.pictures.add(PictureEntity(id = it.id))
-                }
-                taskEntry.pictures.applyChangesToDb()
 
                 // Link it to the task
                 entries.add(taskEntry)
@@ -82,7 +69,12 @@ class TaskEntryRepositoryImpl(
             name?.let { taskEntry.name = it }
             isDone?.let { taskEntry.isDone = it }
 
-            // TODO : Handle pictures
+            // Add all the pictures
+            pictures?.forEach {
+                taskEntry.pictures.add(PictureEntity(id = it.id))
+            }
+            taskEntry.pictures.applyChangesToDb()
+
             // TODO : Handle task dependencies update
 
             // Save our updated entry

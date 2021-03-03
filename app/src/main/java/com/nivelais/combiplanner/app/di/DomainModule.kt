@@ -19,10 +19,11 @@ import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskUseCase
 import com.nivelais.combiplanner.domain.usecases.task.GetTaskUseCase
 import com.nivelais.combiplanner.domain.usecases.task.GetTasksUseCase
 import com.nivelais.combiplanner.domain.usecases.task.SaveTaskUseCase
-import com.nivelais.combiplanner.domain.usecases.task.entry.CreateEntryUseCase
+import com.nivelais.combiplanner.domain.usecases.task.entry.AddEntryUseCase
 import com.nivelais.combiplanner.domain.usecases.task.entry.DeleteEntryUseCase
 import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesUseCase
 import com.nivelais.combiplanner.domain.usecases.task.entry.UpdateEntryUseCase
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
@@ -53,12 +54,15 @@ val domainModule = module {
     }
     scope<TaskEntryViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { UpdateEntryUseCase(get()) }
+
+        scoped { UpdateEntryUseCase(get(), get()) }
         scoped { DeleteEntryUseCase(get()) }
+
+        scoped { androidContext().contentResolver }
     }
     scope<AddEntryViewModel> {
         scoped { viewModelCoroutineScope() }
-        scoped { CreateEntryUseCase(get(), get()) }
+        scoped { AddEntryUseCase(get()) }
     }
 
     // Settings part

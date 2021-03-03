@@ -49,7 +49,7 @@ inline fun <In, Out> FlowableUseCase<In, Out>.runAndCollect(
 /**
  * Convert a bitmap to a byte array, with it's extensions
  */
-fun Bitmap.toBytes() : Pair<ByteArray, String> {
+fun Bitmap.toBytes(): Pair<ByteArray, String> {
     val outputStream = ByteArrayOutputStream()
     val format = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 20, outputStream)
@@ -58,10 +58,10 @@ fun Bitmap.toBytes() : Pair<ByteArray, String> {
         compress(Bitmap.CompressFormat.PNG, 100, outputStream)
         "png"
     }
-    return Pair(outputStream.toByteArray(), format)
+    return outputStream.toByteArray() to format
 }
 
 /**
  * Convert a byte array to a bitmap object
  */
-fun ByteArray.toBitmap() : Bitmap = BitmapFactory.decodeByteArray(this, 0, size)
+fun ByteArray.toBitmap(): Bitmap = BitmapFactory.decodeByteArray(this, 0, size)

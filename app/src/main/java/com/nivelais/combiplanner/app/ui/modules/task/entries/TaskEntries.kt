@@ -21,7 +21,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun TaskEntries(
     taskId: Long?,
     viewModel: TaskEntriesViewModel = getViewModel(),
-    header: LazyListScope.() -> Unit,
     footer: LazyListScope.() -> Unit
 ) {
     DisposableEffect(taskId) {
@@ -35,8 +34,6 @@ fun TaskEntries(
     }
 
     LazyColumn {
-        header()
-
         // Entries
         taskEntriesPart(
             titleRes = R.string.task_entries_title,

@@ -1,30 +1,20 @@
 package com.nivelais.combiplanner.app.ui.modules.task.add_entry
 
-import android.widget.Space
-import androidx.activity.compose.registerForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Photo
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
 import com.nivelais.combiplanner.app.di.getViewModel
-import com.nivelais.combiplanner.app.utils.safeItems
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
@@ -35,77 +25,15 @@ fun AddEntry(
     isEnable: Boolean = taskId != null,
     viewModel: AddEntryViewModel = getViewModel(),
 ) {
-    Column {
-        var isAdvancedOptionsVisible by remember { viewModel.isAdvancedOptionsVisibleState }
-
-        // The launcher used to get a picture
-        val pictureResultLauncher = registerForActivityResult(
-            contract = ActivityResultContracts.StartActivityForResult(),
-            onResult = { viewModel.handlePictureResult(it) })
-
-        AddEntryButton(
-            isAdvancedOptionsVisible = isAdvancedOptionsVisible,
-            isEnable = isEnable,
-            onAddClick = {
-                taskId?.let { viewModel.addEntry(taskId = it) }
-            },
-            onToggleAdvancedOptionClick = {
-                isAdvancedOptionsVisible = !isAdvancedOptionsVisible
-            }
-        )
-
-        if (isAdvancedOptionsVisible) {
-            AdvancedEntryCard {
-                Text("Discover more options here soon !")
-
-                Spacer(modifier = Modifier.padding(8.dp))
-
-                OutlinedButton(onClick = {
-                    pictureResultLauncher.launch(viewModel.intentForPicture)
-                }) {
-                    Text(text = stringResource(id = R.string.task_entries_add_photo))
-                    Icon(Icons.Filled.Photo, "Take a picture")
-                }
-
-                // If we already got some pictures display them
-                if(viewModel.pictures.isNotEmpty()) {
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Text("Current pictures that will be join with the entry")
-                    LazyRow {
-                        safeItems(viewModel.pictures) { picture ->
-                            Image(bitmap = picture.asImageBitmap(), contentDescription = "User picture")
-                            Spacer(modifier = Modifier.padding(8.dp))
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun AddEntryButton(
-    isAdvancedOptionsVisible: Boolean,
-    isEnable: Boolean,
-    onAddClick: () -> Unit,
-    onToggleAdvancedOptionClick: () -> Unit,
-) {
-
     Row {
         OutlinedButton(
             modifier = Modifier.weight(1f),
             enabled = isEnable,
-            onClick = onAddClick
+            onClick = {
+                taskId?.let { viewModel.addEntry(taskId = it) }
+            }
         ) {
             AddEntryButtonContent()
-        }
-        IconButton(
-            enabled = isEnable,
-            onClick = onToggleAdvancedOptionClick
-        ) {
-            val icon =
-                if (isAdvancedOptionsVisible) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore
-            Icon(icon, "Toggle the advanced entry creation options")
         }
     }
 }
@@ -118,20 +46,5 @@ private fun AddEntryButtonContent() {
         Icon(Icons.Default.AddCircle, "Add an entry")
         Spacer(modifier = Modifier.padding(8.dp))
         Text(text = stringResource(id = R.string.task_entries_add_button))
-    }
-}
-
-
-@Composable
-private fun AdvancedEntryCard(
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Card {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            content = content
-        )
     }
 }

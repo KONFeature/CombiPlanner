@@ -14,11 +14,7 @@ interface TaskEntryRepository {
      * Create a new task entry for a task
      */
     suspend fun add(
-        taskId: Long,
-        name: String,
-        isDone: Boolean = false,
-        pictures: List<Picture> = emptyList(),
-        taskDependencies: List<Task> = emptyList()
+        taskId: Long
     ): TaskEntry
 
     /**
