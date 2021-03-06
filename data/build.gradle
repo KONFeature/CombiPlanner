@@ -9,13 +9,14 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         minSdkVersion 27
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+
+        versionCode generateVersionCode()
+        versionName version
 
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -60,4 +61,12 @@ dependencies {
     // Log4j
     implementation "org.apache.logging.log4j:log4j-api:$logback_version"
     kapt "org.apache.logging.log4j:log4j-core:$logback_version"
+}
+
+
+/**
+ * Generate the app version code from the versionName
+ */
+def generateVersionCode() {
+    return Integer.parseInt(version.replaceAll('-SNAPSHOT', '').replaceAll('\\.', ''))
 }

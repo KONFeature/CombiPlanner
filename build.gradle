@@ -25,6 +25,7 @@ buildscript {
 
 plugins {
     id 'com.diffplug.spotless' version '5.10.2'
+    id 'net.researchgate.release' version '2.8.1'
 }
 
 subprojects {

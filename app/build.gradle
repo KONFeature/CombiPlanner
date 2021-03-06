@@ -9,14 +9,15 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.nivelais.combiplanner"
         minSdkVersion 27
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+
+        versionCode generateVersionCode()
+        versionName version
     }
 
     buildTypes {
@@ -101,4 +102,11 @@ dependencies {
     // Use https://github.com/chrisbanes/accompanist for image composable
     // If retrofit for some network, also use https://github.com/skydoves/sandwich
 
+}
+
+/**
+ * Generate the app version code from the versionName
+ */
+def generateVersionCode() {
+    return Integer.parseInt(version.replaceAll('-SNAPSHOT', '').replaceAll('\\.', ''))
 }

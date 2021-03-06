@@ -21,12 +21,12 @@ on:
   workflow_dispatch:
     inputs:
       # The version to release
-      release-version:
+      releaseVersion:
         description: 'Release version'
         default: 'X.Y.Z'
         required: true
       # The next dev version
-      next-version:
+      nextVersion:
         description: 'Next development version'
         default: 'X.Y.Z-SNAPSHOT'
         required: true
@@ -52,9 +52,13 @@ jobs:
         with:
           java-version: 11
 
-      # Run a SpotlessCheck on the code, then build the release version and generate a lint report
+      # Run a SpotlessCheck on the code and generate a lint report
       - name: Build project
-        run: ./gradlew spotlessCheck assembleRelease lintRelease --stacktrace
+        run: ./gradlew spotlessCheck lintRelease --stacktrace
+
+      # Launch the release process
+      - name: Build project
+        run: ./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${{ github.event.inputs.releaseVersion }} -Prelease.newVersion=${{ github.event.inputs.nextVersion }}
 
       # Sign the generated apk
       - uses: r0adkll/sign-android-release@v1
