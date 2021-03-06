@@ -66,3 +66,6 @@ subprojects {
         }
     }
 }
+
+// After a successful release, we build and bundle our app
+afterReleaseBuild.dependsOn('clean', ':app:build', ':app:bundle')

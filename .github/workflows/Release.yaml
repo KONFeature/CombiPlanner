@@ -58,20 +58,32 @@ jobs:
 
       # Launch the release process
       - name: Release project
+        id: release
         run: |
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions"
           ./gradlew release \
             -Prelease.useAutomaticVersion=true \
             -Prelease.releaseVersion=${{ github.event.inputs.releaseVersion }} \
-            -Prelease.newVersion=${{ github.event.inputs.nextVersion }} \
-            -Prelease.requireBranch=release
+            -Prelease.newVersion=${{ github.event.inputs.nextVersion }}
 
+      # Sign the generated bundle
+      - uses: r0adkll/sign-android-release@v1
+        name: Sign app Bundle
+        id: sign_bundle
+        with:
+          releaseDirectory: app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "30.0.3"
 
       # Sign the generated apk
       - uses: r0adkll/sign-android-release@v1
         name: Sign app APK
-        id: sign_app
+        id: sign_apk
         with:
           releaseDirectory: app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
@@ -86,7 +98,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build-outputs
-          path: app/build/outputs/apk/release
+          path: |
+            app/build/outputs/apk/release
+            app/build/outputs/bundle/release
 
       # Upload the lint report
       - name: Upload build reports
