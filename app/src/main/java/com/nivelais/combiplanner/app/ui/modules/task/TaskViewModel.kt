@@ -8,7 +8,15 @@ import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.app.utils.runAndCollect
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
-import com.nivelais.combiplanner.domain.usecases.task.*
+import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskParams
+import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskResult
+import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskUseCase
+import com.nivelais.combiplanner.domain.usecases.task.GetTaskParams
+import com.nivelais.combiplanner.domain.usecases.task.GetTaskResult
+import com.nivelais.combiplanner.domain.usecases.task.GetTaskUseCase
+import com.nivelais.combiplanner.domain.usecases.task.SaveTaskParams
+import com.nivelais.combiplanner.domain.usecases.task.SaveTaskResult
+import com.nivelais.combiplanner.domain.usecases.task.SaveTaskUseCase
 import kotlinx.coroutines.Job
 import org.koin.core.scope.inject
 

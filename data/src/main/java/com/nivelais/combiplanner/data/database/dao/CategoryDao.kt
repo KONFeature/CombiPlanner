@@ -8,7 +8,6 @@ import com.nivelais.combiplanner.data.database.observeAll
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
-import io.objectbox.kotlin.query
 
 /**
  * Dao used to manage our category object

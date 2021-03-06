@@ -1,6 +1,5 @@
 package com.nivelais.combiplanner.app.ui.modules.task.entry
 
-import android.content.ContentResolver
 import androidx.compose.runtime.mutableStateOf
 import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.TaskEntry

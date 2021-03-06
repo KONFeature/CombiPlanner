@@ -23,7 +23,6 @@ import com.nivelais.combiplanner.domain.usecases.task.entry.AddEntryUseCase
 import com.nivelais.combiplanner.domain.usecases.task.entry.DeleteEntryUseCase
 import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesUseCase
 import com.nivelais.combiplanner.domain.usecases.task.entry.UpdateEntryUseCase
-import org.koin.android.ext.koin.androidContext
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 

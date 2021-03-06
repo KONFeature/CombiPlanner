@@ -3,12 +3,10 @@ package com.nivelais.combiplanner.data.repositories
 import com.nivelais.combiplanner.data.database.dao.TaskDao
 import com.nivelais.combiplanner.data.database.dao.TaskEntryDao
 import com.nivelais.combiplanner.data.database.entities.TaskEntity
-import com.nivelais.combiplanner.data.database.entities.TaskEntryEntity
 import com.nivelais.combiplanner.data.database.mapper.TaskDatabaseMapper
 import com.nivelais.combiplanner.data.database.mapper.TaskEntryDatabaseMapper
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.entities.Task
-import com.nivelais.combiplanner.domain.entities.TaskEntry
 import com.nivelais.combiplanner.domain.exceptions.SaveTaskException
 import com.nivelais.combiplanner.domain.repositories.TaskRepository
 import kotlinx.coroutines.flow.Flow

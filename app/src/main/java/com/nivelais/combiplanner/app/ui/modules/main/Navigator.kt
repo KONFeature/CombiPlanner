@@ -9,7 +9,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.nivelais.combiplanner.app.di.InjectNavController
 import com.nivelais.combiplanner.app.ui.modules.home.HomePage
 import com.nivelais.combiplanner.app.ui.modules.settings.SettingsPage

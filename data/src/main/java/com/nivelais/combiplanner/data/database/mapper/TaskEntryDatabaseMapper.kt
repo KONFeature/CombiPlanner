@@ -1,11 +1,9 @@
 package com.nivelais.combiplanner.data.database.mapper
 
-import com.nivelais.combiplanner.data.database.entities.TaskEntity
 import com.nivelais.combiplanner.data.database.entities.TaskEntryEntity
 import com.nivelais.combiplanner.domain.entities.TaskEntry
-import io.objectbox.relation.ToMany
-import org.mapstruct.*
-import org.mapstruct.factory.Mappers
+import org.mapstruct.InjectionStrategy
+import org.mapstruct.Mapper
 
 @Mapper(injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface TaskEntryDatabaseMapper {
