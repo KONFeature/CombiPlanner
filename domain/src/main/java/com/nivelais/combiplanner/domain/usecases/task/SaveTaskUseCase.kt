@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020-2021 Quentin Nivelais
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nivelais.combiplanner.domain.usecases.task
 
 import com.nivelais.combiplanner.domain.entities.Category
@@ -38,7 +53,7 @@ class SaveTaskUseCase(
             }
         } catch (exception: SaveTaskException) {
             log.warn("Error when saving the task", exception)
-            when(exception) {
+            when (exception) {
                 is SaveTaskException.InvalidNameException ->
                     resultFlow.emit(SaveTaskResult.InvalidName)
                 is SaveTaskException.DuplicateNameException ->
@@ -59,7 +74,6 @@ data class SaveTaskParams(
     val name: String,
     val category: Category
 )
-
 
 /**
  * Possible result of this use case
