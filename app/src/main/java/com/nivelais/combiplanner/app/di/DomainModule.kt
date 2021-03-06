@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020-2021 Quentin Nivelais
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nivelais.combiplanner.app.di
 
 import androidx.lifecycle.ViewModel
@@ -19,7 +34,7 @@ import com.nivelais.combiplanner.domain.usecases.task.DeleteTaskUseCase
 import com.nivelais.combiplanner.domain.usecases.task.GetTaskUseCase
 import com.nivelais.combiplanner.domain.usecases.task.GetTasksUseCase
 import com.nivelais.combiplanner.domain.usecases.task.SaveTaskUseCase
-import com.nivelais.combiplanner.domain.usecases.task.entry.CreateEntryUseCase
+import com.nivelais.combiplanner.domain.usecases.task.entry.AddEntryUseCase
 import com.nivelais.combiplanner.domain.usecases.task.entry.DeleteEntryUseCase
 import com.nivelais.combiplanner.domain.usecases.task.entry.GetEntriesUseCase
 import com.nivelais.combiplanner.domain.usecases.task.entry.UpdateEntryUseCase
@@ -32,9 +47,7 @@ import org.koin.dsl.module
  */
 val domainModule = module {
     // Home part
-    scope<HomeViewModel> {
-        scoped { viewModelCoroutineScope() }
-    }
+    scope<HomeViewModel> { }
     scope<TasksViewModel> {
         scoped { viewModelCoroutineScope() }
         scoped { GetTasksUseCase(get(), get()) }
@@ -42,7 +55,6 @@ val domainModule = module {
 
     // Task part
     scope<TaskViewModel> {
-        scoped { viewModelCoroutineScope() }
         scoped { SaveTaskUseCase(get()) }
         scoped { GetTaskUseCase(get()) }
         scoped { DeleteTaskUseCase(get()) }
@@ -52,13 +64,11 @@ val domainModule = module {
         scoped { GetEntriesUseCase(get(), get()) }
     }
     scope<TaskEntryViewModel> {
-        scoped { viewModelCoroutineScope() }
         scoped { UpdateEntryUseCase(get()) }
         scoped { DeleteEntryUseCase(get()) }
     }
     scope<AddEntryViewModel> {
-        scoped { viewModelCoroutineScope() }
-        scoped { CreateEntryUseCase(get()) }
+        scoped { AddEntryUseCase(get()) }
     }
 
     // Settings part
@@ -67,11 +77,9 @@ val domainModule = module {
         scoped { GetCategoriesUseCase(get(), get()) }
     }
     scope<CategoryViewModel> {
-        scoped { viewModelCoroutineScope() }
         scoped { DeleteCategoryUseCase(get(), get()) }
     }
     scope<CreateCategoryViewModel> {
-        scoped { viewModelCoroutineScope() }
         scoped { CreateCategoryUseCase(get()) }
     }
 

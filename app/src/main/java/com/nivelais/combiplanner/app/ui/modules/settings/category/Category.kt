@@ -1,8 +1,37 @@
+/*
+ * Copyright 2020-2021 Quentin Nivelais
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nivelais.combiplanner.app.ui.modules.settings.category
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.Checkbox
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.runtime.Composable
@@ -14,18 +43,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
+import com.nivelais.combiplanner.app.di.get
 import com.nivelais.combiplanner.app.ui.modules.category.picker.StatelessCategoriesPicker
 import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.usecases.category.DeletionStrategy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun CategoryCard(
-    viewModel: CategoryViewModel = CategoryViewModel(),
     category: Category,
-    categories: List<Category>
+    categories: List<Category>,
+    viewModel: CategoryViewModel = get { parametersOf(category, categories) }
 ) {
     val errorRes by remember { viewModel.deletionErrorResState }
 
@@ -36,7 +67,8 @@ fun CategoryCard(
             color = category.color,
             onDeleteClick = {
                 viewModel.deleteCategory(category = category)
-            })
+            }
+        )
         // If we got an error display it
         errorRes?.let {
             Spacer(modifier = Modifier.padding(8.dp))
@@ -52,7 +84,6 @@ fun CategoryCard(
         if (isStrategyToSpecify) {
             MigrationStrategyAlert(
                 viewModel = viewModel,
-                categories = categories,
                 onDismiss = { viewModel.dismissDeletionStrategyDialog() },
                 onDeleteClicked = {
                     viewModel.deleteCategory(category)
@@ -81,7 +112,11 @@ private fun CategoryBox(
 }
 
 @Composable
-private fun CategoryHeader(name: String, color: Long?, onDeleteClick: () -> Unit) {
+private fun CategoryHeader(
+    name: String,
+    color: Long?,
+    onDeleteClick: () -> Unit,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -109,18 +144,22 @@ private fun CategoryHeader(name: String, color: Long?, onDeleteClick: () -> Unit
 @Composable
 private fun MigrationStrategyAlert(
     viewModel: CategoryViewModel,
-    categories: List<Category>,
     onDismiss: () -> Unit,
     onDeleteClicked: () -> Unit,
 ) {
     val errorRes by remember { viewModel.deletionErrorResState }
-    val isStrategyToSpecify by remember { viewModel.isDeletionStrategyRequiredState }
     var deletionStrategy by remember { viewModel.selectedDeletionStrategyState }
+    var selectedCategory by remember { viewModel.selectedCategoryState }
 
-    // TODO : Otpimize that part
     MigrationStrategyAlertBox(
         onDismiss = onDismiss,
-        onDeleteClicked = onDeleteClicked
+        onDeleteClicked = onDeleteClicked,
+        title = {
+            Text(
+                text = stringResource(id = R.string.category_deletion_strategy_picker),
+                style = MaterialTheme.typography.h6
+            )
+        }
     ) {
         // If we got an error display it
         errorRes?.let {
@@ -130,21 +169,15 @@ private fun MigrationStrategyAlert(
                 style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.error
             )
+            Spacer(modifier = Modifier.padding(8.dp))
         }
         // If we need to specify a migration strategy do it
-        if (isStrategyToSpecify) {
-            Spacer(modifier = Modifier.padding(8.dp))
-            Text(
-                text = stringResource(id = R.string.category_deletion_strategy_picker),
-                style = MaterialTheme.typography.body2
-            )
-            Spacer(modifier = Modifier.padding(8.dp))
-            DeleteStrategyPicker(
-                currentStrategy = deletionStrategy,
-                onStrategyPicked = { deletionStrategy = it })
-        }
+        DeleteStrategyPicker(
+            currentStrategy = deletionStrategy,
+            onStrategyPicked = { deletionStrategy = it }
+        )
         // If the current strategy is category then show the category picker
-        if (isStrategyToSpecify && deletionStrategy is DeletionStrategy.Migrate) {
+        if (viewModel.isCategoryRequiredForDeletion) {
             // Category picker
             Spacer(modifier = Modifier.padding(8.dp))
             Text(
@@ -153,11 +186,11 @@ private fun MigrationStrategyAlert(
             )
             Spacer(modifier = Modifier.padding(8.dp))
             StatelessCategoriesPicker(
-                categories = categories,
-                categorySelected = viewModel.selectedCategoryState.value,
+                categories = viewModel.categoriesAvailableForMigration,
+                categorySelected = selectedCategory,
                 onCategoryPicked = {
                     // Update the selected category and the migration target
-                    viewModel.selectedCategoryState.value = it
+                    selectedCategory = it
                     (deletionStrategy as DeletionStrategy.Migrate).newCategoryId = it.id
                 }
             )
@@ -172,15 +205,19 @@ private fun MigrationStrategyAlert(
 private fun MigrationStrategyAlertBox(
     onDismiss: () -> Unit,
     onDeleteClicked: () -> Unit,
+    title: @Composable() (() -> Unit),
     content: @Composable() (ColumnScope.() -> Unit)
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
+        title = title,
         buttons = {
             Row(
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
                 OutlinedButton(onClick = onDeleteClicked) {
                     Text(

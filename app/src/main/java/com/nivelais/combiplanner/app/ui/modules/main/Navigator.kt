@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020-2021 Quentin Nivelais
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nivelais.combiplanner.app.ui.modules.main
 
 import androidx.compose.foundation.layout.Box
@@ -9,7 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.nivelais.combiplanner.app.di.InjectNavController
 import com.nivelais.combiplanner.app.ui.modules.home.HomePage
 import com.nivelais.combiplanner.app.ui.modules.settings.SettingsPage
@@ -42,10 +61,12 @@ fun Navigator() {
                 // Task route (with the route id as optional arg)
                 composable(
                     Route.TaskHost.name,
-                    arguments = listOf(navArgument("taskId") {
-                        type = NavType.LongType
-                        defaultValue = -1L
-                    })
+                    arguments = listOf(
+                        navArgument("taskId") {
+                            type = NavType.LongType
+                            defaultValue = -1L
+                        }
+                    )
                 ) { navBackStackEntry ->
                     TaskPage(
                         taskId = navBackStackEntry.arguments?.getLong("taskId")
@@ -61,7 +82,7 @@ sealed class Route(val name: String) {
     object Home : Route("home")
     object Settings : Route("settings")
 
-    class Task(taskId: Long = 0L) : Route("task/${taskId}")
+    class Task(taskId: Long = 0L) : Route("task/$taskId")
     object TaskHost : Route("task/{taskId}")
 }
 

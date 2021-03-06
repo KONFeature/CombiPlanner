@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:8231332440962027331",
-      "lastPropertyId": "4:9087479259063710704",
+      "lastPropertyId": "5:7188597351882977007",
       "name": "CategoryEntity",
       "properties": [
         {
@@ -84,21 +84,56 @@
           "flags": 4
         }
       ],
+      "relations": [
+        {
+          "id": "2:4821310892614391869",
+          "name": "pictures",
+          "targetId": "4:6161787399075790671"
+        },
+        {
+          "id": "3:5882042847919147006",
+          "name": "taskDependencies",
+          "targetId": "2:7509150695982830961"
+        }
+      ]
+    },
+    {
+      "id": "4:6161787399075790671",
+      "lastPropertyId": "2:8432556647783566852",
+      "name": "PictureEntity",
+      "properties": [
+        {
+          "id": "1:298482153687915607",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8432556647783566852",
+          "name": "path",
+          "type": 9
+        }
+      ],
       "relations": []
     }
   ],
-  "lastEntityId": "3:8006560886609770314",
-  "lastIndexId": "1:1116925231145098315",
-  "lastRelationId": "1:5565604868767882218",
+  "lastEntityId": "4:6161787399075790671",
+  "lastIndexId": "2:3734703042994016318",
+  "lastRelationId": "4:7305856012519124696",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
-  "retiredIndexUids": [],
+  "retiredIndexUids": [
+    3734703042994016318
+  ],
   "retiredPropertyUids": [
     6083801505739560070,
-    6363020487120936281
+    6363020487120936281,
+    7188597351882977007
   ],
-  "retiredRelationUids": [],
+  "retiredRelationUids": [
+    7305856012519124696
+  ],
   "version": 1
 }

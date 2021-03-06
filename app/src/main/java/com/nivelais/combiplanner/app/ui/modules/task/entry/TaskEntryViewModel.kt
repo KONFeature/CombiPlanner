@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020-2021 Quentin Nivelais
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nivelais.combiplanner.app.ui.modules.task.entry
 
 import androidx.compose.runtime.mutableStateOf
@@ -21,11 +36,22 @@ class TaskEntryViewModel : GenericViewModel() {
     private val deleteEntryUseCase: DeleteEntryUseCase by inject()
 
     // The element of the view
-    val nameState = mutableStateOf(taskEntry?.name ?: "null")
+    val nameState = mutableStateOf(taskEntry?.name ?: "")
     val isDoneState = mutableStateOf(taskEntry?.isDone ?: false)
 
     /**
-     * Delete an entry at a specified index
+     * Update the current displayed entry
+     */
+    fun updateEntry(newEntry: TaskEntry?) {
+        // Update the displayed entry
+        taskEntry = newEntry
+        // Reset the field
+        nameState.value = newEntry?.name ?: "null"
+        isDoneState.value = newEntry?.isDone ?: false
+    }
+
+    /**
+     * Delete the current entry
      */
     fun onDeleteClicked() {
         taskEntry?.let {
@@ -63,12 +89,6 @@ class TaskEntryViewModel : GenericViewModel() {
                 )
             )
         }
-    }
-
-    fun updateEntry(newEntry: TaskEntry?) {
-        taskEntry = newEntry
-        nameState.value = newEntry?.name ?: "null"
-        isDoneState.value = newEntry?.isDone ?: false
     }
 
     override fun clearUseCases() {
