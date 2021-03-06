@@ -2,11 +2,8 @@ package com.nivelais.combiplanner.data.repositories
 
 import com.nivelais.combiplanner.data.database.dao.TaskDao
 import com.nivelais.combiplanner.data.database.dao.TaskEntryDao
-import com.nivelais.combiplanner.data.database.entities.PictureEntity
 import com.nivelais.combiplanner.data.database.entities.TaskEntryEntity
 import com.nivelais.combiplanner.data.database.mapper.TaskEntryDatabaseMapper
-import com.nivelais.combiplanner.domain.entities.Picture
-import com.nivelais.combiplanner.domain.entities.Task
 import com.nivelais.combiplanner.domain.entities.TaskEntry
 import com.nivelais.combiplanner.domain.repositories.TaskEntryRepository
 import kotlinx.coroutines.flow.Flow
@@ -46,9 +43,6 @@ class TaskEntryRepositoryImpl(
             }
         }
 
-        // TODO : Handle pictures
-        // TODO : Handle the task dependencies
-
         // Return our fresh entity
         return taskEntryDatabaseMapper.entityToData(taskEntry)
     }
@@ -60,22 +54,12 @@ class TaskEntryRepositoryImpl(
         id: Long,
         name: String?,
         isDone: Boolean?,
-        pictures: List<Picture>?,
-        taskDependencies: List<Task>?
     ) {
         // Find the task entry
         taskEntryDao.get(id = id)?.let { taskEntry ->
             // Update the field we received
             name?.let { taskEntry.name = it }
             isDone?.let { taskEntry.isDone = it }
-
-            // Add all the pictures
-            pictures?.forEach {
-                taskEntry.pictures.add(PictureEntity(id = it.id))
-            }
-            taskEntry.pictures.applyChangesToDb()
-
-            // TODO : Handle task dependencies update
 
             // Save our updated entry
             taskEntryDao.save(taskEntry)
@@ -87,7 +71,6 @@ class TaskEntryRepositoryImpl(
      */
     override suspend fun delete(id: Long) {
         taskEntryDao.delete(id)
-        // TODO : Handle pictures
     }
 
     /**

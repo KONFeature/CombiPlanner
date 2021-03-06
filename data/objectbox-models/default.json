@@ -84,36 +84,6 @@
           "flags": 4
         }
       ],
-      "relations": [
-        {
-          "id": "2:4821310892614391869",
-          "name": "pictures",
-          "targetId": "4:6161787399075790671"
-        },
-        {
-          "id": "3:5882042847919147006",
-          "name": "taskDependencies",
-          "targetId": "2:7509150695982830961"
-        }
-      ]
-    },
-    {
-      "id": "4:6161787399075790671",
-      "lastPropertyId": "2:8432556647783566852",
-      "name": "PictureEntity",
-      "properties": [
-        {
-          "id": "1:298482153687915607",
-          "name": "id",
-          "type": 6,
-          "flags": 1
-        },
-        {
-          "id": "2:8432556647783566852",
-          "name": "path",
-          "type": 9
-        }
-      ],
       "relations": []
     }
   ],
@@ -123,17 +93,23 @@
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
-  "retiredEntityUids": [],
+  "retiredEntityUids": [
+    6161787399075790671
+  ],
   "retiredIndexUids": [
     3734703042994016318
   ],
   "retiredPropertyUids": [
     6083801505739560070,
     6363020487120936281,
-    7188597351882977007
+    7188597351882977007,
+    298482153687915607,
+    8432556647783566852
   ],
   "retiredRelationUids": [
-    7305856012519124696
+    7305856012519124696,
+    4821310892614391869,
+    5882042847919147006
   ],
   "version": 1
 }

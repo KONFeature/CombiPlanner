@@ -40,9 +40,6 @@ fun TaskEntryView(
     val name by remember { viewModel.nameState }
     val isDone by remember { viewModel.isDoneState }
 
-    // Is the advanced panne lvisible
-    var isAdvancedVisible by remember { viewModel.isAdvancedVisibleState }
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -62,67 +59,11 @@ fun TaskEntryView(
                 Text(text = stringResource(id = R.string.task_entries_name_placeholder))
             },
         )
-        // In the case of a new entry we display a little button to add the task
-        // TODO : Replace delete button with arrow that toggle the detail of the entry and the advanced option (adding picture, dependency on other task etc)
-        // TODO : No card for the advanced pannel, maybe a divider at the bottom ?
-        // TODO : Or advanced pannel = alert ? With the
-        IconButton(
-            onClick = { isAdvancedVisible = !isAdvancedVisible }
-        ) {
-            val icon = if (isAdvancedVisible) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore
-            Icon(icon, "Toggle the advanced entry pannel")
-        }
+        // Delete entry button
         IconButton(
             onClick = { viewModel.onDeleteClicked() }
         ) {
             Icon(Icons.Default.Delete, "Delete the entry")
         }
-    }
-
-    if (isAdvancedVisible) {
-        AdvancedEntryCard {
-            // The launcher used to get a picture
-            val pictureResultLauncher = registerForActivityResult(
-                contract = ActivityResultContracts.StartActivityForResult(),
-                onResult = { viewModel.handlePictureResult(it) })
-
-            Text("Discover more options here soon !")
-
-            Spacer(modifier = Modifier.padding(8.dp))
-
-            OutlinedButton(onClick = {
-                pictureResultLauncher.launch(viewModel.intentForPicture)
-            }) {
-                Text(text = stringResource(id = R.string.task_entries_add_photo))
-                Icon(Icons.Filled.Photo, "Take a picture")
-            }
-
-            // If we already got some pictures display them
-            if (viewModel.pictures.isNotEmpty()) {
-                Spacer(modifier = Modifier.padding(8.dp))
-                Text("Current pictures that will be join with the entry")
-                LazyRow {
-                    safeItems(viewModel.pictures) { picture ->
-                        Image(bitmap = picture.asImageBitmap(), contentDescription = "User picture")
-                        Spacer(modifier = Modifier.padding(8.dp))
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-private fun AdvancedEntryCard(
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Card {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            content = content
-        )
     }
 }

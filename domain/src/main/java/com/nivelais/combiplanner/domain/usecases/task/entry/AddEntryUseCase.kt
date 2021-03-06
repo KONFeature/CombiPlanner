@@ -1,7 +1,5 @@
 package com.nivelais.combiplanner.domain.usecases.task.entry
 
-import com.nivelais.combiplanner.domain.entities.Task
-import com.nivelais.combiplanner.domain.repositories.PictureRepository
 import com.nivelais.combiplanner.domain.repositories.TaskEntryRepository
 import com.nivelais.combiplanner.domain.usecases.core.FlowableUseCase
 import kotlinx.coroutines.FlowPreview

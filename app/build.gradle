@@ -80,7 +80,7 @@ dependencies {
     // Navigation with Compose
     implementation "androidx.navigation:navigation-compose:$nav_compose_version"
 
-    // Koin (Dependency Injection) TODO : To be replaced by Hilt when fully stable for compose view model injection with state
+    // Koin (Dependency Injection)
     implementation "org.koin:koin-core-ext:$koin_version"
     implementation "org.koin:koin-androidx-ext:$koin_version"
     implementation "org.koin:koin-androidx-compose:$koin_version"

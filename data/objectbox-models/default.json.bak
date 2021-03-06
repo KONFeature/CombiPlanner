@@ -26,13 +26,7 @@
           "flags": 2
         }
       ],
-      "relations": [
-        {
-          "id": "4:7305856012519124696",
-          "name": "childCategories",
-          "targetId": "1:8231332440962027331"
-        }
-      ]
+      "relations": []
     },
     {
       "id": "2:7509150695982830961",
@@ -138,6 +132,8 @@
     6363020487120936281,
     7188597351882977007
   ],
-  "retiredRelationUids": [],
+  "retiredRelationUids": [
+    7305856012519124696
+  ],
   "version": 1
 }

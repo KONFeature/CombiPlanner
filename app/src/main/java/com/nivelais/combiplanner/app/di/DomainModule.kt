@@ -33,9 +33,7 @@ import org.koin.dsl.module
  */
 val domainModule = module {
     // Home part
-    scope<HomeViewModel> {
-        scoped { viewModelCoroutineScope() }
-    }
+    scope<HomeViewModel> { }
     scope<TasksViewModel> {
         scoped { viewModelCoroutineScope() }
         scoped { GetTasksUseCase(get(), get()) }
@@ -43,7 +41,6 @@ val domainModule = module {
 
     // Task part
     scope<TaskViewModel> {
-        scoped { viewModelCoroutineScope() }
         scoped { SaveTaskUseCase(get()) }
         scoped { GetTaskUseCase(get()) }
         scoped { DeleteTaskUseCase(get()) }
@@ -53,15 +50,10 @@ val domainModule = module {
         scoped { GetEntriesUseCase(get(), get()) }
     }
     scope<TaskEntryViewModel> {
-        scoped { viewModelCoroutineScope() }
-
-        scoped { UpdateEntryUseCase(get(), get()) }
+        scoped { UpdateEntryUseCase(get()) }
         scoped { DeleteEntryUseCase(get()) }
-
-        scoped { androidContext().contentResolver }
     }
     scope<AddEntryViewModel> {
-        scoped { viewModelCoroutineScope() }
         scoped { AddEntryUseCase(get()) }
     }
 
@@ -71,11 +63,9 @@ val domainModule = module {
         scoped { GetCategoriesUseCase(get(), get()) }
     }
     scope<CategoryViewModel> {
-        scoped { viewModelCoroutineScope() }
         scoped { DeleteCategoryUseCase(get(), get()) }
     }
     scope<CreateCategoryViewModel> {
-        scoped { viewModelCoroutineScope() }
         scoped { CreateCategoryUseCase(get()) }
     }
 

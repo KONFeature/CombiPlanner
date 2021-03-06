@@ -14,7 +14,4 @@ data class TaskEntryEntity(
     @Id var id: Long = 0,
     var name: String? = null,
     var isDone: Boolean = false,
-) {
-    lateinit var pictures: ToMany<PictureEntity>
-    lateinit var taskDependencies: ToMany<TaskEntity>
-}
+)
