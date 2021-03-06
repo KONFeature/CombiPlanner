@@ -14,17 +14,28 @@
 # limitations under the License.
 #
 
-name: Build
+name: Release
 
+# Only trigger this job manually, passing the current version and the next dev version
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
+    inputs:
+      # The version to release
+      release-version:
+        description: 'Release version'
+        default: 'X.Y.Z'
+        required: true
+      # The next dev version
+      next-version:
+        description: 'Next development version'
+        default: 'X.Y.Z-SNAPSHOT'
+        required: true
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: production # Run on the production environment, to get the keystore, password etc
 
     steps:
       # Checkout the code
@@ -41,16 +52,29 @@ jobs:
         with:
           java-version: 11
 
-      # Run a SpotlessCheck on the code, then build it and generate a lint report
+      # Run a SpotlessCheck on the code, then build the release version and generate a lint report
       - name: Build project
-        run: ./gradlew spotlessCheck assembleDebug lintDebug --stacktrace
+        run: ./gradlew spotlessCheck assembleRelease lintRelease --stacktrace
 
-      # Upload the built debug apk
+      # Sign the generated apk
+      - uses: r0adkll/sign-android-release@v1
+        name: Sign app APK
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "30.0.3"
+
+      # Upload the built release apk
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v2
         with:
           name: build-outputs
-          path: app/build/outputs
+          path: app/build/outputs/apk/release
 
       # Upload the lint report
       - name: Upload build reports
