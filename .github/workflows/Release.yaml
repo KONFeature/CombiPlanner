@@ -65,7 +65,7 @@ jobs:
             -Prelease.useAutomaticVersion=true \
             -Prelease.releaseVersion=${{ github.event.inputs.releaseVersion }} \
             -Prelease.newVersion=${{ github.event.inputs.nextVersion }} \
-            -Prelease.newVersion=${{ github.event.inputs.nextVersion }} \
+            -Prelease.requireBranch=release
 
 
       # Sign the generated apk
