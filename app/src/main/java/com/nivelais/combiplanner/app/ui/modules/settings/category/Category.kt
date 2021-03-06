@@ -42,7 +42,6 @@ fun CategoryCard(
             onDeleteClick = {
                 viewModel.deleteCategory(category = category)
             })
-        // TODO : toggle to display all the sub category
         // If we got an error display it
         errorRes?.let {
             Spacer(modifier = Modifier.padding(8.dp))
@@ -125,7 +124,6 @@ private fun MigrationStrategyAlert(
     var deletionStrategy by remember { viewModel.selectedDeletionStrategyState }
     var selectedCategory by remember { viewModel.selectedCategoryState }
 
-    // TODO : Otpimize that part
     MigrationStrategyAlertBox(
         onDismiss = onDismiss,
         onDeleteClicked = onDeleteClicked,

@@ -11,7 +11,6 @@ import org.koin.core.scope.inject
 
 /**
  * View model used to handle all the logic related to the management of our task entries
- * TODO : Prevent rebuilding each time
  */
 class TaskEntriesViewModel : GenericViewModel() {
 

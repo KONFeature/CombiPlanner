@@ -98,7 +98,7 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-api:$logback_version"
     kapt "org.apache.logging.log4j:log4j-core:$logback_version"
 
-    // TODO : Use https://github.com/chrisbanes/accompanist ??
-    // TODO : If retrofit for some network, also use https://github.com/skydoves/sandwich
+    // Use https://github.com/chrisbanes/accompanist for image composable
+    // If retrofit for some network, also use https://github.com/skydoves/sandwich
 
 }

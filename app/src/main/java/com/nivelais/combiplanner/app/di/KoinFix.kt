@@ -1,9 +1,4 @@
 package com.nivelais.combiplanner.app.di
-/**
-  * File used to fix koin 2.2 with the latest version of compose
- *  @see https://github.com/InsertKoinIO/koin/issues/1006
- *  TODO : Try 3.0-alpha version of koin ?
-  */
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -19,6 +14,7 @@ import org.koin.core.qualifier.Qualifier
 /**
  * Compose v1.0.0-alpha12 and koin v2.2.2 are not compatible. This file contains koin source code as
  * a temporary workaround.
+ *  @see https://github.com/InsertKoinIO/koin/issues/1006
  */
 
 /**
