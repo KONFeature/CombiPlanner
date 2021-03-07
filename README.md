@@ -83,28 +83,28 @@ Project Link: [https://github.com/KONFeature/CombiPlanner](https://github.com/KO
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[android-shield]: https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white
-[kotlin-shield]: https://img.shields.io/badge/Kotlin-0095D5?&style=flat-square&logo=kotlin&logoColor=white
-[version-shield]: https://img.shields.io/github/v/tag/KONFeature/CombiPlanner.svg?label=Release&style=flat-square
+[android-shield]: https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white
+[kotlin-shield]: https://img.shields.io/badge/Kotlin-0095D5?&style=for-the-badge&logo=kotlin&logoColor=white
+[version-shield]: https://img.shields.io/github/v/tag/KONFeature/CombiPlanner.svg?label=Release&style=for-the-badge
 
-[issues-shield]: https://img.shields.io/github/issues/KONFeature/CombiPlanner.svg?style=flat-square
+[issues-shield]: https://img.shields.io/github/issues/KONFeature/CombiPlanner.svg?style=for-the-badge
 [issues-url]: https://github.com/KONFeature/CombiPlanner/issues
-[license-shield]: https://img.shields.io/github/license/KONFeature/CombiPlanner.svg?style=flat-square
+[license-shield]: https://img.shields.io/github/license/KONFeature/CombiPlanner.svg?style=for-the-badge
 [license-url]: https://github.com/KONFeature/CombiPlanner/blob/master/LICENSE
 
-[codefactor-shield]: https://img.shields.io/codefactor/grade/github/KONFeature/CombiPlanner.svg?style=flat-square
+[codefactor-shield]: https://img.shields.io/codefactor/grade/github/KONFeature/CombiPlanner.svg?style=for-the-badge
 [codefactor-url]: https://www.codefactor.io/repository/github/konfeature/combiplanner
-[libraries-shield]: https://img.shields.io/librariesio/github/KONFeature/CombiPlanner.svg?style=flat-square
+[libraries-shield]: https://img.shields.io/librariesio/github/KONFeature/CombiPlanner.svg?style=for-the-badge
 [libraries-url]: https://libraries.io/github/KONFeature/CombiPlanner
-[mad-shield]: https://img.shields.io/badge/MAD%20ScoreCard-073042?style=flat-square&logo=android&logoColor=white
+[mad-shield]: https://img.shields.io/badge/MAD%20ScoreCard-073042?style=for-the-badge&logo=android&logoColor=white
 [mad-url]: https://madscorecard.withgoogle.com/scorecard/share/3751598406/
 
-[build-job-shield]: https://img.shields.io/github/workflow/status/KONFeature/CombiPlanner/Build?label=Build&logo=github&style=flat-square
+[build-job-shield]: https://img.shields.io/github/workflow/status/KONFeature/CombiPlanner/Build?label=Build&logo=github&style=for-the-badge
 [build-job-url]: https://github.com/KONFeature/CombiPlanner/actions/workflows/Build.yaml
-[release-job-shield]: https://img.shields.io/github/workflow/status/KONFeature/CombiPlanner/Release?label=Release&logo=github&style=flat-square
+[release-job-shield]: https://img.shields.io/github/workflow/status/KONFeature/CombiPlanner/Release?label=Release&logo=github&style=for-the-badge
 [release-job-url]: https://github.com/KONFeature/CombiPlanner/actions/workflows/Release.yaml
-[scan-job-shield]: https://img.shields.io/github/workflow/status/KONFeature/CombiPlanner/Security%20Scan?label=Security%20Scan&logo=github&style=flat-square
+[scan-job-shield]: https://img.shields.io/github/workflow/status/KONFeature/CombiPlanner/Security%20Scan?label=Security%20Scan&logo=github&style=for-the-badge
 [scan-job-url]: https://github.com/KONFeature/CombiPlanner/actions/workflows/Security.yaml
 
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/quentin-nivelais-5081a4141
