@@ -68,5 +68,5 @@ dependencies {
  * Generate the app version code from the versionName
  */
 def generateVersionCode() {
-    return Integer.parseInt(version.replaceAll('-SNAPSHOT', '').replaceAll('\\.', ''))
+    return Integer.parseInt(version.replaceAll("[^0-9]", ""))
 }
