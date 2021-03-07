@@ -23,13 +23,23 @@ on:
       # The version to release
       releaseVersion:
         description: 'Release version'
-        default: 'X.Y.Z'
+        default: '0.0.X'
         required: true
       # The next dev version
       nextVersion:
         description: 'Next development version'
-        default: 'X.Y.Z-SNAPSHOT'
+        default: '0.0.Y'
         required: true
+      # The next release suffix
+      nextReleaseSufifx:
+        description: 'Next-release suffix'
+        default: 'snapshot'
+        required: false
+      # The pre release suffix
+      preReleaseSufifx:
+        description: 'Pre-release suffix'
+        default: 'alpha'
+        required: false
 
 jobs:
   release:
@@ -64,8 +74,9 @@ jobs:
           git config --global user.name "github-actions"
           ./gradlew release \
             -Prelease.useAutomaticVersion=true \
-            -Prelease.releaseVersion=${{ github.event.inputs.releaseVersion }} \
-            -Prelease.newVersion=${{ github.event.inputs.nextVersion }}
+            -Prelease.releaseVersion=${{ github.event.inputs.releaseVersion }}-${{ github.event.inputs.preReleaseSufifx }} \
+            -Prelease.newVersion=${{ github.event.inputs.nextVersion }}-${{ github.event.inputs.preReleaseSufifx }}-${{ github.event.inputs.nextReleaseSufifx }} \
+            --stacktrace
 
       # Sign the generated bundle
       - uses: r0adkll/sign-android-release@v1
@@ -117,5 +128,6 @@ jobs:
           name: Release ${{ github.event.inputs.releaseVersion }}
           tag: ${{ github.event.inputs.releaseVersion }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "app/build/outputs/apk/release/*.apk,app/build/outputs/bundle/release/*.aab"
+          artifacts: "app/build/outputs/apk/release/signed*.apk,app/build/outputs/bundle/release/*.aab"
           artifactContentType: application/zip
+          prerelease: ${{ github.event.inputs.preReleaseSufifx != null }}
