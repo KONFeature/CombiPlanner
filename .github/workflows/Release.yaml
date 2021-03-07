@@ -114,7 +114,7 @@ jobs:
       - name: Create github release
         uses: ncipollo/release-action@v1
         with:
-          name: Release ${{ github.event.inputs.releaseVersion }
+          name: Release ${{ github.event.inputs.releaseVersion }}
           tag: ${{ github.event.inputs.releaseVersion }}
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "app/build/outputs/apk/release/*.apk,app/build/outputs/bundle/release/*.aab"
