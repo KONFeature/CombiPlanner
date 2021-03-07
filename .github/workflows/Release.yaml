@@ -99,8 +99,8 @@ jobs:
         with:
           name: build-outputs
           path: |
-            app/build/outputs/apk/release
-            app/build/outputs/bundle/release
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab
 
       # Upload the lint report
       - name: Upload build reports
@@ -109,3 +109,13 @@ jobs:
         with:
           name: build-reports
           path: app/build/reports
+
+      # Create the github release
+      - name: Create github release
+        uses: ncipollo/release-action@v1
+        with:
+          name: Release ${{ github.event.inputs.releaseVersion }
+          tag: ${{ github.event.inputs.releaseVersion }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "app/build/outputs/apk/release/*.apk,app/build/outputs/bundle/release/*.aab"
+          artifactContentType: application/zip
