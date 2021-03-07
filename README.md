@@ -2,9 +2,6 @@
 ![Kotlin][kotlin-shield]
 ![Version][version-shield]
 [![Apache License][license-shield]][license-url]
-
-<br />
-
 [![CodeFactor][codefactor-shield]][codefactor-url]
 [![Libraries][libraries-shield]][libraries-url]
 [![Issues][issues-shield]][issues-url]
@@ -16,14 +13,11 @@
 [![Scan job][scan-job-shield]][scan-job-url]
 [![Release job][release-job-shield]][release-job-url]
 
-<!-- TODO : PROJECT LOGO -->
 <br />
-<!--
 <p align="center">
   <a href="https://github.com/KONFeature/CombiPlanner">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="playstore-logo.png" alt="Logo" width="80" height="80">
   </a>
--->
 
 <h3 align="center">CombiPlanner</h3>
 
@@ -81,7 +75,7 @@ Distributed under the Apache 2.0 License. See `LICENSE` for more information.
 
 ## Contact
 
-Quentin Nivelais - [Portfolio](https://nivelais.com/) - [quentin@nivelais.com](mailto:quentin@nivelais.com) - [![LinkedIn][linkedin-shield]][linkedin-url]
+Quentin Nivelais - [Portfolio](https://nivelais.com/) - [quentin@nivelais.com](mailto:quentin@nivelais.com) - [LinkedIn][linkedin-url]
 
 
 Project Link: [https://github.com/KONFeature/CombiPlanner](https://github.com/KONFeature/CombiPlanner)
@@ -102,14 +96,14 @@ Project Link: [https://github.com/KONFeature/CombiPlanner](https://github.com/KO
 [codefactor-url]: https://www.codefactor.io/repository/github/konfeature/combiplanner
 [libraries-shield]: https://img.shields.io/librariesio/github/KONFeature/CombiPlanner.svg?style=flat-square
 [libraries-url]: https://libraries.io/github/KONFeature/CombiPlanner
-[mad-shield]: https://img.shields.io/badge/MAD%20ScoreCard-3DDC84?style=flat-square&logo=android&logoColor=white
+[mad-shield]: https://img.shields.io/badge/MAD%20ScoreCard-073042?style=flat-square&logo=android&logoColor=white
 [mad-url]: https://madscorecard.withgoogle.com/scorecard/share/3751598406/
 
 [build-job-shield]: https://img.shields.io/github/workflow/status/KONFeature/CombiPlanner/Build?label=Build&logo=github&style=flat-square
 [build-job-url]: https://github.com/KONFeature/CombiPlanner/actions/workflows/Build.yaml
 [release-job-shield]: https://img.shields.io/github/workflow/status/KONFeature/CombiPlanner/Release?label=Release&logo=github&style=flat-square
 [release-job-url]: https://github.com/KONFeature/CombiPlanner/actions/workflows/Release.yaml
-[scan-job-shield]: https://img.shields.io/github/workflow/status/KONFeature/CombiPlanner/Security%20Scan?label=Scan&logo=github&style=flat-square
+[scan-job-shield]: https://img.shields.io/github/workflow/status/KONFeature/CombiPlanner/Security%20Scan?label=Security%20Scan&logo=github&style=flat-square
 [scan-job-url]: https://github.com/KONFeature/CombiPlanner/actions/workflows/Security.yaml
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
