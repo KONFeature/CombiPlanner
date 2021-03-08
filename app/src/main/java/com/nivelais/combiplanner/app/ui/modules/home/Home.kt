@@ -107,6 +107,9 @@ fun HomePage(
     }
 }
 
+/**
+ * TODO : Find a way to add a reversed droplet style to the fab when active (displaying the filter card)
+ */
 @Composable
 private fun FilterButton(onClick: () -> Unit) {
     FloatingActionButton(

@@ -46,15 +46,10 @@ class TaskRepositoryImpl(
      * @inheritDoc
      */
     @Throws(SaveTaskException::class)
-    override suspend fun create(
-        name: String,
-        category: Category
-    ): Task {
+    override suspend fun create(name: String): Task {
         checkName(name, true)
         // Create the task entity
-        val entity = TaskEntity(name = name).apply {
-            this.category.targetId = category.id
-        }
+        val entity = TaskEntity(name = name)
 
         // Insert it in the database and return the mapped result
         taskDao.save(entity)
@@ -67,18 +62,22 @@ class TaskRepositoryImpl(
     @Throws(SaveTaskException::class)
     override suspend fun update(
         id: Long,
-        name: String,
-        category: Category
+        name: String?,
+        category: Category?
     ) {
-        checkName(name, false)
         // Get the entity for this id
-        val taskEntity = taskDao.get(id)
-        taskEntity?.let { task ->
-            // Update the field of our resolved task
-            task.name = name
-            task.category.targetId = category.id
-            // Then save it
-            taskDao.save(task)
+        taskDao.get(id)?.let { taskEntity ->
+            // Check and update the name if provided
+            name?.let {
+                checkName(it, false)
+                taskEntity.name = it
+            }
+            // Update the category if provided
+            category?.let {
+                taskEntity.category.targetId = category.id
+            }
+            // Then save the updated entity
+            taskDao.save(taskEntity)
         }
     }
 
@@ -86,13 +85,13 @@ class TaskRepositoryImpl(
      * Check a task name
      */
     @Throws(SaveTaskException::class)
-    private fun checkName(name: String, isTaskCreation: Boolean) {
+    private fun checkName(name: String, needToBeUnique: Boolean) {
         // Empty name not accepted
         if (name.isBlank()) {
             throw SaveTaskException.InvalidNameException
         }
         // In the case of a task creation also check for name duplication
-        if (isTaskCreation && taskDao.countByName(name) > 0) {
+        if (needToBeUnique && taskDao.countByName(name) > 0) {
             throw SaveTaskException.DuplicateNameException
         }
     }

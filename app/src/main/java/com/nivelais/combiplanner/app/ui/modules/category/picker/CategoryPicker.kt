@@ -106,7 +106,8 @@ private fun CategorySelectableCard(
         ) {
             Text(
                 text = category.name,
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(4.dp),
+                style = MaterialTheme.typography.button
             )
             // If this category got a color display it
             category.color?.let { colorCode ->

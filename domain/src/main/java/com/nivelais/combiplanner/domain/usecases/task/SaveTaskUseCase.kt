@@ -44,10 +44,7 @@ class SaveTaskUseCase(
                 log.info("Task updated with success {}")
             } ?: run {
                 // Creation operation
-                val createdTask = taskRepository.create(
-                    params.name,
-                    params.category
-                )
+                val createdTask = taskRepository.create(params.name)
                 resultFlow.emit(SaveTaskResult.Success(createdTask.id))
                 log.info("New task created {}", createdTask)
             }
@@ -72,7 +69,7 @@ class SaveTaskUseCase(
 data class SaveTaskParams(
     val id: Long?,
     val name: String,
-    val category: Category
+    val category: Category?
 )
 
 /**

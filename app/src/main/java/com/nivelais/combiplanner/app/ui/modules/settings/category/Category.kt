@@ -182,7 +182,7 @@ private fun MigrationStrategyAlert(
             Spacer(modifier = Modifier.padding(8.dp))
             Text(
                 text = stringResource(id = R.string.category_categories_picker),
-                style = MaterialTheme.typography.body2
+                style = MaterialTheme.typography.subtitle1
             )
             Spacer(modifier = Modifier.padding(8.dp))
             StatelessCategoriesPicker(
@@ -250,6 +250,14 @@ private fun DeleteStrategyPicker(
     Column(
         modifier = Modifier.padding(8.dp),
     ) {
+        DeletionStrategyCheckbox(
+            textRes = R.string.category_deletion_strategy_migrate_to_null,
+            isChecked = currentStrategy is DeletionStrategy.MigrateToNull,
+            onCheckedChange = {
+                if (it) onStrategyPicked(DeletionStrategy.MigrateToNull)
+            }
+        )
+        Spacer(modifier = Modifier.padding(8.dp))
         DeletionStrategyCheckbox(
             textRes = R.string.category_deletion_strategy_cascade,
             isChecked = currentStrategy is DeletionStrategy.Cascade,

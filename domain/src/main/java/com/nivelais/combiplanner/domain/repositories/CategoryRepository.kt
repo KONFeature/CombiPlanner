@@ -46,5 +46,5 @@ interface CategoryRepository {
      * Migrate all the tasks associated to a given category to a new one
      */
     @Throws(DeleteCategoryException::class)
-    suspend fun migrate(initialId: Long, targetId: Long)
+    suspend fun migrate(initialId: Long, targetId: Long?)
 }

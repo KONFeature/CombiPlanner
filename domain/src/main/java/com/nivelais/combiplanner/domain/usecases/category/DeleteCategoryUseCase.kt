@@ -75,6 +75,7 @@ data class DeleteCategoryParams(
 )
 
 sealed class DeletionStrategy {
+    object MigrateToNull : DeletionStrategy()
     object Cascade : DeletionStrategy()
     data class Migrate(
         var newCategoryId: Long

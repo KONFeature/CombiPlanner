@@ -46,6 +46,13 @@ abstract class TaskDatabaseMapper {
     /**
      * Map ToOne relations of our task
      */
-    fun mapCategory(categoryEntity: ToOne<CategoryEntity>): Category =
-        Mappers.getMapper(CategoryDatabaseMapper::class.java).entityToData(categoryEntity.target)
+    fun mapCategory(categoryEntity: ToOne<CategoryEntity>): Category? {
+        // Return a category only if it's present
+        return if (!categoryEntity.isNull) {
+            Mappers.getMapper(CategoryDatabaseMapper::class.java)
+                .entityToData(categoryEntity.target)
+        } else {
+            null
+        }
+    }
 }
