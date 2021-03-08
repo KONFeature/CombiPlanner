@@ -54,6 +54,8 @@ The original idea behind this app was to help me organise all the work needing t
 
 ### Built With
 
+For the development :
+
 * [Jetpack Compose](https://developer.android.com/jetpack/compose)
 * [Koin](https://insert-koin.io/)
 * [ObjectBox](https://objectbox.io/)
@@ -61,6 +63,15 @@ The original idea behind this app was to help me organise all the work needing t
 * [MapStruct](https://mapstruct.org/)
 * [WhatIf](https://github.com/skydoves/WhatIf)
 * [Slf4j](http://www.slf4j.org/)
+
+For the integration : 
+
+* [GitHub Actions](https://github.com/features/actions)
+* [Detekt](https://github.com/detekt/detekt)  
+* [Spotless](https://github.com/diffplug/spotless)]
+* [CodeScene](https://codescene.io/projects/13613/jobs/127645/results)
+* [CodeFactor](https://www.codefactor.io/repository/github/konfeature/combiplanner)
+* [Libraries](https://libraries.io/github/KONFeature/CombiPlanner)
 
 <!-- ROADMAP -->
 ## Roadmap
