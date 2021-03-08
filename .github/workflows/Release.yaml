@@ -128,6 +128,6 @@ jobs:
           name: Release ${{ github.event.inputs.releaseVersion }}
           tag: ${{ github.event.inputs.releaseVersion }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "app/build/outputs/apk/release/signed*.apk,app/build/outputs/bundle/release/*.aab"
+          artifacts: "app/build/outputs/apk/release/*signed.apk,app/build/outputs/bundle/release/*.aab"
           artifactContentType: application/zip
           prerelease: ${{ github.event.inputs.preReleaseSufifx != null }}
