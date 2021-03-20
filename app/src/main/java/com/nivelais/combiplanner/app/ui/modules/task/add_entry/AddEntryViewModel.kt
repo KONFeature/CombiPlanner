@@ -20,7 +20,7 @@ import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.usecases.task.entry.AddEntryParams
 import com.nivelais.combiplanner.domain.usecases.task.entry.AddEntryUseCase
 import kotlinx.coroutines.launch
-import org.koin.core.scope.inject
+import org.koin.core.component.inject
 
 /**
  * View model used to handle all the logic related to the management of our add entry button

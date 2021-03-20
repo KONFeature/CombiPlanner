@@ -1,11 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.4.30'
+    ext.kotlin_version = '1.4.31'
     ext.coroutines_version = '1.4.2'
-    ext.nav_version = '2.3.3'
-    ext.compose_version = '1.0.0-beta01'
-    ext.nav_compose_version = '1.0.0-alpha08'
-    ext.koin_version = '2.2.2'
+    ext.nav_version = '2.3.4'
+    ext.compose_version = '1.0.0-beta02'
+    ext.nav_compose_version = '1.0.0-alpha09'
+    ext.koin_version = '3.0.1-beta-1'
     ext.objectbox_version = '2.9.0'
     ext.mapstruct_version = '1.4.2.Final'
     ext.slf4j_version = '1.7.30'
@@ -16,9 +16,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha08'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha10'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.koin:koin-gradle-plugin:$koin_version"
         classpath "io.objectbox:objectbox-gradle-plugin:$objectbox_version"
     }
 }

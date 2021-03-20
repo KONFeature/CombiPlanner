@@ -89,14 +89,13 @@ class CategoryRepositoryImpl(
      * @inheritDoc
      */
     @Throws(DeleteCategoryException::class)
-    override suspend fun migrate(initialId: Long, targetId: Long) {
+    override suspend fun migrate(initialId: Long, targetId: Long?) {
         // If the two id are the same throw an exception
         if (initialId == targetId) throw DeleteCategoryException.MigrationIdInvalid
         // Fetch the initial and target category
         val initialCategory = categoryDao.get(initialId)
             ?: throw DeleteCategoryException.MigrationIdInvalid
-        val targetCategory = categoryDao.get(targetId)
-            ?: throw DeleteCategoryException.MigrationIdInvalid
+        val targetCategory = targetId?.let { categoryDao.get(targetId) }
         // Migrate all the task to the other category
         initialCategory.tasks.forEach { task ->
             task.category.setAndPutTarget(targetCategory)

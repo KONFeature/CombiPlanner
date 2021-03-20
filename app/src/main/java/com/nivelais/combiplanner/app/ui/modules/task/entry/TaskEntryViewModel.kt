@@ -22,7 +22,7 @@ import com.nivelais.combiplanner.domain.usecases.task.entry.DeleteEntryParams
 import com.nivelais.combiplanner.domain.usecases.task.entry.DeleteEntryUseCase
 import com.nivelais.combiplanner.domain.usecases.task.entry.UpdateEntryParams
 import com.nivelais.combiplanner.domain.usecases.task.entry.UpdateEntryUseCase
-import org.koin.core.scope.inject
+import org.koin.core.component.inject
 
 /**
  * View model used to handle all the logic related to the management of our task entries

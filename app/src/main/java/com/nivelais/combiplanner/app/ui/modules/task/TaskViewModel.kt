@@ -33,7 +33,7 @@ import com.nivelais.combiplanner.domain.usecases.task.SaveTaskParams
 import com.nivelais.combiplanner.domain.usecases.task.SaveTaskResult
 import com.nivelais.combiplanner.domain.usecases.task.SaveTaskUseCase
 import kotlinx.coroutines.Job
-import org.koin.core.scope.inject
+import org.koin.core.component.inject
 
 class TaskViewModel : GenericViewModel() {
 
@@ -55,10 +55,8 @@ class TaskViewModel : GenericViewModel() {
     // The state for the id of the current task
     var idState: MutableState<Long?> = mutableStateOf(null)
 
-    /**
-     * State used to know if the category picker is displayed or not
-     */
-    val isCategoryPickerDisplayedState = mutableStateOf(true)
+    // The state used to know if the category picker is displayed or not
+    val isCategoryPickerDisplayedState = mutableStateOf(false)
 
     /*
      * The states for the name, category and entries of the current task
@@ -85,8 +83,6 @@ class TaskViewModel : GenericViewModel() {
         log.info("Loading task for the id '$id'")
         // Convert not found id to null
         val usableId = if (id == -1L || id == 0L) null else id
-        // Hide the category picker if the value isn't null
-        isCategoryPickerDisplayedState.value = usableId == null
         // Backup the initial task id
         idState.value = usableId
         // Observe the get task flow
@@ -128,24 +124,11 @@ class TaskViewModel : GenericViewModel() {
      * Save this task
      */
     fun save() {
-        // If a category is picked launch the save job
-        categoryState.value?.let { category ->
-            saveTask(category = category)
-        } ?: run {
-            // Else display an error
-            errorResState.value = R.string.task_save_error_no_category
-        }
-    }
-
-    /**
-     * Launch the save task use case
-     */
-    private fun saveTask(category: Category) {
         saveListenerJob?.cancel()
         saveListenerJob = saveTaskUseCase.runAndCollect(
             SaveTaskParams(
                 id = idState.value,
-                category = category,
+                category = categoryState.value,
                 name = nameState.value
             ),
             viewModelScope

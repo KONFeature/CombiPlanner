@@ -93,7 +93,7 @@ val CombiPlannerTypography = Typography(
     body2 = TextStyle(
         fontFamily = Montserrat,
         fontSize = 14.sp,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Light,
         lineHeight = 20.sp,
         letterSpacing = 0.25.sp
     ),

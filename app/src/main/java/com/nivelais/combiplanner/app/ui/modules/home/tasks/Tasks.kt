@@ -16,6 +16,7 @@
 package com.nivelais.combiplanner.app.ui.modules.home.tasks
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,8 +25,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -40,8 +43,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nivelais.combiplanner.R
-import com.nivelais.combiplanner.app.di.get
-import com.nivelais.combiplanner.app.di.getViewModel
+import org.koin.androidx.compose.get
+import org.koin.androidx.compose.getViewModel
 import com.nivelais.combiplanner.app.ui.modules.main.Route
 import com.nivelais.combiplanner.app.ui.modules.main.navigate
 import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
@@ -71,35 +74,31 @@ fun Tasks(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TasksGrid(
     tasks: List<Task>,
     columnCount: Int,
     onTaskClicked: (Task) -> Unit
 ) {
-    // Chunk or list to get two task by column
-    val tasksChunked = tasks.chunked(columnCount)
-
     // If we got value display all the task
-    LazyColumn {
-        safeItems(items = tasksChunked) { taskRow ->
-            Row {
-                taskRow.forEach { task ->
-                    TaskCard(
-                        task = task,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(4.dp)
-                            .clickable(
-                                onClick = {
-                                    onTaskClicked(task)
-                                }
-                            )
-                    )
-                }
+    LazyVerticalGrid(
+        cells = GridCells.Fixed(columnCount),
+        content = {
+            safeItems(tasks) { task ->
+                TaskCard(
+                    task = task,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .clickable(
+                            onClick = {
+                                onTaskClicked(task)
+                            }
+                        )
+                )
             }
         }
-    }
+    )
 }
 
 @Composable
@@ -117,26 +116,30 @@ private fun TaskCard(
             Text(
                 modifier = modifier.weight(1f),
                 text = task.name,
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.subtitle2
             )
-            task.category.color?.let { colorCode ->
+            task.category?.color?.let { colorCode ->
                 Spacer(modifier = Modifier.padding(8.dp))
                 ColorIndicator(colorCode = colorCode)
             }
         }
-        Spacer(modifier = Modifier.padding(4.dp))
+        Divider(thickness = 1.dp, modifier = Modifier.padding(0.dp, 8.dp))
         // Entries not done of this task
         task.entries.filter { !it.isDone }.forEach { entry ->
-            Text(text = entry.name)
+            Text(
+                text = entry.name,
+                style = MaterialTheme.typography.body2
+            )
         }
         // Sum of the entries done
-        Spacer(modifier = Modifier.padding(4.dp))
+        Divider(thickness = 1.dp, modifier = Modifier.padding(0.dp, 8.dp))
         Text(
             text = stringResource(
                 id = R.string.tasks_card_done_state,
                 task.entries.filter { it.isDone }.count(),
                 task.entries.count()
-            )
+            ),
+            style = MaterialTheme.typography.overline
         )
     }
 }

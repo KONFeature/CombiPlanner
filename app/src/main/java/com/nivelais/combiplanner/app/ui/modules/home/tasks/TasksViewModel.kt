@@ -22,7 +22,7 @@ import com.nivelais.combiplanner.domain.entities.Task
 import com.nivelais.combiplanner.domain.usecases.task.GetTasksParams
 import com.nivelais.combiplanner.domain.usecases.task.GetTasksUseCase
 import kotlinx.coroutines.Job
-import org.koin.core.scope.inject
+import org.koin.core.component.inject
 
 class TasksViewModel : GenericViewModel() {
 

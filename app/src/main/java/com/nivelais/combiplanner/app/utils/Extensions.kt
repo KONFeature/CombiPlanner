@@ -18,6 +18,8 @@ package com.nivelais.combiplanner.app.utils
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.lazy.LazyGridScope
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
@@ -37,6 +39,21 @@ import java.io.ByteArrayOutputStream
 inline fun <T> LazyListScope.safeItems(
     items: List<T>,
     crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit
+) = items(items.size) { index ->
+    items.getOrNull(index)?.let { itemContent(it) }
+}
+
+/**
+ * Safely adds a list of items. (Useful for the snapshot state list that can contain null element sometimes)
+ * @see LazyListScope.safeItems
+ *
+ * @param items the data list
+ * @param itemContent the content displayed by a single item
+ */
+@OptIn(ExperimentalFoundationApi::class)
+inline fun <T> LazyGridScope.safeItems(
+    items: List<T>,
+    crossinline itemContent: @Composable LazyGridScope.(item: T) -> Unit
 ) = items(items.size) { index ->
     items.getOrNull(index)?.let { itemContent(it) }
 }
