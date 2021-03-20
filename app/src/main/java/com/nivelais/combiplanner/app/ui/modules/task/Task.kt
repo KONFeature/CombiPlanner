@@ -42,8 +42,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nivelais.combiplanner.R
-import com.nivelais.combiplanner.app.di.get
-import com.nivelais.combiplanner.app.di.getViewModel
+import org.koin.androidx.compose.get
+import org.koin.androidx.compose.getViewModel
 import com.nivelais.combiplanner.app.ui.modules.category.picker.CategoryPicker
 import com.nivelais.combiplanner.app.ui.modules.task.add_entry.AddEntry
 import com.nivelais.combiplanner.app.ui.modules.task.entries.TaskEntries

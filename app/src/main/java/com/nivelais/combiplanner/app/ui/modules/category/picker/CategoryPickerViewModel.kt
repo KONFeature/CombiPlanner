@@ -22,7 +22,7 @@ import com.nivelais.combiplanner.app.ui.modules.main.GenericViewModel
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.usecases.category.GetCategoriesUseCase
 import kotlinx.coroutines.Job
-import org.koin.core.scope.inject
+import org.koin.core.component.inject
 
 class CategoryPickerViewModel(
     initialCategory: Category? = null

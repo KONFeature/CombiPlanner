@@ -27,7 +27,7 @@ import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryResult
 import com.nivelais.combiplanner.domain.usecases.category.DeleteCategoryUseCase
 import com.nivelais.combiplanner.domain.usecases.category.DeletionStrategy
 import kotlinx.coroutines.Job
-import org.koin.core.scope.inject
+import org.koin.core.component.inject
 
 class CategoryViewModel(
     private val category: Category,

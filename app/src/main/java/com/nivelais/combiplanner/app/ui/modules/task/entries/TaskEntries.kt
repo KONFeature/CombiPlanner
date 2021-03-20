@@ -24,7 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.res.stringResource
 import com.nivelais.combiplanner.R
-import com.nivelais.combiplanner.app.di.getViewModel
+import org.koin.androidx.compose.getViewModel
 import com.nivelais.combiplanner.app.ui.modules.task.entry.TaskEntryView
 import com.nivelais.combiplanner.app.utils.safeItems
 import com.nivelais.combiplanner.domain.entities.TaskEntry

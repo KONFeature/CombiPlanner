@@ -31,7 +31,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.nivelais.combiplanner.R
-import com.nivelais.combiplanner.app.di.get
+import org.koin.androidx.compose.get
 
 @Composable
 fun BottomNavBar(

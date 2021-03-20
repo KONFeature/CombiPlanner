@@ -43,7 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
-import com.nivelais.combiplanner.app.di.get
+import org.koin.androidx.compose.get
 import com.nivelais.combiplanner.app.ui.modules.category.picker.StatelessCategoriesPicker
 import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
 import com.nivelais.combiplanner.domain.entities.Category
@@ -58,8 +58,6 @@ fun CategoryCard(
     categories: List<Category>,
     viewModel: CategoryViewModel = get { parametersOf(category, categories) }
 ) {
-    val errorRes by remember { viewModel.deletionErrorResState }
-
     CategoryBox {
         // The base content of the category card
         CategoryHeader(
@@ -69,22 +67,12 @@ fun CategoryCard(
                 viewModel.deleteCategory(category = category)
             }
         )
-        // If we got an error display it
-        errorRes?.let {
-            Spacer(modifier = Modifier.padding(8.dp))
-            Text(
-                text = stringResource(id = it),
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.error
-            )
-        }
 
         // If we need to specify a migration strategy show the dialog
         val isStrategyToSpecify by remember { viewModel.isDeletionStrategyRequiredState }
         if (isStrategyToSpecify) {
             MigrationStrategyAlert(
                 viewModel = viewModel,
-                onDismiss = { viewModel.dismissDeletionStrategyDialog() },
                 onDeleteClicked = {
                     viewModel.deleteCategory(category)
                 }
@@ -123,7 +111,7 @@ private fun CategoryHeader(
     ) {
         Text(
             text = name,
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.body1,
             modifier = Modifier.weight(1f)
         )
         color?.let { colorCode ->
@@ -144,7 +132,6 @@ private fun CategoryHeader(
 @Composable
 private fun MigrationStrategyAlert(
     viewModel: CategoryViewModel,
-    onDismiss: () -> Unit,
     onDeleteClicked: () -> Unit,
 ) {
     val errorRes by remember { viewModel.deletionErrorResState }
@@ -152,7 +139,7 @@ private fun MigrationStrategyAlert(
     var selectedCategory by remember { viewModel.selectedCategoryState }
 
     MigrationStrategyAlertBox(
-        onDismiss = onDismiss,
+        onDismiss =  { viewModel.dismissDeletionStrategyDialog() },
         onDeleteClicked = onDeleteClicked,
         title = {
             Text(

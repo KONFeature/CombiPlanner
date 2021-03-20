@@ -27,7 +27,7 @@ import com.nivelais.combiplanner.domain.usecases.category.CreateCategoryParams
 import com.nivelais.combiplanner.domain.usecases.category.CreateCategoryResult
 import com.nivelais.combiplanner.domain.usecases.category.CreateCategoryUseCase
 import kotlinx.coroutines.Job
-import org.koin.core.scope.inject
+import org.koin.core.component.inject
 
 class CreateCategoryViewModel : GenericViewModel() {
 

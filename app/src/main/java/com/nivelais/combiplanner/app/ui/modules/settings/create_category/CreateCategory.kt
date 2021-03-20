@@ -42,7 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
-import com.nivelais.combiplanner.app.di.getViewModel
+import org.koin.androidx.compose.getViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -58,7 +58,7 @@ fun CreateCategory(
     CreateCategoryBox {
         Text(
             text = stringResource(id = R.string.create_category_title),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.body1,
         )
         Spacer(modifier = Modifier.padding(8.dp))
         NamePicker(

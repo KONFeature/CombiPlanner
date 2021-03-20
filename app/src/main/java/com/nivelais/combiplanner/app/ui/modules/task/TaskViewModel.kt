@@ -33,7 +33,7 @@ import com.nivelais.combiplanner.domain.usecases.task.SaveTaskParams
 import com.nivelais.combiplanner.domain.usecases.task.SaveTaskResult
 import com.nivelais.combiplanner.domain.usecases.task.SaveTaskUseCase
 import kotlinx.coroutines.Job
-import org.koin.core.scope.inject
+import org.koin.core.component.inject
 
 class TaskViewModel : GenericViewModel() {
 

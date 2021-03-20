@@ -17,9 +17,10 @@ package com.nivelais.combiplanner.app.ui.modules.main
 
 import androidx.lifecycle.ViewModel
 import com.nivelais.combiplanner.domain.common.logger
-import org.koin.core.scope.KoinScopeComponent
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.component.createScope
+import org.koin.core.component.newScope
 import org.koin.core.scope.Scope
-import org.koin.core.scope.newScope
 
 /**
  * Generic view model bind to a Koin Scope
@@ -30,7 +31,7 @@ open class GenericViewModel : ViewModel(), KoinScopeComponent {
     val log by logger
 
     // The scope for this view model
-    override val scope: Scope by lazy { newScope(this) }
+    override val scope: Scope by lazy { createScope(this) }
 
     // Abstract function that will close all the use case
     open fun clearUseCases() {}

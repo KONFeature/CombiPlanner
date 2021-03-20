@@ -26,7 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.nivelais.combiplanner.app.di.getViewModel
+import org.koin.androidx.compose.getViewModel
 import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
 import com.nivelais.combiplanner.app.ui.widgets.SimpleFlowRow
 import com.nivelais.combiplanner.domain.entities.Category
