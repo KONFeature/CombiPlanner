@@ -42,8 +42,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
-import org.koin.androidx.compose.getViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable

@@ -26,12 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
-import org.koin.androidx.compose.getViewModel
 import com.nivelais.combiplanner.app.ui.modules.settings.category.CategoryCard
 import com.nivelais.combiplanner.app.ui.modules.settings.create_category.CreateCategory
 import com.nivelais.combiplanner.app.utils.safeItems
 import com.nivelais.combiplanner.domain.entities.Category
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable

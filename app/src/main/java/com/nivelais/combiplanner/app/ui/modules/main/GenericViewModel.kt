@@ -19,7 +19,6 @@ import androidx.lifecycle.ViewModel
 import com.nivelais.combiplanner.domain.common.logger
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.createScope
-import org.koin.core.component.newScope
 import org.koin.core.scope.Scope
 
 /**

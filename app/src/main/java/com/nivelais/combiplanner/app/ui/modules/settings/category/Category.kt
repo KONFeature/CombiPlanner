@@ -43,12 +43,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nivelais.combiplanner.R
-import org.koin.androidx.compose.get
 import com.nivelais.combiplanner.app.ui.modules.category.picker.StatelessCategoriesPicker
 import com.nivelais.combiplanner.app.ui.widgets.ColorIndicator
 import com.nivelais.combiplanner.domain.entities.Category
 import com.nivelais.combiplanner.domain.usecases.category.DeletionStrategy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.androidx.compose.get
 import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -139,7 +139,7 @@ private fun MigrationStrategyAlert(
     var selectedCategory by remember { viewModel.selectedCategoryState }
 
     MigrationStrategyAlertBox(
-        onDismiss =  { viewModel.dismissDeletionStrategyDialog() },
+        onDismiss = { viewModel.dismissDeletionStrategyDialog() },
         onDeleteClicked = onDeleteClicked,
         title = {
             Text(
