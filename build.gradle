@@ -16,7 +16,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha12'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha13'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.objectbox:objectbox-gradle-plugin:$objectbox_version"
     }
@@ -59,6 +59,9 @@ subprojects {
 
             // Allow unstable dependencies
             freeCompilerArgs += '-Xskip-prerelease-check'
+
+            // User the new IR compiler
+            useIR = true
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"
