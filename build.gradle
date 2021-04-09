@@ -13,10 +13,11 @@ buildscript {
 
     repositories {
         google()
-        jcenter()
+        mavenCentral()
+        jcenter() // To be removed when compose no longuer depend on kotlinx-collections-immutable-jvm:0.3.3
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha13'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha14'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.objectbox:objectbox-gradle-plugin:$objectbox_version"
     }
@@ -30,6 +31,7 @@ plugins {
 subprojects {
     repositories {
         google()
+        mavenCentral()
         jcenter()
     }
 
