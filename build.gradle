@@ -1,22 +1,23 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.kotlin_version = '1.4.31'
-    ext.coroutines_version = '1.4.2'
+    ext.coroutines_version = '1.4.3'
     ext.nav_version = '2.3.4'
-    ext.compose_version = '1.0.0-beta02'
+    ext.compose_version = '1.0.0-beta03'
     ext.nav_compose_version = '1.0.0-alpha09'
     ext.koin_version = '3.0.1-beta-1'
-    ext.objectbox_version = '2.9.0'
+    ext.objectbox_version = '2.9.1'
     ext.mapstruct_version = '1.4.2.Final'
     ext.slf4j_version = '1.7.30'
     ext.logback_version = '2.14.0'
 
     repositories {
         google()
-        jcenter()
+        mavenCentral()
+        jcenter() // To be removed when compose no longuer depend on kotlinx-collections-immutable-jvm:0.3.3
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha10'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha14'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.objectbox:objectbox-gradle-plugin:$objectbox_version"
     }
@@ -30,6 +31,7 @@ plugins {
 subprojects {
     repositories {
         google()
+        mavenCentral()
         jcenter()
     }
 
@@ -59,6 +61,9 @@ subprojects {
 
             // Allow unstable dependencies
             freeCompilerArgs += '-Xskip-prerelease-check'
+
+            // User the new IR compiler
+            useIR = true
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"
